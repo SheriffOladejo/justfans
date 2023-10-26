@@ -1,0 +1,258 @@
+.live-video-container {
+  display: flex;
+  flex-direction: row;
+  margin-top: 30px;
+  height: 100vh;
+  justify-content: center;
+  gap: 20px;
+  margin-top: 30px;
+  padding-top: 50px;
+}
+
+.live-video-sidebar {
+  max-width: 360px;
+  background-color: #ffffff;
+  border-radius: 8px;
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+}
+
+.live-video-comment-input {
+  border: none;
+  background-color: transparent;
+  outline: none;
+  padding-left: 15px;
+  font-family: 'Inter', sans-serif;
+  font-size: 14px;
+  font-weight: 400;
+}
+
+.live-video-comment-input::placeholder {
+  font-family: 'Inter', sans-serif;
+  font-size: 14px;
+}
+
+.live-video-controls {
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+    align-items: center;
+    margin: 15px;
+}
+
+.live-video-user-info {
+  display: flex;
+  align-items: center;
+}
+
+.live-video-name-username {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+}
+
+.live-video-profile-picture {
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  margin-right: 12px;
+  margin-bottom: 10px;
+}
+
+.live-video-user-details {
+  margin-top: 10px;
+}
+
+.live-video-display-name {
+  font-weight: 600;
+  font-family: 'Inter', sans-serif;
+  font-size: 12px;
+  margin-bottom: 0px;
+  margin-top: 0px;
+  margin-right: 5px;
+}
+
+.live-video-username {
+  color: #000000;
+  font-size: 10px;
+  font-family: 'Inter', sans-serif;
+  text-align: left;
+}
+
+.live-video-post-time {
+  color: #888;
+  font-size: 11px;
+  font-family: 'Inter', sans-serif;
+  margin: 8px 0;
+}
+
+.live-video-verified {
+  width: 15px;
+  height: 15px;
+}
+
+.live-video-live-container {
+    height: 20px;
+    width: 50px;
+    background-color: #F94F64;
+    padding-top: 2px;
+    padding-bottom:2px;
+    padding-right:4px;
+    padding-left:4px;
+    font-size:11px;
+    font-weight:600;
+    font-family:Inter;
+    color:#ffffff;
+    display:flex;
+    flex-direction:row;
+    justify-content:center;
+    align-items:center;
+    border-radius:5px;
+    margin-left:20px;
+}
+
+.live-video-count-container {
+    height:20px;
+    width:50px;
+    background-color:#7F7F7F;
+    padding-top:2px;
+    padding-bottom:2px;
+    padding-right:4px;
+    padding-left:4px;
+    font-size:11px;
+    font-weight:600;
+    font-family:Inter;
+    color:#ffffff;
+    display:flex;
+    flex-direction:row;
+    justify-content:center;
+    align-items:center;
+    border-radius:5px;
+    margin-left: 20px;
+}
+
+.live-video-count-container-row {
+    display:flex;
+    flex-direction: row;
+    align-items: center;
+}
+
+.live-video-count-container-eye {
+    width:19px;
+    height:17px;
+}
+
+.live-video-count-container-count {
+    font-size:11px;
+    font-family:Inter;
+    color:#ffffff;
+    margin-left:3px;
+}
+
+.live-video-divider {
+    width:360px;
+    background-color:#EBEBEB;
+    height:0.5px;
+    margin-top:10px;
+    margin-bottom:10px;
+}
+
+.live-video-back-button {
+    height:12px;
+    width:18px;
+    cursor: pointer;
+}
+
+.live-video-back-arrow-container {
+    width:40px;
+    height:40px;
+    background-color:#ffffff;
+    border-radius: 50%;
+    display:flex;
+    flex-direction:row;
+    justify-content:center;
+    align-items:center;
+    cursor: pointer;
+}
+
+.live-video-back-arrow-container:hover {
+    background-color:lightgray;
+    cursor: pointer;
+}
+
+.live-video-tips-received {
+  color: #000000;
+  font-size: 16px;
+  font-family: 'Inter', sans-serif;
+  text-align: center;
+}
+
+.live-video-tips-received-amount {
+  color: #7f7f7f;
+  font-size: 12px;
+  font-family: 'Inter', sans-serif;
+  text-align: center;
+}
+
+.live-video-comment-list {
+  margin-top: 20px;
+  padding: 10px;
+  background-color: #ffffff;
+  max-height:auto;
+  overflow-y: auto;
+}
+
+.live-video-comment-list::-webkit-scrollbar {
+  width: 0.0rem; /* Set the width of the scrollbar to a very small value */
+}
+
+/* Remove scrollbar track on hover (optional) */
+.live-video-comment-list::-webkit-scrollbar:hover {
+  width: 0.0rem;
+}
+
+/* Style the scrollbar thumb (optional) */
+.live-video-comment-list::-webkit-scrollbar-thumb {
+  background-color: #ccc; /* Set the color of the scrollbar thumb */
+  border-radius: 3px; /* Add some border-radius for a rounded appearance */
+}
+
+.live-video-comment-container {
+  background-color: #FEDCE0;
+  border-bottom-right-radius: 8px;
+  border-bottom-left-radius: 8px;
+  padding-top: 10px;
+  padding-bottom: 10px;
+  height: 70px;
+  width: 100%;
+}
+
+.live-video-user-profile-picture {
+   width: 40px;
+   height: 40px;
+   border-radius: 50%;
+   margin-left: 15px;
+}
+
+.live-video-comment-box {
+  width: 100%;
+  height: 50px;
+  background-color: #ffffff;
+  border-radius: 65px;
+  display: flex;
+  flex-direction: row;
+  margin-left: 15px;
+  margin-right: 15px;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.live-video-media {
+  height: 100%;
+}
+
+.live-dummy-image {
+  height: 100%;
+  max-width: 800px;
+}

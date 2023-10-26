@@ -1,0 +1,37 @@
+.story-card {
+  width: 54px;
+  height: 54px;
+  background-color: #f94f64;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-right: 5px;
+  margin-left: 5px;
+  margin-bottom: 20px;
+}
+
+.story-card img {
+  width: 51px;
+  height: 51px;
+  border-radius: 50%;
+  object-fit: cover;
+}
+
+.story-card .active {
+  transform: translateX(0);
+}
+
+.left-button {
+  left: 10px;
+  visibility: hidden; /* Hidden by default */
+}
+
+.right-button {
+  right: 10px;
+  visibility: visible; /* Visible by default */
+}
+
+.visible {
+  visibility: visible !important;
+}

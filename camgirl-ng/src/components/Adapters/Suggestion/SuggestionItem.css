@@ -1,0 +1,74 @@
+.suggestion-item-container {
+  position: relative;
+  margin-top: 10px;
+}
+
+.suggestion-item {
+  max-width: auto;
+  height: 85px;
+  border-radius: 8px;
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+  align-items: center;
+  background-color: #303030;
+  padding-right: 15px;
+  background-image: url('/public/images/signup_bg.png'); /* Replace with the path to your image */
+  background-size: cover;
+  background-repeat: no-repeat;
+  background-position: center;
+  position: relative;
+}
+
+.suggestion-overlay {
+  width: 100%;
+  height: 100%;
+  background-color: rgba(48, 48, 48, 0.4);
+  position: absolute;
+  border-radius: 8px;
+  bottom: 0;
+  left: 0;
+}
+
+.suggestion-display-name {
+  font-weight: 700;
+  font-family: 'Inter', sans-serif;
+  font-size: 15px;
+  margin-bottom: 0px;
+  margin-top: 0px;
+  margin-right: 5px;
+  color: #ffffff;
+}
+
+.suggestion-username {
+  color: #ffffff;
+  margin-bottom: 0px;
+  margin-top: 0px;
+  margin-left: 0px;
+  font-family: 'Inter', sans-serif;
+  font-size: 13px;
+  font-weight: 400;
+  text-align: left;
+}
+
+.subscription {
+    color: #F94F64;
+    font-weight: 700;
+    font-family: 'Lato';
+    font-size: 16px;
+    margin-bottom: 0px;
+    margin-top: 0px;
+}
+
+.suggestion-item-user-info {
+  display: flex;
+  flex-direction: column;
+  z-index: 2;
+}
+
+.suggestion-item-user-verified {
+  margin-left: 5px;
+  vertical-align: middle;
+  width: 15px;
+  height: 15px;
+}

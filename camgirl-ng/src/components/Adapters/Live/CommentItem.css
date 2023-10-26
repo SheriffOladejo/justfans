@@ -1,0 +1,82 @@
+.comment-container {
+    display: flex;
+    flex-direction: row;
+    height: auto;
+    margin-top: 5px;
+    background-color: white;
+    align-items: center;
+}
+
+.comment-profile-picture {
+  width: 35px;
+  height:35px;
+  position: relative;
+  margin-right: 10px;
+  margin-left: 20px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 2;
+}
+
+
+.underlay {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  width: 45px; /* Adjust the size as needed, slightly bigger than the profile picture */
+  height: 45px; /* Adjust the size as needed, slightly bigger than the profile picture */
+  background-color: #f94f64; /* Background color for the underlay */
+  border-radius: 50%; /* Make it round */
+  z-index: -1; /* Place it behind the profile picture */
+}
+
+.comment-profile-picture img {
+  width: 42px;
+  height: 42px;
+  border-radius: 50%;
+  object-fit: cover;
+}
+
+.live-comment-username {
+    font-size: 14px;
+    font-weight: 600;
+    color: black;
+    font-family: 'lato';
+    max-width: 100px;
+}
+
+.has-story {
+  display: flex;
+  flex-direction: row;
+  width: 40px;
+  height: 40px;
+  margin-left: 20px;
+  border-radius: 50%;
+  background: linear-gradient(to left, #f94f64 0%, #f94f64 12%, #f8c8c8 16%, #f8c8c8 100%, #ffffff 100%);
+  justify-content: center;
+}
+
+.live-comment-comment {
+    font-size: 14px;
+    font-weight: 400;
+    color: #7F7F7F;
+    font-family: 'lato';
+    margin-left: 10px;
+    text-align: bottom;
+}
+
+.comment-user-verified {
+  width: 15px;
+  height: 15px;
+  margin-left: 5px;
+}
+
+.live-comment-container {
+  width: 100%;
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+  align-items: center;
+}

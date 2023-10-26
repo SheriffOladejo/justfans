@@ -1,0 +1,92 @@
+.carousel-container {
+  position: relative;
+}
+
+.custom-buttons {
+  position: absolute;
+  top: 50%;
+  left: 0;
+  right: 0;
+  display: flex;
+  justify-content: space-between;
+}
+
+.custom-button {
+  background-color: #333;
+  color: #fff;
+  border: none;
+  padding: 10px 20px;
+  cursor: pointer;
+}
+
+.custom-pagination {
+  display: flex;
+  justify-content: center;
+  margin-top: 20px;
+}
+
+.custom-dot {
+  width: 10px;
+  height: 10px;
+  background-color: #ccc; /* Inactive dot color */
+  margin: 0 5px;
+  border-radius: 50%;
+  cursor: pointer;
+}
+
+.custom-dot.active {
+  background-color: #F94F64; /* Active dot color */
+}
+
+.suggestion {
+    display: flex;
+    flex-direction: row;
+    font-family: 'Lato';
+    align-items: center;
+    font-size: 16px;
+    font-weight: 600;
+    justify-content: space-between;
+}
+
+.arrow-container {
+    width: 90px;
+    height: 40px;
+    background-color: #F9FAFB;
+    border-radius: 65px;
+    align-items: center;
+    justify-content: space-between;
+    display: flex;
+    margin-top: 5px;
+    margin-bottom: 5px;
+    padding: 5px;
+}
+
+.left-arrow,
+.right-arrow {
+    width: 35px;
+    height: 35px;
+    background-color: #fff; /* Change this color for the arrow background */
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    border-radius: 50%;
+    cursor: pointer;
+}
+
+.left-arrow::before,
+.right-arrow::before {
+    content: '←'; /* Left arrow (←) Unicode character */
+    font-size: 25px;
+}
+
+.right-arrow::before {
+    content: '→'; /* Change to '→' for a right-pointing arrow */
+}
+
+.left-arrow:hover,
+.right-arrow:hover {
+    background-color: #ccc; /* Change this color for hover effect */
+}
+
+
+

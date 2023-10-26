@@ -1,0 +1,39 @@
+.selector-container {
+  display: flex;
+  max-width: 200px;
+  height: 40px;
+  border-radius: 8px;
+  overflow: hidden;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.option {
+  flex: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  transition: background-color 0.3s, color 0.3s;
+}
+
+.option.selected {
+  background-color: #f94f64;
+  color: white;
+}
+
+.icon {
+  width: 20px;
+  height: 20px;
+  margin-right: 8px;
+  transition: filter 0.3s;
+}
+
+.text {
+  font-size: 14px;
+  transition: color 0.3s;
+  font-family: 'Inter', sans-serif;
+}
+
+.option:hover .icon {
+  filter: brightness(1.2);
+}

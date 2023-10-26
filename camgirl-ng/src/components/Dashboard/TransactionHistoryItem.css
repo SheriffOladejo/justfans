@@ -1,0 +1,127 @@
+.historyitem-column-names-container {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    max-width: 100%;
+    height: 70px;
+    background-color: white;
+    margin-bottom: 10px;
+}
+
+.historyitem-date-column {
+    width: 15%;
+    height: 100%;
+    border-right: 2px solid #EBEBEB;
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    padding-left: 10px;
+    font-size: 12px;
+    color: black;
+    font-weight: 600;
+    font-family: 'Inter', sans-serif;
+    
+}
+
+.historyitem-transaction-column {
+    width: 50%;
+    height: 100%;
+    border-right: 2px solid #EBEBEB;
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    justify-content: center;
+    font-size: 12px;
+    color: #666666;
+    font-weight: 400;
+    font-family: 'Inter', sans-serif;
+    padding: 10px;
+    
+}
+
+.historyitem-invoice-column {
+    width: 10%;
+    height: 100%;
+    border-right: 2px solid #EBEBEB;
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    justify-content: center;
+    font-size: 12px;
+    color: #666666;
+    font-weight: 400;
+    font-family: 'Inter', sans-serif;
+    
+}
+
+.historyitem-amount-column {
+    width: 12.5%;
+    height: 100%;
+    border-right: 2px solid #EBEBEB;
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    justify-content: center;
+    font-size: 12px;
+    color: #666666;
+    font-weight: 400;
+    font-family: 'Inter', sans-serif;
+    
+}
+
+.historyitem-type-column {
+    width: 12.5%;
+    height: 100%;
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    justify-content: center;
+    font-size: 12px;
+    font-family: 'Inter', sans-serif;
+    
+}
+
+.historyitem-status {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    justify-content: center;
+}
+
+.historyitem-status-circle-active {
+    width: 5px;
+    height: 5px;
+    background-color: green;
+    border-radius: 50%;
+    margin-right: 5px;
+}
+
+.historyitem-status-circle-inactive {
+    width: 5px;
+    height: 5px;
+    background-color: red;
+    border-radius: 50%;
+    margin-right: 5px;
+}
+
+.historyitem-status-active {
+    font-size: 12px;
+    color: green;
+    font-weight: 400;
+    font-family: 'Inter', sans-serif;
+}
+
+.historyitem-status-inactive {
+    font-size: 12px;
+    color: red;
+    font-weight: 400;
+    font-family: 'Inter', sans-serif;
+}
+
+.historyitem-divider {
+    width:100%;
+    background-color:#EBEBEB;
+    height:1.5px;
+    margin-top:0px;
+    margin-bottom:0px;
+}

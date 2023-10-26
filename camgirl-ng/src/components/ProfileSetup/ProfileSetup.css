@@ -1,0 +1,145 @@
+.dialog-container {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  min-height: 100vh;
+}
+
+.profile-dialog {
+  width: 500px;
+  padding: 60px;
+  border: 1px solid #ccc;
+  border-radius: 8px;
+  background-color: white;
+  box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.2);
+  overflow: hidden;
+}
+
+.progress-bar {
+  display: flex;
+  justify-content: center;
+  margin: 0 auto;
+  width: 500px;
+  height: 8px;
+  background-color: #ccc;
+  border-radius: 4px;
+  margin-bottom: 20px;
+}
+
+.progress {
+  top: 0;
+  left: 0;
+  margin: 0;
+  padding: 0;
+  height: 100%;
+  transition: width 0.3s;
+}
+
+h2 {
+  font-weight: 700;
+  font-size: 32px;
+  font-family: 'Inter', sans-serif;
+  margin-bottom: 20px;
+  text-align: center;
+}
+
+.input-row {
+  display: flex;
+  justify-content: space-between;
+  margin-bottom: 0px;
+}
+
+.custom-year-dropdown {
+  position: relative;
+}
+
+.custom-year-dropdown select {
+  padding-right: 32px; /* Create space for the arrow indicators */
+}
+
+.custom-year-dropdown .year-arrows {
+  position: absolute;
+  right: 8px;
+  top: 50%;
+  transform: translateY(-50%);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.custom-year-dropdown .year-arrows button {
+  background: none;
+  border: none;
+  cursor: pointer;
+}
+
+
+.date-picker-input {
+  background-color: #ffffff; /* Set a background color to visually indicate uneditable */
+  cursor: pointer; /* Show pointer cursor to indicate interactivity */
+}
+
+.input-row .input-group input {
+  width: 222px;
+  padding: 8px;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+}
+
+.input-group
+.input-group input.date-of-birth {
+  width: 483px;
+  padding: 8px;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+}
+
+.input-group {
+  margin-bottom: 20px;
+}
+
+.input-group .date-picker-trigger {
+  width: 483px;
+  /* Add any other styling you want */
+}
+
+.input-group label {
+  display: block;
+  margin-bottom: 5px;
+  font-weight: normal;
+  font-size: 14px;
+  font-family: 'Inter', sans-serif;
+  color:'#344054';
+}
+
+input {
+  width: 100%;
+  padding: 8px;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+}
+
+.navigation-buttons {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.back-button {
+  display: flex;
+  align-items: center;
+  cursor: pointer;
+}
+
+.back-button img {
+  margin-right: 5px;
+}
+
+.continue-button {
+  background-color: #F94F64;
+  color: white;
+  border: none;
+  padding: 10px 20px;
+  border-radius: 4px;
+  cursor: pointer;
+}

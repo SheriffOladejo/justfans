@@ -1,0 +1,276 @@
+.messages-main-container {
+    display: flex;
+    flex-direction: row;
+    margin-top: 30px;
+    padding-bottom: 30px;
+    height: 100vh;
+    justify-content: center;
+    gap: 20px;
+    padding-top: 50px;
+    margin-top: 30px;
+}
+
+.messages-chat-container1 {
+    max-width: 200px;
+}
+
+.messages-chat-container {
+    height: 100%;
+    max-width: 100%;
+    background-color: white;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    border-radius: 8px;
+}
+
+.messages-chat-search-form {
+    margin: 0px;   
+    width: 100%;
+    padding: 0px;
+}
+
+.messages-chat-search-container {
+    position: relative;
+    align-self: center;
+    margin-top: 15px;
+    display: flex;
+    flex-direction: row;
+    justify-content: center;
+    width: 95%;
+}
+
+.messages-chat-search-input {
+    border: 1px solid #ffffff;
+    border-radius: 50px;
+    font-size: 16px;
+    font-family: 'Inter', sans-serif;
+    background-color: #EBEBEB;
+    padding-left: 45px;
+}
+  
+  .messages-chat-search-input::placeholder {
+    color: #000000;
+    font-size: 12px;
+    font-family: 'Inter', sans-serif;
+}
+  
+  .messages-chat-search-icon {
+    position: absolute;
+    top: 50%;
+    left: 10px;
+    transform: translateY(-50%);
+    color: #000000;
+    width: 20px;
+    height: 20px;
+}
+
+.messages-chat-divider {
+    width:350px;
+    background-color:#EBEBEB;
+    height:0.5px;
+    margin-top:0px;
+    margin-bottom:1px;
+}
+
+.messages-chat-title {
+    margin-left: 25px;
+    margin-top: 40px;
+    text-align: start;
+    width: 100%;
+    font-size: 18px;
+}
+
+.messages-convo-inactive-container {
+    height: 100%;
+    width: 600px;
+    background-color: white;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    border-radius: 8px;
+    justify-content: center;
+}
+
+.messages-no-chat-container {
+    align-items: center;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    gap: 0px;
+}
+
+.messages-no-chat-icon {
+    width: 80px;
+    height: 80px;
+}
+
+.messages-start-convo-title {
+    font-family: 'Inter', sans-serif;
+    font-size: 16px;
+    font-weight: 600;
+    color: #6A6A70;
+    margin: 0px;
+}
+
+.messages-start-convo-text {
+    font-family: 'Inter', sans-serif;
+    font-weight: 400;
+    font-size: 14px;
+    color: #6A6A70;
+    width: 400px;
+    text-align: center;
+}
+
+.messages-start-conversation {
+    height: 48px;
+    width: 180px;
+    background-color: #F94F64;
+    border-radius: 8px;
+    padding: 0px;
+    font-size: 16px;
+    font-family: 'Lato', sans-serif;
+    font-weight: 600;
+}
+
+.messages-start-coversation-row {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    justify-content: center;
+}
+
+.messages-start-coversation-row img {
+    width: 24px;
+    height: 24px;
+    margin-top: 5px;
+    margin-left: 2px;
+}
+
+.messages-chat-list {
+    background-color: #ffffff;
+    max-height:auto;
+    overflow-y: auto;
+    margin-bottom: 5px;
+}
+
+.messages-convo-list {
+    padding-top: 5px;
+    width: 100%;
+    height: 82%;
+    background-color: white;
+}
+
+.messages-convo-list2 {
+    max-width: 100%;
+    height: 100%;
+}
+
+.messages-chat-list::-webkit-scrollbar {
+    width: 0.0rem; /* Set the width of the scrollbar to a very small value */
+  }
+  
+/* Remove scrollbar track on hover (optional) */
+.messages-chat-list::-webkit-scrollbar:hover {
+width: 0.0rem;
+}
+
+.messages-convo-list2::-webkit-scrollbar {
+    width: 0.0rem; /* Set the width of the scrollbar to a very small value */
+  }
+  
+/* Remove scrollbar track on hover (optional) */
+.messages-convo-list2::-webkit-scrollbar:hover {
+  width: 0.0rem;
+}
+
+.messages-convo-container {
+    width: 600px;
+    background-color: white;
+    border-radius: 8px;
+}
+
+.messages-convo-recipient-info-container {
+    width: 100%;
+    height: 55px;
+    background-color: #F94F64;
+    border-top-right-radius: 8px;
+    border-top-left-radius: 8px;
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    justify-content: space-between;
+}
+
+.messages-convo-recipient-info {
+    display: flex;
+    flex-direction: row;
+    gap: 10px;
+    align-items: center;
+}
+
+
+.messages-convo-recipient-user-verified {
+    width: 15px;
+    height: 15px;
+    margin-left: 5px;
+}
+
+.messages-convo-recipient-display-name {
+    font-weight: 700;
+    font-family: 'Inter', sans-serif;
+    font-size: 15px;
+    margin-bottom: 0px;
+    margin-top: 0px;
+    margin-right: 5px;
+    color: #ffffff;
+}
+
+.messages-convo-recipient-username {
+    color: #ffffff;
+    margin-bottom: 0px;
+    margin-left: 0px;
+    margin-top: 2px;
+    font-family: 'Inter', sans-serif;
+    font-size: 13px;
+    font-weight: 400;
+    text-align: left;
+}
+
+.messages-convo-options {
+    margin-right: 20px;
+    cursor: pointer;
+}
+
+.messages-comment-container {
+    background-color: #FEDCE0;
+    border-bottom-right-radius: 8px;
+    border-bottom-left-radius: 8px;
+    padding-top: 10px;
+    padding-bottom: 10px;
+    height: 50px;
+    width: 100%;
+  }
+  
+  .messages-comment-box {
+    width: 100%;
+    height: 50px;
+    background-color: #ffffff;
+    border-radius: 65px;
+    display: flex;
+    flex-direction: row;
+    margin-left: 15px;
+    margin-right: 15px;
+    justify-content: space-between;
+    align-items: center;
+  }
+  
+  .messages-comment-input {
+    border: none;
+    background-color: transparent;
+    outline: none;
+    padding-left: 15px;
+    font-family: 'Inter', sans-serif;
+    font-size: 14px;
+    font-weight: 400;
+  }

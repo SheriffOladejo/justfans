@@ -1,0 +1,106 @@
+.explore-container {
+  width: auto;
+  height: auto;
+  background-color: #EBEBEB;
+  display: flex;
+  flex-direction: row;
+  justify-content: center;
+  gap: 30px;
+  margin-top: 30px;
+  padding-top: 50px;
+  margin-left: 30px;
+  margin-right: 30px;
+  padding-bottom: 200px;
+}
+
+.explore-main-container {
+  max-width: 900px;
+}
+
+.explore-search-input {
+  padding: 8px 8px 8px 40px;
+  border: 1px solid #ffffff;
+  border-radius: 8px;
+  font-size: 16px;
+  width: 100%;
+  font-family: 'Inter', sans-serif;
+}
+
+.explore-search-input::placeholder {
+  color: #000000;
+  font-size: 12px;
+  font-family: 'Inter', sans-serif;
+}
+
+.explore-search-icon {
+  position: absolute;
+  top: 50%;
+  left: 10px;
+  transform: translateY(-50%);
+  color: #000000;
+  width: 20px;
+  height: 20px;
+}
+
+.explore-search-container {
+  position: relative;
+  width: 400px;
+}
+
+.explore-paid-selection {
+  width: 50px;
+  height: 20px;
+  border-radius: 8px;
+  padding-top: 8px;
+  padding-bottom: 8px;
+  padding-left: 12px;
+  padding-right: 12px;
+  background-color: white;
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: space-between;
+  font-size: 13px;
+  font-weight: 400;
+  cursor: pointer;
+  font-family: 'Lato', sans-serif;
+  margin-left: 70px;
+}
+
+.explore-first-container {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  margin: 0px;
+}
+
+.explore-trending-tab {
+  width: auto;
+  height: auto;
+  border-radius: 8px;
+  background-color: white;
+  padding-top: 1px;
+  padding-bottom: 18px;
+  padding-left: 16px;
+  padding-right: 16px;
+  margin-top: 30px;
+}
+
+.explore-trend-title {
+  color: black;
+  font-weight: 700;
+  font-family: 'Inter', sans-serif;
+  font-size: 20px;
+}
+
+.explore-trend-list {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+}
+
+.explore-top-creator-list {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 30px;
+}

@@ -1,0 +1,234 @@
+.post-back-container {
+    max-width: auto;
+    height: 75px;
+    background-color: white;
+    border-radius: 8px;
+    display:flex;
+    flex-direction:row;
+    align-items:center;
+}
+
+.post-comment-page {
+  display: flex;
+  margin-top: 30px;
+  justify-content: center;
+  gap: 30px;
+  background-color: #EBEBEB;
+  margin-top: 30px;
+  padding-top: 50px;
+}
+
+.back-post-text {
+    font-size:20px;
+    font-weight:600;
+    color:black;
+    font-family: 'Inter', sans-serif;
+    margin-left: 30px;
+}
+
+.post-comment-container {
+    max-width: 600px;
+    height: auto;
+    background-color: white;
+    margin-top:30px;
+    padding: 20px;
+    display:flex;
+    flex-direction:column;
+    align-items:start;
+    border-radius: 8px;
+}
+
+.post-comment-user-info {
+  display: flex;
+  align-items: center;
+}
+
+.post-comment-name-username {
+  display: flex;
+  align-items: center;
+}
+
+.post-comment-feed-profile-picture {
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  margin-right: 12px;
+  margin-bottom: 10px;
+}
+
+.post-comment-user-details {
+  margin-left: 15px;
+}
+
+.post-comment-divider {
+  background-color: #ccc;
+  width: 100%;
+  height: 0.5px;
+  margin-top: 10px;
+  margin-bottom: 10px;
+}
+
+.post-comment-display-name {
+  font-weight: 600;
+  font-family: 'Inter', sans-serif;
+  font-size: 14px;
+  margin-bottom: 0px;
+  margin-top: 0px;
+  margin-right: 5px;
+}
+
+.post-comment-username {
+  color: #666;
+  margin-bottom: 0px;
+  margin-top: 0px;
+  margin-left: 5px;
+  font-family: 'Inter', sans-serif;
+  font-size: 14px;
+  font-weight: 400;
+  color: black;
+}
+
+.post-comment-post-time {
+  color: #888;
+  font-size: 11px;
+  font-family: 'Inter', sans-serif;
+  margin: 8px 0;
+}
+
+.post-comment-divider {
+  background-color: #ccc;
+  width: 100%;
+  height: 0.5px;
+  margin-top: 10px;
+  margin-bottom: 10px;
+}
+
+.post-comment-caption {
+  font-size: 12px;
+  margin: 8px 0;
+  font-weight: 500;
+  font-family: 'Inter', sans-serif;
+}
+
+.post-comment-media {
+  margin-top: 12px;
+}
+
+.post-comment-verified {
+  width: 15px;
+  height: 15px;
+}
+
+.post-comment-post-video,
+.post-comment-post-image {
+  max-width: 100%;
+  height: auto;
+}
+
+.post-comment-emoji-container {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.post-comment-emoji {
+  font-size: 20px;
+  margin-right: -8px;
+}
+
+.post-comment-text {
+  margin-left: 20px;
+  font-size: 12px;
+  font-weight: 400;
+  font-family: 'Inter', sans-serif;
+}
+
+.post-comment-reaction-container {
+  width: 100%;
+  display: flex;
+  justify-content: space-between;
+  margin-right: 15px;
+  cursor: pointer;
+}
+
+.post-comment-reaction-text {
+  font-size: 10px;
+  font-weight: 600;
+  font-family: 'Inter', sans-serif;
+  color: #828282;
+}
+
+.post-comment-reaction {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  text-align: center;
+  gap: 5px;
+  padding: 10px;
+}
+
+.post-comment-reaction:hover {
+  background-color: rgba(0, 255, 0, 0.05);
+  border-radius: 10px;
+  padding: 10px;
+}
+
+.post-comment-back-arrow {
+  cursor: pointer;
+}
+
+.post-comment-back-container {
+    margin-left: 20px;
+    width:40px;
+    height:40px;
+    background-color:#ffffff;
+    border-radius: 50%;
+    display:flex;
+    flex-direction:row;
+    justify-content:center;
+    align-items:center;
+    cursor: pointer;
+}
+
+.post-comment-back-container:hover {
+    background-color:lightgray;
+}
+
+.post-comment-box {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: space-between;
+  width: 100%;
+}
+
+.post-comment-reply-button-inactive {
+  width: 60px;
+  height: 24px;
+  border-radius: 28px;
+  padding: 10px;
+  background-color: #FEDCE0;
+  align-items: center;
+  display: flex;
+  flex-direction: row;
+  justify-content: center;
+}
+
+.post-comment-reply-button-text {
+  font-size: 16px;
+  font-family: 'Inter', sans-serif;
+  color: white;
+  font-weight: 600;
+}
+
+.post-comment-input {
+  border: none;
+  background-color: transparent;
+  outline: none;
+  padding-left: 15px;
+  font-family: 'Inter', sans-serif;
+  font-size: 14px;
+  color: black;
+  font-weight: 400;
+}
+

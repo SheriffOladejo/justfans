@@ -1,0 +1,114 @@
+.notifications-main-container {
+    width: 400px;
+    height: auto;
+    background-color: white;
+    border-radius: 8px;
+    padding-bottom: 10px;
+}
+
+.notifications-title {
+    font-size: 16px;
+    font-weight: 600;
+    color: black;
+    font-family: 'Inter', sans-serif;
+    margin-left: 10px;
+    height: 50px;
+}
+
+.notifications-item-row {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    justify-content: space-between;
+    width: 100%;
+    height: auto;
+    margin: 10px;
+}
+
+.notifications-item-row2 {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    height: auto;
+}
+
+.notifications-item-column {
+    display: flex;
+    flex-direction: column;
+    width: 350px;
+    height: auto;
+}
+
+.notifications-item-title {
+    font-weight: 500;
+    font-size: 16px;
+    font-family: 'Inter', sans-serif;
+    color: black;
+    height: 0px;
+}
+
+.notifications-item-desc {
+    font-weight: 400;
+    font-size: 12px;
+    font-family: 'Inter', sans-serif;
+    color: black;
+
+}
+
+.notifications-switch {
+    width: 40px;
+    height: 24px;
+    background-color: #ccc;
+    border-radius: 12px;
+    right: 20px;
+    position: relative;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+  }
+  
+  .notifications-slider {
+    width: 15px;
+    height: 15px;
+    margin-left: 5px;
+    background-color: #fff;
+    border-radius: 50%;
+    position: absolute;
+    transition: 0.2s;
+  }
+  
+  .notifications-switch.on {
+    background-color: #F94F64;
+  }
+  
+  .notifications-switch.on .notifications-slider {
+    left: 12px; 
+  }  
+
+  .notifications-switch.off {
+    background-color: #ccc;
+  }
+  
+  .notifications-switch.off .notifications-slider {
+    left: 0;
+  }
+
+  .notifications-item-arrow {
+    margin-right: 30px;
+    width: 10px;
+    height: 10px;
+  }
+
+  .notifications-divider {
+    width: 100%;
+    height: 0.5px;
+    background-color: #CECECF;
+    margin-top: 0px;
+    margin-bottom: 0px;
+  }
+
+  .notifications-item-icon {
+    margin-right: 15px;
+    width: 15px;
+    height: 15px;
+  }

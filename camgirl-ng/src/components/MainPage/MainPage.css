@@ -1,0 +1,19 @@
+.main-page {
+  display: flex;
+  flex-direction: row;
+  gap: 30px;
+  margin-top: 50px;
+  height: auto;
+  max-width: auto;
+  justify-content: center;
+  background-color: #EBEBEB;
+  padding-top: 35px;
+}
+
+body {
+  overflow: auto;
+}
+
+.main-container {
+  overflow-x: hidden;
+}

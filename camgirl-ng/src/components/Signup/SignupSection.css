@@ -1,0 +1,126 @@
+.signup-container {
+  max-width: 500px;
+  padding: 20px;
+  text-align: left;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+}
+
+form {
+  margin-top: 20px;
+  display: flex;
+  flex-direction: column;
+  gap: 0px;
+}
+
+input {
+  padding: 10px;
+  border: 1px solid #ccc;
+  border-radius: 5px;
+}
+
+button {
+  padding: 10px;
+  background-color: #F94F64;
+  color: #fff;
+  border: none;
+  border-radius: 16px;
+  cursor: pointer;
+}
+
+.google-button {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background-color: #4285F4;
+  color: white;
+  border: none;
+  border-radius: 16px;
+  padding: 10px;
+  cursor: pointer;
+  font-weight: 700;
+  max-width: 370px;
+  font-family: 'Inter', sans-serif
+}
+
+
+.google-logo {
+  width: 20px;
+  height: 20px;
+  margin-right: 10px;
+}
+
+.or-container {
+  display: flex;
+  max-width: 370px;
+  align-items: center;
+  margin: 20px 0;
+}
+
+.line {
+  flex: 1;
+  height: 0.5px;
+  background-color: #000;
+}
+
+.or-text {
+  margin: 0 10px;
+  color: #000;
+  font-size: 16;
+  font-weight: 500;
+  font-family: 'Inter', sans-serif;
+}
+
+.password-input-container {
+  display: flex;
+  align-items: center;
+  max-width: 367px;
+  margin-left: -20px;
+}
+
+.eye-icon {
+  width: 20px;
+  height: 20px;
+  margin-left: -25px;
+  cursor: pointer;
+}
+
+.checkbox-container {
+  font-size: 14px;
+  display: flex;
+  align-items: center;
+}
+
+.checkbox-label {
+  position: relative;
+  padding-left: 25px;
+}
+
+input[type='checkbox'] {
+  display: none;
+}
+
+.checkbox-custom {
+  position: absolute;
+  top: 2px;
+  left: 0;
+  width: 16px;
+  height: 16px;
+  border: 2px solid #ccc;
+  border-radius: 4px;
+  background-color: transparent;
+  transition: border-color 0.3s;
+}
+
+input[type='checkbox']:checked + .checkbox-custom {
+  border-color: #f94f64;
+  background-color: #f94f64;
+}
+
+.terms-link {
+  color: #f94f64;
+  cursor: pointer;
+}
+
+
