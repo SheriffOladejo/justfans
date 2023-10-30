@@ -31,9 +31,9 @@ app.get("/api", (req, res) => {
 });
 
 app.post("/signup", (req, res) => {
-    const { user_id, username, email, password, date_joined, creator_mode } = req.body;
-    const sql = `INSERT INTO ${constants.USER_TABLE} (user_id, username, email, password, creator_mode, date_joined) VALUES (?, ?, ?, ?, ?, ?)`;
-    db.query(sql, [user_id, username, email, password, creator_mode, date_joined], (err, result) => {
+    const { user_id, username, firstname, lastname, email, password, date_joined, creator_mode } = req.body;
+    const sql = `INSERT INTO ${constants.USER_TABLE} (user_id, username, firstname, lastname, email, password, creator_mode, date_joined) VALUES (?, ?, ?, ?, ?, ?, ?, ?)`;
+    db.query(sql, [user_id, username, firstname, lastname, email, password, creator_mode, date_joined], (err, result) => {
         if (err) {
             console.error('Error inserting user: ' + err.message);
             res.status(500).json({ message: 'Signup failed' });

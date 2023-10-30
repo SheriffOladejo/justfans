@@ -6,8 +6,11 @@ import axios from 'axios';
 import { ToastContainer, toast } from 'react-toastify';  
 import Constants from '../../utils/Constants';
 import { Base64 } from 'js-base64';
+import { useNavigate } from 'react-router-dom';
 
 function Login() {
+
+  const navigate = useNavigate();
 
   const [username, setUsername] = useState('sheriff');
   const [password, setPassword] = useState('password');
@@ -59,7 +62,27 @@ function Login() {
             toast("Incorrect password");
           }
           else {
+            const profile_setup = emailResponse.data[0]["profile_setup"];
+            const firstname = emailResponse.data[0]["firstname"];
+            const lastname = emailResponse.data[0]["lastname"];
+            const dob = emailResponse.data[0]["dob"];
+            const verification_doc = emailResponse.data[0]["verification_doc"];
+            const location = emailResponse.data[0]["location"];
 
+            if (profile_setup !== "true") {
+              navigate('/profile-setup', {state: {
+                username,
+                profile_setup,
+                firstname,
+                lastname,
+                dob,
+                verification_doc,
+                location
+              }});
+            } 
+            else if (profile_setup === "true") {
+              navigate('/main-page');
+            }
           }
         }
         else {
@@ -74,7 +97,27 @@ function Login() {
             toast("Incorrect password");
           }
           else {
-            
+            const profile_setup = emailResponse.data[0]["profile_setup"];
+            const firstname = emailResponse.data[0]["firstname"];
+            const lastname = emailResponse.data[0]["lastname"];
+            const dob = emailResponse.data[0]["dob"];
+            const verification_doc = emailResponse.data[0]["verification_doc"];
+            const location = emailResponse.data[0]["location"];
+
+            if (profile_setup !== "true") {
+              navigate('/profile-setup', {state: {
+                username,
+                profile_setup,
+                firstname,
+                lastname,
+                dob,
+                verification_doc,
+                location
+              }});
+            } 
+            else if (profile_setup === "true") {
+              navigate('/main-page');
+            }
           }
         }
         else {

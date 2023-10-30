@@ -13,7 +13,7 @@ function ProfileSetup () {
 
       const location = useLocation();
 
-      const { username, email, password, confirmPassword } = location.state || {};
+      const { username, firstname, lastname, email, password, confirmPassword } = location.state || {};
 
       const [stage, setStage] = useState(1);
 
@@ -73,11 +73,11 @@ function ProfileSetup () {
                     <div className="input-row">
                         <div className="input-group">
                           <label>First Name</label>
-                          <input type="text" />
+                          <input value={firstname} type="text" />
                         </div>
                         <div className="input-group">
                           <label>Last Name</label>
-                          <input type="text" />
+                          <input value={lastname} type="text" />
                         </div>
                     </div>
                     <div className="input-row">

@@ -29,6 +29,9 @@ function SignupSection () {
     const [password, setPassword] = useState('password');
     const [confirmPassword, setConfirmPassword] = useState('password');
 
+    const [firstname, setFirstname] = useState('');
+    const [lastname, setLastname] = useState('');
+
     const [showPassword, setShowPassword] = useState(false);
     const [showConfirmPassword, setShowConfirmPassword] = useState(false);
 
@@ -135,6 +138,8 @@ function SignupSection () {
                   "creator_mode": selectedOption,
                   "user_id": email_hash,
                   "date_joined": Date.now(),
+                  "firstname": firstname,
+                  "lastname": lastname
                 };
       
                 try {
@@ -144,19 +149,20 @@ function SignupSection () {
                 } catch (error) {
                   console.error('Request failed:', error);
                 }
-                // navigate('/profile-setup', {state: {
-                //     username,
-                //     emailOrPhone,
-                //     password,
-                //     confirmPassword
-                // }});
+                navigate('/profile-setup', {state: {
+                  username,
+                  firstname,
+                  lastname,
+                  
+                }});
               }
             }
             else{
               const uint8Array = Utils.stringToUint8Array(email);
               const email_hash = await Utils.sha256(uint8Array);
               const data = {
-                "username": username,
+                "firstname": firstname,
+                "lastname": lastname,
                 "email": email,
                 "password": Base64.encode(password),
                 "creator_mode": selectedOption,
@@ -167,6 +173,12 @@ function SignupSection () {
               try {
     
                 const response = await axios.post(`${constants.BASE_API_URL}/signup`, data);
+                navigate('/profile-setup', {state: {
+                  username,
+                  firstname,
+                  lastname,
+
+                }});
               } catch (error) {
                 console.error('Request failed:', error);
               }
@@ -181,6 +193,11 @@ function SignupSection () {
 
     const onGoogleSuccess = async (res) => {
       const mail = res.profileObj["email"];
+      const firstname = res.profileObj['givenName'];
+      const lastname = res.profileObj['familyName'];
+      setFirstname(firstname);
+      setLastname(lastname);
+      console.log("Google response: ", res.profileObj);
       if (mail !== "") {
         const emailResponse = await checkForEmail();
         if (emailResponse.data.length > 0) {
