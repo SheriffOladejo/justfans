@@ -1,9 +1,9 @@
 create table justfans_user (
     id integer primary key auto_increment,
-    user_id varchar(20),
-    username varchar(20),
-    email varchar(20),
-    phone_number varchar(20),
+    user_id varchar(200),
+    username varchar(200),
+    email varchar(400),
+    phone_number varchar(200),
     password varchar(50),
     firstname varchar(20),
     lastname varchar(20),
@@ -25,4 +25,5 @@ create table justfans_user (
     creator_mode varchar(10),
     verified varchar(10),
     live_mode varchar(10),
+    profile_setup varchar(10),
 );

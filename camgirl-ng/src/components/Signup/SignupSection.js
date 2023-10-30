@@ -1,10 +1,21 @@
 import './SignupSection.css';
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import Selector from '../Signup/Selector';
 import Login from '../Login/Login';
 import { useNavigate } from 'react-router-dom';
+import axios from 'axios';
+import { ToastContainer, toast } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
+import { isValidEmail } from '../../utils/Utils';
+import { GoogleLogin } from 'react-google-login';
+import { gapi } from 'gapi-script';
+import Utils from '../../utils/Utils';
+import Constants from '../../utils/Constants';
+import { Base64 } from 'js-base64';
 
 function SignupSection () {
+
+    const constants = require('../../utils/Constants');
 
     const [selectedOption, setSelectedOption] = useState('fan');
 
@@ -13,10 +24,10 @@ function SignupSection () {
         console.log(option);
     };
 
-    const [username, setUsername] = useState('');
-    const [emailOrPhone, setEmailOrPhone] = useState('');
-    const [password, setPassword] = useState('');
-    const [confirmPassword, setConfirmPassword] = useState('');
+    const [username, setUsername] = useState('sheriff');
+    const [email, setEmail] = useState('sherifffoladejo@gmail.com');
+    const [password, setPassword] = useState('password');
+    const [confirmPassword, setConfirmPassword] = useState('password');
 
     const [showPassword, setShowPassword] = useState(false);
     const [showConfirmPassword, setShowConfirmPassword] = useState(false);
@@ -24,6 +35,8 @@ function SignupSection () {
     const [showLogin, setShowLogin] = useState(false);
 
     const [isChecked, setIsChecked] = useState(false);
+
+    const [isGoogleSignIn, setGoogleSignIn] = useState(false);
 
     const toggleShowLogin = () => {
         setShowLogin(!showLogin);
@@ -43,16 +56,150 @@ function SignupSection () {
 
     const navigate = useNavigate();
 
-    const createAccount = () => {
+    useEffect(() => {
+      function start() {
+        gapi.client.init({
+          clientId: constants.GOOGLE_CLIENT_ID,
+          scope: ""
+        });
+  
+        gapi.load('client:auth2', start);
+      }
+    });
+
+    useEffect(() => {
+      createAccount();
+    }, [isGoogleSignIn]);
+
+    const checkForUsername = async () => {
+      const data = {
+        "username": username
+      };
+      try {
+        const response = await axios.get(`${Constants.BASE_API_URL}/checkUsername`, {params: data});
+        return response;
+      }
+      catch (error) {
+        console.error("An error occurred: " + error);
+      }
+    }
+
+    const checkForEmail = async () => {
+      const data = {
+        "email": email
+      };
+      try {
+        const response = await axios.get(`${Constants.BASE_API_URL}/checkEmail`, {params: data});
+        return response;
+      }
+      catch (error) {
+        console.error("An error occurred: " + error);
+      }
+    }
+
+    const createAccount = async () => {
+      if (email !== "") {
         if (isChecked) {
-            navigate('/profile-setup', {state: {
-                username,
-                emailOrPhone,
-                password,
-                confirmPassword
-            }});
+          if (!isGoogleSignIn && username === "") {
+            toast.error('Username is required');
+          }
+          else if (!isGoogleSignIn && email === "") {
+            toast.error("Email is required");
+          }
+          else if (!isGoogleSignIn && !isValidEmail(email)) {
+            toast.error("Invalid email");
+          }
+          else if (!isGoogleSignIn && password.length < 6) {
+            toast.error("Password must be at least 6 characters");
+          }
+          else if (!isGoogleSignIn && password !== confirmPassword) {
+            toast.error("Passwords don't match");
+          }
+          else {
+            if (!isGoogleSignIn) {
+              const usernameResponse = await checkForUsername();
+              const emailResponse = await checkForEmail();
+              if (usernameResponse.data.length > 0) {
+                toast("This username is already taken");
+              }
+              else if (emailResponse.data.length > 0) {
+                toast("This email is already registered");
+              }
+              else {
+                const uint8Array = Utils.stringToUint8Array(email);
+                const email_hash = await Utils.sha256(uint8Array);
+                const data = {
+                  "username": username,
+                  "email": email,
+                  "password": Base64.encode(password),
+                  "creator_mode": selectedOption,
+                  "user_id": email_hash,
+                  "date_joined": Date.now(),
+                };
+      
+                try {
+      
+                  const response = await axios.post(`${constants.BASE_API_URL}/signup`, data);
+                  
+                } catch (error) {
+                  console.error('Request failed:', error);
+                }
+                // navigate('/profile-setup', {state: {
+                //     username,
+                //     emailOrPhone,
+                //     password,
+                //     confirmPassword
+                // }});
+              }
+            }
+            else{
+              const uint8Array = Utils.stringToUint8Array(email);
+              const email_hash = await Utils.sha256(uint8Array);
+              const data = {
+                "username": username,
+                "email": email,
+                "password": Base64.encode(password),
+                "creator_mode": selectedOption,
+                "user_id": email_hash,
+                "date_joined": Date.now(),
+              };
+    
+              try {
+    
+                const response = await axios.post(`${constants.BASE_API_URL}/signup`, data);
+              } catch (error) {
+                console.error('Request failed:', error);
+              }
+            }
+          }
         }
+        else {
+          toast("Read and accept terms and conditons");
+        }
+      }
     };
+
+    const onGoogleSuccess = async (res) => {
+      const mail = res.profileObj["email"];
+      if (mail !== "") {
+        const emailResponse = await checkForEmail();
+        if (emailResponse.data.length > 0) {
+          toast("This email is already registered");
+        }
+        else {
+          setEmail(mail);
+          setGoogleSignIn(true);
+        }
+      }
+      else {
+        toast("An error occurred");
+      }
+    }
+
+    const onGoogleFailure = (res) => {
+      console.log("Google sign up failure: ", res);
+    }
+
 
     if (showLogin) {
         return (
@@ -84,10 +231,10 @@ function SignupSection () {
             />
             <div style={{ height: '20px' }}></div>
             <input
-                value={emailOrPhone}
-                onChange={(e) => setEmailOrPhone(e.target.value)}
+                value={email}
+                onChange={(e) => setEmail(e.target.value)}
                 type="text"
-                placeholder="Email address or Phone Number"
+                placeholder="Email address"
                 style={{ width: '350px', fontFamily: 'Inter, sans-serif' }}
             />
             <div className="signup-container">
@@ -143,10 +290,21 @@ function SignupSection () {
             <div className="or-text">or</div>
             <div className="line"></div>
           </div>
-          <button className="google-button" >
-            <img src='/images/google_logo.png' alt="Google Logo" className="google-logo" />
-            Sign up with Google
-          </button>
+          <GoogleLogin
+            clientId={constants.GOOGLE_CLIENT_ID}
+            render={renderProps => (
+              <button onClick={renderProps.onClick} disabled={renderProps.disabled} className="google-button" >
+                <img src='/images/google_logo.png' alt="Google Logo" className="google-logo" />
+                Sign up with Google
+              </button>
+            )}
+            buttonText="Sign up with Google"
+            onSuccess={onGoogleSuccess}
+            onFailure={onGoogleFailure}
+            cookiePolicy={'single_host_origin'}
+            isSignedIn={false}
+          />
+          <ToastContainer />
         </div>
     );
 }
