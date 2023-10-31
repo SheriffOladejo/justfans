@@ -12,8 +12,11 @@ import { gapi } from 'gapi-script';
 import Utils from '../../utils/Utils';
 import Constants from '../../utils/Constants';
 import { Base64 } from 'js-base64';
+import DbHelper from '../../utils/DbHelper';
 
 function SignupSection () {
+
+    const dbHelper = new DbHelper();
 
     const constants = require('../../utils/Constants');
 
@@ -74,32 +77,6 @@ function SignupSection () {
       createAccount();
     }, [isGoogleSignIn]);
 
-    const checkForUsername = async () => {
-      const data = {
-        "username": username
-      };
-      try {
-        const response = await axios.get(`${Constants.BASE_API_URL}/checkUsername`, {params: data});
-        return response;
-      }
-      catch (error) {
-        console.error("An error occurred: " + error);
-      }
-    }
-
-    const checkForEmail = async () => {
-      const data = {
-        "email": email
-      };
-      try {
-        const response = await axios.get(`${Constants.BASE_API_URL}/checkEmail`, {params: data});
-        return response;
-      }
-      catch (error) {
-        console.error("An error occurred: " + error);
-      }
-    }
-
     const createAccount = async () => {
       if (email !== "") {
         if (isChecked) {
@@ -120,8 +97,8 @@ function SignupSection () {
           }
           else {
             if (!isGoogleSignIn) {
-              const usernameResponse = await checkForUsername();
-              const emailResponse = await checkForEmail();
+              const usernameResponse = await dbHelper.checkForUsername(username);
+              const emailResponse = await dbHelper.checkForEmail(email);
               if (usernameResponse.data.length > 0) {
                 toast("This username is already taken");
               }
@@ -144,17 +121,21 @@ function SignupSection () {
       
                 try {
       
-                  const response = await axios.post(`${constants.BASE_API_URL}/signup`, data);
-                  
+                  const response = await axios.post(`${Constants.BASE_API_URL}/signup`, data);
+                  if (selectedOption === "fan") {
+                    navigate('/main-page');
+                  }
+                  else {
+                    navigate('/profile-setup', {state: {
+                      username,
+                      email,
+                      password
+                    }});
+                  }
                 } catch (error) {
                   console.error('Request failed:', error);
                 }
-                navigate('/profile-setup', {state: {
-                  username,
-                  firstname,
-                  lastname,
-                  
-                }});
+                
               }
             }
             else{
@@ -172,13 +153,18 @@ function SignupSection () {
     
               try {
     
-                const response = await axios.post(`${constants.BASE_API_URL}/signup`, data);
-                navigate('/profile-setup', {state: {
-                  username,
-                  firstname,
-                  lastname,
-
-                }});
+                const response = await axios.post(`${Constants.BASE_API_URL}/signup`, data);
+                if (selectedOption === "fan") {
+                  navigate('/main-page');
+                }
+                else {
+                  navigate('/profile-setup', {state: {
+                    username,
+                    firstname,
+                    lastname,
+                    email,
+                  }});
+                }
               } catch (error) {
                 console.error('Request failed:', error);
               }
@@ -197,9 +183,8 @@ function SignupSection () {
       const lastname = res.profileObj['familyName'];
       setFirstname(firstname);
       setLastname(lastname);
-      console.log("Google response: ", res.profileObj);
       if (mail !== "") {
-        const emailResponse = await checkForEmail();
+        const emailResponse = await dbHelper.checkForEmail(mail);
         if (emailResponse.data.length > 0) {
           toast("This email is already registered");
         }
@@ -225,10 +210,11 @@ function SignupSection () {
     }
 
     return (
-        <div className="signup-container">
+      <div className='signup-container'>
+        <div className="signup-column">
           <h2 style={{ textAlign: 'left'}}>
             <span style={{ fontWeight: '700', fontFamily: 'Inter, sans-serif', fontSize: '33px', color: 'black' }}>Create</span>{' '}
-            <span style={{ fontWeight: '700', fontFamily: 'Inter, sans-serif', fontSize: '33px', color: '#F94F64', cursor: 'pointer' }}>Your Account</span>
+            <span style={{ fontWeight: '700', fontFamily: 'Inter, sans-serif', fontSize: '33px', color: '#F94F64'}}>Your Account</span>
           </h2>
 
           <p style={{ }}>
@@ -244,24 +230,23 @@ function SignupSection () {
                 onChange={(e) => setUsername(e.target.value)}
                 type="text"
                 placeholder="Username"
-                style={{ width: '350px', fontFamily: 'Inter, sans-serif' }}
+                style={{ width: '350px', fontFamily: 'Inter, sans-serif', marginTop: '0px' }}
             />
-            <div style={{ height: '20px' }}></div>
             <input
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}
                 type="text"
                 placeholder="Email address"
-                style={{ width: '350px', fontFamily: 'Inter, sans-serif' }}
+                style={{ width: '350px', fontFamily: 'Inter, sans-serif', marginTop: '20px' }}
             />
-            <div className="signup-container">
+            <div>
               <div className="password-input-container">
                 <input
                     value={password}
                     onChange={(e) => setPassword(e.target.value)}
                     type={showPassword ? 'text' : 'password'}
                     placeholder="Password"
-                    style={{ width: '350px', fontFamily: 'Inter, sans-serif' }}
+                    style={{ width: '350px', fontFamily: 'Inter, sans-serif', marginTop: '20px' }}
                 />
                 <img
                   src={showPassword ? '/images/eye-icon-open.png' : '/images/eye-icon-closed.png'}
@@ -270,14 +255,13 @@ function SignupSection () {
                   onClick={togglePasswordVisibility}
                 />
               </div>
-              <div style={{ height: '20px' }}></div>
               <div className="password-input-container">
                 <input
                     value={confirmPassword}
                     onChange={(e) => setConfirmPassword(e.target.value)}
                     type={showConfirmPassword ? 'text' : 'password'}
                     placeholder="Confirm Password"
-                    style={{ width: '350px', fontFamily: 'Inter, sans-serif' }}
+                    style={{ width: '350px', fontFamily: 'Inter, sans-serif', marginTop: '20px' }}
                 />
                 <img
                   src={showConfirmPassword ? '/images/eye-icon-open.png' : '/images/eye-icon-closed.png'}
@@ -296,11 +280,10 @@ function SignupSection () {
                 />
                 <span className="checkbox-custom"></span>
                 By clicking on Create Free Account, I acknowledge that I am 18+ years old and I accept the&nbsp;
-                <span className="terms-link" style={{ cursor: 'pointer' }}>Terms & Conditions</span>
+                <span className="terms-link" style={{ cursor: 'pointer', marginTop: '20px' }}>Terms & Conditions</span>
               </label>
             </div>
-            <div style={{ height: '20px' }}></div>
-            <button onClick={createAccount} type="button" style={{ width: '372px', fontFamily: 'Inter, sans-serif', fontWeight: '700' }}>Create account</button>
+            <button onClick={createAccount} type="button" style={{ marginTop: '20px', width: '372px', fontFamily: 'Inter, sans-serif', fontWeight: '700' }}>Create account</button>
           </form>
           <div className="or-container">
             <div className="line"></div>
@@ -308,7 +291,7 @@ function SignupSection () {
             <div className="line"></div>
           </div>
           <GoogleLogin
-            clientId={constants.GOOGLE_CLIENT_ID}
+            clientId={Constants.GOOGLE_CLIENT_ID}
             render={renderProps => (
               <button onClick={renderProps.onClick} disabled={renderProps.disabled} className="google-button" >
                 <img src='/images/google_logo.png' alt="Google Logo" className="google-logo" />
@@ -323,6 +306,8 @@ function SignupSection () {
           />
           <ToastContainer />
         </div>
+      </div>
+
     );
 }
 

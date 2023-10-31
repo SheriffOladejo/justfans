@@ -1,10 +1,19 @@
 .signup-container {
-  max-width: 500px;
+  height: auto;
+  width: 50%;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+}
+
+.signup-column {
+  max-width: 400px;
+  max-height: 700px;
   padding: 20px;
   text-align: left;
   display: flex;
   flex-direction: column;
-  justify-content: center;
 }
 
 form {
@@ -40,7 +49,7 @@ button {
   padding: 10px;
   cursor: pointer;
   font-weight: 700;
-  max-width: 370px;
+  width: 370px;
   font-family: 'Inter', sans-serif
 }
 
@@ -72,13 +81,6 @@ button {
   font-family: 'Inter', sans-serif;
 }
 
-.password-input-container {
-  display: flex;
-  align-items: center;
-  max-width: 367px;
-  margin-left: -20px;
-}
-
 .eye-icon {
   width: 20px;
   height: 20px;
@@ -90,6 +92,8 @@ button {
   font-size: 14px;
   display: flex;
   align-items: center;
+  margin-top: 20px;
+  width: 380px;
 }
 
 .checkbox-label {

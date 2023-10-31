@@ -5,15 +5,16 @@ import SignupSection from '../Signup/SignupSection';
 
 function Signup () {
     return (
+      <div className='signup-row'>
         <div className="container">
-          <div className="overlay"></div>
-          <div className="content">
-            <Logo/>
-            <div className="separator"></div>
-            <Login/>
+          <div className='overlay'></div>
+          <img src="/images/logo_small.png" className='login-logo-small' />
+          <div>
+            <img src="/images/logo_big.png" className='login-logo-big' />
           </div>
         </div>
-
+        <Login/>
+      </div>
     );
 }
 
