@@ -47,20 +47,17 @@ class DbHelper {
             "bio": user.getBio() === undefined ? "" : user.getBio(),
             "profile_picture": user.getProfilePicture() === undefined ? "" : user.getProfilePicture(),
             "cover_picture": user.getCoverPicture() === undefined ? "" : user.getCoverPicture(),
-            "subscribers": user.getSubscribers() === undefined ? "" : user.getSubscribers(),
-            "connections": user.getConnections() === undefined ? "" : user.getConnections(),
-            "subscription_price": user.getSubscriptionPrice() === undefined ? "" : user.getSubscriptionPrice(),
+            "subscribers": user.getSubscribers() === undefined ? 0 : user.getSubscribers(),
+            "connections": user.getConnections() === undefined ? 0 : user.getConnections(),
+            "subscription_price": user.getSubscriptionPrice() === undefined ? 0 : user.getSubscriptionPrice(),
             "currency_symbol": user.getCurrencySymbol() === undefined ? "" : user.getCurrencySymbol(),
             "verified": user.getVerified() === undefined ? "" : user.getVerified(),
             "live_mode": user.getLiveMode() === undefined ? "" : user.getLiveMode(),
             "profile_setup": user.getProfileSetup() === undefined ? "" : user.getProfileSetup(),
             "dob": user.getDOB() === undefined ? "" : user.getDOB(),
         };
-        console.log(data);  
         try {
-            console.log("here");
             const response = await axios.post(`${Constants.BASE_API_URL}/updateUser`, data);
-            console.log(response);
             return response;
         }
         catch (error) {

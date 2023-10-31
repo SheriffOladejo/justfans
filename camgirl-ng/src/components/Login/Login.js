@@ -55,6 +55,7 @@ function Login() {
             const dob = emailResponse.data[0]["dob"];
             const verification_doc = emailResponse.data[0]["verification_doc"];
             const location = emailResponse.data[0]["location"];
+            const user_id = emailResponse.data[0]["user_id"];
 
             if (profile_setup !== "true") {
               navigate('/profile-setup', {state: {
@@ -63,7 +64,8 @@ function Login() {
                 lastname,
                 dob,
                 verification_doc,
-                location
+                location,
+                user_id
               }});
             } 
             else if (profile_setup === "true") {
@@ -89,6 +91,7 @@ function Login() {
             const dob = usernameResponse.data[0]["dob"];
             const verification_doc = usernameResponse.data[0]["verification_doc"];
             const location = usernameResponse.data[0]["location"];
+            const user_id = usernameResponse.data[0]["user_id"];
 
             if (profile_setup !== "true") {
               navigate('/profile-setup', {state: {
@@ -98,7 +101,8 @@ function Login() {
                 lastname,
                 dob,
                 verification_doc,
-                location
+                location,
+                user_id
               }});
             } 
             else if (profile_setup === "true") {

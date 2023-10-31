@@ -19,13 +19,14 @@ function ProfileSetup () {
 
       const location = useLocation();
 
-      const { username, firstname, lastname, email, password } = location.state || {};
+      const { user_id, username, firstname, lastname, email, password } = location.state || {};
       var user = new AppUser();
       user.setUserName(username);
       user.setFirstName(firstname);
       user.setLastName(lastname);
       user.setEmail(email);
       user.setPassword(password);
+      user.setUserId(user_id);
 
       const dbHelper = new DbHelper();
 

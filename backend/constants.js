@@ -17,6 +17,7 @@ const COL_LOCATION = 'location';
 const COL_VERIFICATION_DOC = 'verification_doc';
 const COL_DOCS_VERIFIED = 'docs_verified';
 const COL_BIO = 'bio';
+const COL_DOB = "dob";
 const COL_DATE_JOINED = "date_joined";
 const COL_LAST_UPDATED = 'last_updated';
 const COL_PROFILE_PICTURE = 'profile_picture';
@@ -61,5 +62,6 @@ module.exports = {
     COL_VERIFIED,
     COL_LIVE_MODE,
     COL_PROFILE_SETUP,
-    COL_DATE_JOINED
+    COL_DATE_JOINED,
+    COL_DOB,
   };

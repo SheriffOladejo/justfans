@@ -48,17 +48,16 @@ app.post("/signup", (req, res) => {
 app.post("/updateUser", (req, res) => {
     const last_updated = Date.now();
     const { user_id, username, firstname, lastname, password, creator_mode, phone_number, country, location,
-    verification_doc, docs_verified, bio, profile_picture, cover_picture, subscribers, connections, 
+    verification_doc, docs_verified, bio, dob, profile_picture, cover_picture, subscribers, connections, 
     subscription_price, currency_symbol, verified, live_mode, profile_setup } = req.body;
-    const sql = `UPDATE ${constants.USER_TABLE} set ${constants.COL_FIRSTNAME} = ?, ${constants.COL_LASTNAME} = ?, ${constants.COL_PASSWORD} = ?, 
+    const sql = `UPDATE ${constants.USER_TABLE} set ${constants.COL_FIRSTNAME} = ?, ${constants.COL_USERNAME} = ?, ${constants.COL_LASTNAME} = ?, ${constants.COL_PASSWORD} = ?, 
         ${constants.COL_CREATOR_MODE} = ?, ${constants.COL_PHONE_NUMBER} = ?, ${constants.COL_COUNTRY} = ?, ${constants.COL_LOCATION} = ?, 
-        ${constants.COL_VERIFICATION_DOC} = ?, ${constants.COL_DOCS_VERIFIED} = ?, ${constants.COL_BIO} = ?, ${constants.COL_LAST_UPDATED} = ?, 
+        ${constants.COL_VERIFICATION_DOC} = ?, ${constants.COL_DOCS_VERIFIED} = ?, ${constants.COL_BIO} = ?, ${constants.COL_DOB} = ?, ${constants.COL_LAST_UPDATED} = ?, 
         ${constants.COL_PROFILE_PICTURE} = ?, ${constants.COL_COVER_PICTURE} = ?, ${constants.COL_SUBSCRIBERS} = ?, ${constants.COL_CONNECTIONS} = ?, 
         ${constants.COL_SUBSCRIPTION_PRICE} = ?, ${constants.COL_CURRENCY_SYMBOL} = ?, ${constants.COL_VERIFIED} = ?, ${constants.COL_LIVE_MODE} = ?, 
-        ${constants.COL_PROFILE_SETUP} = ? where ${constants.COL_USERNAME} = ?`;
-        console.log(sql);
-    db.query(sql, [firstname, lastname, password, creator_mode, phone_number, country, location, verification_doc, docs_verified, bio, last_updated, 
-        profile_picture, cover_picture, subscribers, connections, subscription_price, currency_symbol, verified, live_mode, profile_setup, username], (err, result) => {
+        ${constants.COL_PROFILE_SETUP} = ? where ${constants.COL_USER_ID} = ?`;
+    db.query(sql, [firstname, username, lastname, password, creator_mode, phone_number, country, location, verification_doc, docs_verified, bio, dob, last_updated, 
+        profile_picture, cover_picture, subscribers, connections, subscription_price, currency_symbol, verified, live_mode, profile_setup, user_id], (err, result) => {
             if (err) {
                 console.error('/updateUser: Error updating user: ' + err.message);
                 res.status(500).json({ message: '/updateUser: User update failed' });
