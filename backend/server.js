@@ -31,10 +31,12 @@ app.get("/api", (req, res) => {
 });
 
 app.post("/signup", (req, res) => {
-    const { user_id, username, firstname, lastname, email, password, date_joined, creator_mode } = req.body;
+    const { user_id, account_type, username, firstname, lastname, email, password, date_joined, creator_mode } = req.body;
+    console.log("password"+password);
     const sql = `INSERT INTO ${constants.USER_TABLE} (${constants.COL_USER_ID}, ${constants.COL_USERNAME}, ${constants.COL_FIRSTNAME},
-        ${constants.COL_LASTNAME}, ${constants.COL_EMAIL}, ${constants.COL_PASSWORD}, ${constants.COL_CREATOR_MODE}, ${constants.COL_DATE_JOINED}) VALUES (?, ?, ?, ?, ?, ?, ?, ?)`;
-    db.query(sql, [user_id, username, firstname, lastname, email, password, creator_mode, date_joined], (err, result) => {
+        ${constants.COL_LASTNAME}, ${constants.COL_EMAIL}, ${constants.COL_PASSWORD}, ${constants.COL_CREATOR_MODE}, ${constants.COL_DATE_JOINED}, 
+        ${constants.COL_ACCOUNT_TYPE}) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)`;
+    db.query(sql, [user_id, username, firstname, lastname, email, password, creator_mode, date_joined, account_type], (err, result) => {
         if (err) {
             console.error('/signup: Error inserting user: ' + err.message);
             res.status(500).json({ message: '/signup: Signup failed' });
@@ -56,6 +58,7 @@ app.post("/updateUser", (req, res) => {
         ${constants.COL_PROFILE_PICTURE} = ?, ${constants.COL_COVER_PICTURE} = ?, ${constants.COL_SUBSCRIBERS} = ?, ${constants.COL_CONNECTIONS} = ?, 
         ${constants.COL_SUBSCRIPTION_PRICE} = ?, ${constants.COL_CURRENCY_SYMBOL} = ?, ${constants.COL_VERIFIED} = ?, ${constants.COL_LIVE_MODE} = ?, 
         ${constants.COL_PROFILE_SETUP} = ? where ${constants.COL_USER_ID} = ?`;
+        console.log("user_id"+user_id);
     db.query(sql, [firstname, username, lastname, password, creator_mode, phone_number, country, location, verification_doc, docs_verified, bio, dob, last_updated, 
         profile_picture, cover_picture, subscribers, connections, subscription_price, currency_symbol, verified, live_mode, profile_setup, user_id], (err, result) => {
             if (err) {
@@ -63,6 +66,7 @@ app.post("/updateUser", (req, res) => {
                 res.status(500).json({ message: '/updateUser: User update failed' });
             }
             else {
+                console.log('/updateUser: User updated');
                 res.json({ message: '/updateUser: User updated' });
             }
         })

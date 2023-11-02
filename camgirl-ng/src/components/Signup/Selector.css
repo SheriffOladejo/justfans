@@ -24,7 +24,6 @@
 .icon {
   width: 20px;
   height: 20px;
-  margin-right: 8px;
   transition: filter 0.3s;
 }
 
@@ -32,6 +31,8 @@
   font-size: 14px;
   transition: color 0.3s;
   font-family: 'Inter', sans-serif;
+  margin-right: 10px;
+  margin-left: 10px;
 }
 
 .option:hover .icon {

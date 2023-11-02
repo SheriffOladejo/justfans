@@ -1,0 +1,90 @@
+
+.loading-screen {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+  }
+  
+  .logo {
+    width: 50px;
+    height: 50px;
+    margin-bottom: 20px; 
+  }
+  
+  .progress-bar {
+    width: 20px;
+    height: 20px;
+    border: 4px solid #3498db; 
+    border-top: 4px solid transparent;
+    border-radius: 50%;
+    animation: spin 1s linear infinite;
+  }
+  
+  @keyframes spin {
+    0% {
+      transform: rotate(0deg);
+    }
+    100% {
+      transform: rotate(360deg);
+    }
+  }
+
+  .circular-progress {
+    display: inline-block;
+    position: relative;
+    width: 30px; /* Adjust the size as needed */
+    height: 30px;
+    animation: spin 1s linear infinite; /* Animation for spinning effect, 1s duration */
+  }
+  
+  .inner,
+  .outer {
+    position: absolute;
+    border: 4px solid transparent;
+    border-top: 4px solid #3498db; /* Progress indicator color */
+    border-radius: 50%;
+    width: 100%;
+    height: 100%;
+  }
+  
+  .inner {
+    animation: spin-inner 1s linear infinite; /* Animation for inner circle */
+  }
+  
+  .outer {
+    animation: spin-outer 1s linear infinite reverse; /* Reverse animation for outer circle */
+  }
+  
+  @keyframes spin {
+    0% {
+      transform: rotate(0deg);
+    }
+    100% {
+      transform: rotate(360deg);
+    }
+  }
+  
+  @keyframes spin-inner {
+    0% {
+      transform: rotate(0deg);
+    }
+    100% {
+      transform: rotate(360deg);
+    }
+  }
+  
+  @keyframes spin-outer {
+    0% {
+      transform: rotate(0deg);
+    }
+    100% {
+      transform: rotate(-360deg);
+    }
+  }
+  

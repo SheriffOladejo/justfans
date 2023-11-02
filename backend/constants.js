@@ -29,6 +29,7 @@ const COL_CURRENCY_SYMBOL = 'currency_symbol';
 const COL_VERIFIED = 'verified';
 const COL_LIVE_MODE = 'live_mode';
 const COL_PROFILE_SETUP = 'profile_setup';
+const COL_ACCOUNT_TYPE = "account_type";
 
 const BASE_API_URL = "http://localhost:4000";
 
@@ -64,4 +65,5 @@ module.exports = {
     COL_PROFILE_SETUP,
     COL_DATE_JOINED,
     COL_DOB,
+    COL_ACCOUNT_TYPE,
   };

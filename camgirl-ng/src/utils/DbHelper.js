@@ -32,6 +32,7 @@ class DbHelper {
     }
     
     async updateUser (user) {
+        console.log(user.getUserId());
         const data = {
             "user_id": user.getUserId()  === undefined ? "" : user.getUserId(),
             "username": user.getUserName() === undefined ? "" : user.getUserName(),

@@ -7,7 +7,7 @@ create table justfans_user (
     password varchar(50),
     firstname varchar(20),
     lastname varchar(20),
-    dob varchar(20),
+    dob varchar(200),
     country varchar(20),
     location varchar(50),
     verification_doc text,
@@ -26,4 +26,5 @@ create table justfans_user (
     verified varchar(10),
     live_mode varchar(10),
     profile_setup varchar(10),
+    account_type varchar(20),
 );

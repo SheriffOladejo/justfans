@@ -9,6 +9,7 @@ import { Base64 } from 'js-base64';
 import { useNavigate } from 'react-router-dom';
 import { GoogleLogin } from 'react-google-login';
 import DbHelper from '../../utils/DbHelper';
+import LoadingScreen from '../LoadingScreen/LoadingScreen';
 
 function Login() {
 
@@ -19,9 +20,13 @@ function Login() {
   const [username, setUsername] = useState('sheriff');
   const [password, setPassword] = useState('password');
 
+  const [toastMessage, setToastMessage] = useState("");
+
   const [firstname, setFirstname] = useState('');
   const [lastname, setLastname] = useState('');
-
+  
+  const [loading, setLoading] = useState(false);
+ 
   const [showPassword, setShowPassword] = useState(false);
   const [showSignup, setShowSignup] = useState(false);
 
@@ -36,36 +41,109 @@ function Login() {
   };
 
   useEffect(() => {
-    //login();
+    loginGoogle();
   }, [isGoogleSignIn]);
+
+  
+
+  useEffect(() => {
+    if (toastMessage !== "") {
+      toast(toastMessage);
+      setToastMessage("");
+    }
+  }, [toastMessage]);
+
+  const loginGoogle = async () => {
+    if (isGoogleSignIn) {
+      if (Utils.isValidEmail(username)) {
+        const emailResponse = await dbHelper.checkForEmail(username);
+        if (emailResponse.data.length !== 0) {
+          const profile_setup = emailResponse.data[0]["profile_setup"];
+          const dob = emailResponse.data[0]["dob"];
+          const verification_doc = emailResponse.data[0]["verification_doc"];
+          const location = emailResponse.data[0]["location"];
+          const email_hash = emailResponse.data[0]["user_id"];
+          const username = emailResponse.data[0]["username"];
+          const stage = emailResponse.data[0]["profile_setup"];
+          const account_type = emailResponse.data[0]["account_type"];
+
+          setLoading(false);
+
+          if (profile_setup !== "true") {
+            console.log("login user id: " + email_hash);
+            navigate('/profile-setup', {state: {
+              profile_setup,
+              firstname,
+              lastname,
+              dob,
+              verification_doc,
+              location,
+              email_hash,
+              username,
+              stage,
+              account_type
+            }});
+          } 
+          else if (profile_setup === "true") {
+            setLoading(false);
+            navigate('/main-page');
+          }
+        }
+        else {
+          toast("User not found");
+          setLoading(false);
+        }
+      }
+      else {
+        toast("Invalid email");
+        setLoading(false);
+      }
+      setGoogleSignIn(false);
+    }
+  }
 
   const login = async () => {
     if (username !== "") {
       if (Utils.isValidEmail(username)) {
+        setLoading(true);
         const emailResponse = await dbHelper.checkForEmail(username);
         if (emailResponse.data.length !== 0) {
-          const _password = Base64.decode(emailResponse.data[0]["password"]);
-          if (password !== _password) {
-            toast("Incorrect password");
+          const encodedPassword = emailResponse.data[0]["password"];
+          const _password = Base64.decode(encodedPassword);
+          const account_type = emailResponse.data[0]["account_type"];
+          if (account_type === "google") {
+            setLoading(false);
+            setToastMessage("User not found");
+          }
+          else if (password !== _password) {
+            setLoading(false);
+            setToastMessage("Incorrect password");
           }
           else {
+            
             const profile_setup = emailResponse.data[0]["profile_setup"];
             const firstname = emailResponse.data[0]["firstname"];
             const lastname = emailResponse.data[0]["lastname"];
             const dob = emailResponse.data[0]["dob"];
             const verification_doc = emailResponse.data[0]["verification_doc"];
             const location = emailResponse.data[0]["location"];
-            const user_id = emailResponse.data[0]["user_id"];
+            const email_hash = emailResponse.data[0]["user_id"];
+            const username = emailResponse.data[0]["username"];
+            const stage = emailResponse.data[0]["profile_setup"];
 
             if (profile_setup !== "true") {
               navigate('/profile-setup', {state: {
+                username,
+                stage,
                 profile_setup,
                 firstname,
                 lastname,
                 dob,
                 verification_doc,
                 location,
-                user_id
+                email_hash,
+                account_type,
+                encodedPassword
               }});
             } 
             else if (profile_setup === "true") {
@@ -74,15 +152,25 @@ function Login() {
           }
         }
         else {
-          toast("User not found");
+          setLoading(false);
+          setToastMessage("User not found");
         }
       }
       else {
         const usernameResponse = await dbHelper.checkForUsername(username);
         if (usernameResponse.data.length !== 0) {
-          const _password = Base64.decode(usernameResponse.data[0]["password"]);
-          if (password !== _password) {
-            toast("Incorrect password");
+          const encodedPassword = usernameResponse.data[0]["password"];
+          const _password = Base64.decode(encodedPassword);
+          const account_type = usernameResponse.data[0]["account_type"];
+          console.log(_password + " " + password);
+
+          if (account_type === "google") {
+            setLoading(false);
+            setToastMessage("User not found");
+          }
+          else if (password !== _password) {
+            setLoading(false);
+            setToastMessage("Incorrect password");
           }
           else {
             const profile_setup = usernameResponse.data[0]["profile_setup"];
@@ -91,18 +179,23 @@ function Login() {
             const dob = usernameResponse.data[0]["dob"];
             const verification_doc = usernameResponse.data[0]["verification_doc"];
             const location = usernameResponse.data[0]["location"];
-            const user_id = usernameResponse.data[0]["user_id"];
+            const email_hash = usernameResponse.data[0]["user_id"];
+            const username = usernameResponse.data[0]["username"];
+            const stage = usernameResponse.data[0]["profile_setup"];
 
             if (profile_setup !== "true") {
               navigate('/profile-setup', {state: {
                 username,
+                stage,
                 profile_setup,
                 firstname,
                 lastname,
                 dob,
                 verification_doc,
                 location,
-                user_id
+                email_hash,
+                account_type,
+                encodedPassword
               }});
             } 
             else if (profile_setup === "true") {
@@ -111,7 +204,8 @@ function Login() {
           }
         }
         else {
-          toast("User not found");
+          setLoading(false);
+          setToastMessage("User not found");
         }
       }
     }
@@ -135,21 +229,23 @@ function Login() {
       setFirstname(firstname);
       setLastname(lastname);
       setGoogleSignIn(true);
-      login();
     }
     else {
-      toast("An error occurred");
+      setLoading(false);
+      setToastMessage("An error occurred");
     }
   }
 
   const onGoogleFailure = (res) => {
-    console.log("Google sign up failure: ", res);
+    setLoading(false);
+    setToastMessage("Google login failure");
+    console.log("Google login failure: ", res);
   }
-
 
   return (
     <div className='login-container'>
-      <div className="login-column">
+      {loading && <LoadingScreen left="50%" width="50%" />} 
+      {!loading && <div className="login-column">
         <h2 style={{ textAlign:'left' }}>
           <span style={{ fontWeight: '700', color: 'black', fontFamily: 'Inter, sans-serif', fontSize: '33px' }}>Log</span>{' '}
           <span style={{ color: '#F94F64', fontFamily: 'Inter, sans-serif', fontSize: '33px', fontWeight: '700' }}>In</span>
@@ -190,7 +286,7 @@ function Login() {
         <GoogleLogin
             clientId={Constants.GOOGLE_CLIENT_ID}
             render={renderProps => (
-              <button onClick={renderProps.onClick} disabled={renderProps.disabled} className="google-button" >
+              <button onClick={() => {setLoading(true); renderProps.onClick();}} disabled={renderProps.disabled} className="google-button" >
                 <img src='/images/google_logo.png' alt="Google Logo" className="google-logo" />
                 Sign in with Google
               </button>
@@ -202,7 +298,7 @@ function Login() {
             isSignedIn={false}
           />
           <ToastContainer />
-      </div>
+      </div>}
     </div>
   );
 }

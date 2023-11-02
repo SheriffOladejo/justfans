@@ -5,7 +5,6 @@ import CommentItem from '../Adapters/Live/CommentItem';
 import { useNavigate } from 'react-router-dom';
 import React, { useEffect, useRef, useState } from 'react';
 
-
 function LiveVideo () {
 
     const navigate = useNavigate();

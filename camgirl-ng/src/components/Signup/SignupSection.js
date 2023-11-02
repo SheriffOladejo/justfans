@@ -13,6 +13,7 @@ import Utils from '../../utils/Utils';
 import Constants from '../../utils/Constants';
 import { Base64 } from 'js-base64';
 import DbHelper from '../../utils/DbHelper';
+import LoadingScreen from '../LoadingScreen/LoadingScreen';
 
 function SignupSection () {
 
@@ -27,10 +28,15 @@ function SignupSection () {
         console.log(option);
     };
 
+    const [loading, setLoading] = useState(false);
+
     const [username, setUsername] = useState('sheriff');
     const [email, setEmail] = useState('sherifffoladejo@gmail.com');
     const [password, setPassword] = useState('password');
+    const [encodedPassword, setEncodedPassword] = useState('');
     const [confirmPassword, setConfirmPassword] = useState('password');
+
+    const [toastMessage, setToastMessage] = useState("");
 
     const [firstname, setFirstname] = useState('');
     const [lastname, setLastname] = useState('');
@@ -74,49 +80,103 @@ function SignupSection () {
     });
 
     useEffect(() => {
-      createAccount();
+      createAccountGoogle();
     }, [isGoogleSignIn]);
+
+    useEffect(() => {
+      if (toastMessage !== "") {
+        toast(toastMessage);
+        setToastMessage("");
+      }
+    }, [toastMessage]);
+
+    const createAccountGoogle = async () => {
+      if (isGoogleSignIn) {
+        const account_type = "google";
+        const uint8Array = Utils.stringToUint8Array(email);
+        const email_hash = await Utils.sha256(uint8Array);
+        const data = {
+          "firstname": firstname,
+          "lastname": lastname,
+          "email": email,
+          "password": "",
+          "creator_mode": selectedOption,
+          "user_id": email_hash,
+          "date_joined": Date.now(),
+          "account_type": account_type
+        };
+
+        try {
+  
+          const response = await axios.post(`${Constants.BASE_API_URL}/signup`, data);
+          if (selectedOption === "fan") {
+            navigate('/main-page');
+          }
+          else {
+            navigate('/profile-setup', {state: {
+              firstname,
+              lastname,
+              email,
+              email_hash,
+              account_type
+            }});
+          }
+        } catch (error) {
+          setLoading(false);
+          setToastMessage("Request failed: " + error);
+          console.error('Request failed:', error);
+        }
+      }
+      setGoogleSignIn(false);
+    }
 
     const createAccount = async () => {
       if (email !== "") {
         if (isChecked) {
-          if (!isGoogleSignIn && username === "") {
+          if (username === "") {
             toast.error('Username is required');
           }
-          else if (!isGoogleSignIn && email === "") {
+          else if (email === "") {
             toast.error("Email is required");
           }
-          else if (!isGoogleSignIn && !isValidEmail(email)) {
+          else if (!isValidEmail(email)) {
             toast.error("Invalid email");
           }
-          else if (!isGoogleSignIn && password.length < 6) {
+          else if (password.length < 6) {
             toast.error("Password must be at least 6 characters");
           }
-          else if (!isGoogleSignIn && password !== confirmPassword) {
+          else if (password !== confirmPassword) {
             toast.error("Passwords don't match");
           }
           else {
             if (!isGoogleSignIn) {
+              setLoading(true);
+              const account_type = "manual";
               const usernameResponse = await dbHelper.checkForUsername(username);
               const emailResponse = await dbHelper.checkForEmail(email);
               if (usernameResponse.data.length > 0) {
+                setLoading(false);
+                setToastMessage("This username is already taken");
                 toast("This username is already taken");
               }
               else if (emailResponse.data.length > 0) {
-                toast("This email is already registered");
+                setLoading(false);
+                setToastMessage("This email is already registered");
               }
               else {
                 const uint8Array = Utils.stringToUint8Array(email);
                 const email_hash = await Utils.sha256(uint8Array);
+                
                 const data = {
                   "username": username,
                   "email": email,
-                  "password": Base64.encode(password),
+                  "password": encodedPassword,
                   "creator_mode": selectedOption,
                   "user_id": email_hash,
                   "date_joined": Date.now(),
                   "firstname": firstname,
-                  "lastname": lastname
+                  "lastname": lastname,
+                  "account_type": account_type
                 };
       
                 try {
@@ -129,44 +189,18 @@ function SignupSection () {
                     navigate('/profile-setup', {state: {
                       username,
                       email,
-                      password
+                      encodedPassword,
+                      firstname,
+                      lastname,
+                      email_hash,
+                      account_type
                     }});
                   }
                 } catch (error) {
+                  setLoading(false);
                   console.error('Request failed:', error);
                 }
                 
-              }
-            }
-            else{
-              const uint8Array = Utils.stringToUint8Array(email);
-              const email_hash = await Utils.sha256(uint8Array);
-              const data = {
-                "firstname": firstname,
-                "lastname": lastname,
-                "email": email,
-                "password": Base64.encode(password),
-                "creator_mode": selectedOption,
-                "user_id": email_hash,
-                "date_joined": Date.now(),
-              };
-    
-              try {
-    
-                const response = await axios.post(`${Constants.BASE_API_URL}/signup`, data);
-                if (selectedOption === "fan") {
-                  navigate('/main-page');
-                }
-                else {
-                  navigate('/profile-setup', {state: {
-                    username,
-                    firstname,
-                    lastname,
-                    email,
-                  }});
-                }
-              } catch (error) {
-                console.error('Request failed:', error);
               }
             }
           }
@@ -186,7 +220,10 @@ function SignupSection () {
       if (mail !== "") {
         const emailResponse = await dbHelper.checkForEmail(mail);
         if (emailResponse.data.length > 0) {
-          toast("This email is already registered");
+          setLoading(false);
+          setFirstname("");
+          setLastname("");
+          setToastMessage("This email is already registered");
         }
         else {
           setEmail(mail);
@@ -194,11 +231,14 @@ function SignupSection () {
         }
       }
       else {
-        toast("An error occurred");
+        setLoading(false);
+        setToastMessage("An error occurred");
       }
     }
 
     const onGoogleFailure = (res) => {
+      setLoading(false);
+      setToastMessage("Google sign up failure");
       console.log("Google sign up failure: ", res);
     }
 
@@ -211,8 +251,9 @@ function SignupSection () {
 
     return (
       <div className='signup-container'>
-        <div className="signup-column">
-          <h2 style={{ textAlign: 'left'}}>
+        {loading && <div><ToastContainer /><LoadingScreen left="50%" width="50%" /></div>} 
+        {!loading && <div className="signup-column">
+          <h2 style={{textAlign: 'left'}}>
             <span style={{ fontWeight: '700', fontFamily: 'Inter, sans-serif', fontSize: '33px', color: 'black' }}>Create</span>{' '}
             <span style={{ fontWeight: '700', fontFamily: 'Inter, sans-serif', fontSize: '33px', color: '#F94F64'}}>Your Account</span>
           </h2>
@@ -243,7 +284,7 @@ function SignupSection () {
               <div className="password-input-container">
                 <input
                     value={password}
-                    onChange={(e) => setPassword(e.target.value)}
+                    onChange={(e) => {setPassword(e.target.value);setEncodedPassword(Base64.encode(e.target.value));}}
                     type={showPassword ? 'text' : 'password'}
                     placeholder="Password"
                     style={{ width: '350px', fontFamily: 'Inter, sans-serif', marginTop: '20px' }}
@@ -293,7 +334,7 @@ function SignupSection () {
           <GoogleLogin
             clientId={Constants.GOOGLE_CLIENT_ID}
             render={renderProps => (
-              <button onClick={renderProps.onClick} disabled={renderProps.disabled} className="google-button" >
+              <button onClick={() => {setLoading(true); renderProps.onClick();}} disabled={renderProps.disabled} className="google-button" >
                 <img src='/images/google_logo.png' alt="Google Logo" className="google-logo" />
                 Sign up with Google
               </button>
@@ -305,7 +346,7 @@ function SignupSection () {
             isSignedIn={false}
           />
           <ToastContainer />
-        </div>
+        </div>}
       </div>
 
     );

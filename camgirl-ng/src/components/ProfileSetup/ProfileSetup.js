@@ -1,4 +1,4 @@
-import React, { useState, useRef } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import { useLocation } from 'react-router-dom';
 import { useNavigate } from 'react-router-dom';
 import './ProfileSetup.css';
@@ -10,31 +10,68 @@ import { ToastContainer, toast } from 'react-toastify';
 import DbHelper from '../../utils/DbHelper';
 
 function ProfileSetup () {
-
-      const [selectedDate, setSelectedDate] = useState(undefined);
+      const [selectedDate, setSelectedDate] = useState('');
+      const [dob, setDOB] = useState('');
       const [showDatePicker, setShowDatePicker] = useState(false);
       const [_username, setUsername] = useState('');
       const [_firstname, setFirstname] = useState('');
       const [_lastname, setLastname] = useState('');
+      const [stage, setStage] = useState(1);
 
       const location = useLocation();
 
-      const { user_id, username, firstname, lastname, email, password } = location.state || {};
+      const { 
+        email_hash = '',
+        account_type = '',
+        username = '',
+        profile_setup = '',
+        firstname = '',
+        lastname = '',
+        email = '',
+        encodedPassword = ''
+       } = location.state || {};
       var user = new AppUser();
       user.setUserName(username);
       user.setFirstName(firstname);
       user.setLastName(lastname);
       user.setEmail(email);
-      user.setPassword(password);
-      user.setUserId(user_id);
+      user.setPassword(encodedPassword);
+      console.log("encoded password: " + encodedPassword);
+      user.setUserId(email_hash);
+      user.setProfileSetup(profile_setup);
+
+      useEffect(() => {
+        if (profile_setup === "2") {
+          setStage(2);
+        }
+        else if (profile_setup === "3") {
+          setStage(3);
+        }
+      });
 
       const dbHelper = new DbHelper();
-
-      const [stage, setStage] = useState(1);
 
       const datePickerRef = useRef(null);
 
       const handleDateChange = (date) => {
+        const options = {
+          weekday: 'short',
+          month: 'short',
+          day: 'numeric',
+          year: 'numeric',
+        };
+        const formattedDate = new Date(date).toLocaleDateString('en-US', options);
+        const arr = formattedDate.split(',');
+        var s = "";
+        for (let i = 0; i < arr.length; i++) {
+          if (i === 1) {
+            s += arr[i] + ", ";
+          }
+          else {
+            s += arr[i] + " ";
+          }
+        }
+        setDOB(s);
         setSelectedDate(date);
       };
 
@@ -65,24 +102,28 @@ function ProfileSetup () {
 
       const handleContinue = async () => {
         if (stage === 1) {
-          if (_firstname === "" && firstname === undefined) {
+          if (_firstname === "" && firstname === "") {
             toast("Firstname is required");
           }
-          else if (_lastname === "" && lastname === undefined) {
+          else if (_lastname === "" && lastname === "") {
             toast("Lastname is required");
           }
-          else if (_username === "" && username === undefined) {
+          else if (_username === "" && username === "") {
             toast("Username is required");
           }
           else if (selectedDate === "" || selectedDate === undefined) {
             toast("DOB is required");
           }
           else {
-            user.setFirstName(firstname === undefined ? _firstname : firstname);
-            user.setLastName(lastname === undefined ? _lastname : lastname);
-            user.setUserName(username === undefined ? _username : username);
-            user.setDOB(selectedDate);
-            
+            user.setFirstName(_firstname !== "" ? _firstname : firstname);
+            user.setLastName(_lastname !== "" ? _lastname : lastname);
+            user.setUserName(username === '' ? _username : username);
+            console.log("username: " + username);
+            console.log("_username: " + _username);
+            console.log("user object username: " + user.getUserName());
+            user.setDOB(dob);
+            console.log(dob);
+            user.setProfileSetup("2");
             const response = await dbHelper.updateUser(user);
             setStage(stage + 1);
           }
@@ -94,17 +135,12 @@ function ProfileSetup () {
           navigate('/main-page');
         }
       };
+
       return (
       <div>
         <Navbar />
         <div className="dialog-container">
           <div className="profile-dialog">
-            <div className="progress-bar">
-              <div
-                className="progress"
-                style={{ width: `${(stage) * 33.33}%`, backgroundColor: stage <= 3 ? '#F94F64' : '#ccc' }}
-              ></div>
-            </div>
             {stage === 1 && (
               <div>
                 <h2>Set up your profile</h2>
@@ -121,7 +157,7 @@ function ProfileSetup () {
                 <div className="input-row">
                     <div className="input-group">
                       <label>Username</label>
-                      <input onChange={(e) => setUsername(e.target.value)} value={_username} placeholder={username} type="text" />
+                      <input onChange={(e) => setUsername(e.target.value)} disabled={account_type === "google" ? false : true } value={_username} placeholder={username} type="text" />
                     </div>
                     <div className="input-group">
                         <label>Date of Birth</label>
