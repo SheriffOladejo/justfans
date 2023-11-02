@@ -32,7 +32,7 @@ app.get("/api", (req, res) => {
 
 app.post("/signup", (req, res) => {
     const { user_id, account_type, username, firstname, lastname, email, password, date_joined, creator_mode } = req.body;
-    console.log("password"+password);
+    console.log("username "+username);
     const sql = `INSERT INTO ${constants.USER_TABLE} (${constants.COL_USER_ID}, ${constants.COL_USERNAME}, ${constants.COL_FIRSTNAME},
         ${constants.COL_LASTNAME}, ${constants.COL_EMAIL}, ${constants.COL_PASSWORD}, ${constants.COL_CREATOR_MODE}, ${constants.COL_DATE_JOINED}, 
         ${constants.COL_ACCOUNT_TYPE}) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)`;

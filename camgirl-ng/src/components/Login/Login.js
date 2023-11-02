@@ -70,7 +70,7 @@ function Login() {
           setLoading(false);
 
           if (profile_setup !== "true") {
-            console.log("login user id: " + email_hash);
+            console.log("login user username: " + username);
             navigate('/profile-setup', {state: {
               profile_setup,
               firstname,

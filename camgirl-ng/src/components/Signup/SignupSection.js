@@ -103,7 +103,8 @@ function SignupSection () {
           "creator_mode": selectedOption,
           "user_id": email_hash,
           "date_joined": Date.now(),
-          "account_type": account_type
+          "account_type": account_type,
+          "username": ""
         };
 
         try {
