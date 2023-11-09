@@ -26,5 +26,6 @@ CREATE TABLE justfans_db.justfans_user (
     verified VARCHAR(10) DEFAULT '',
     live_mode VARCHAR(10) DEFAULT '',
     profile_setup VARCHAR(10) DEFAULT '',
-    account_type VARCHAR(20) DEFAULT ''
+    account_type VARCHAR(20) DEFAULT '',
+    creator_mode_desc_dismissed VARCHAR(20) DEFAULT '',
 );

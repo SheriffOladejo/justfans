@@ -51,16 +51,16 @@ app.post("/updateUser", (req, res) => {
     const last_updated = Date.now();
     const { user_id, username, firstname, lastname, password, creator_mode, phone_number, country, location,
     verification_doc, docs_verified, bio, dob, profile_picture, cover_picture, subscribers, connections, 
-    subscription_price, currency_symbol, verified, live_mode, profile_setup } = req.body;
+    subscription_price, currency_symbol, verified, live_mode, profile_setup, creator_mode_desc_dismissed } = req.body;
     const sql = `UPDATE ${constants.USER_TABLE} set ${constants.COL_FIRSTNAME} = ?, ${constants.COL_USERNAME} = ?, ${constants.COL_LASTNAME} = ?, ${constants.COL_PASSWORD} = ?, 
         ${constants.COL_CREATOR_MODE} = ?, ${constants.COL_PHONE_NUMBER} = ?, ${constants.COL_COUNTRY} = ?, ${constants.COL_LOCATION} = ?, 
         ${constants.COL_VERIFICATION_DOC} = ?, ${constants.COL_DOCS_VERIFIED} = ?, ${constants.COL_BIO} = ?, ${constants.COL_DOB} = ?, ${constants.COL_LAST_UPDATED} = ?, 
         ${constants.COL_PROFILE_PICTURE} = ?, ${constants.COL_COVER_PICTURE} = ?, ${constants.COL_SUBSCRIBERS} = ?, ${constants.COL_CONNECTIONS} = ?, 
-        ${constants.COL_SUBSCRIPTION_PRICE} = ?, ${constants.COL_CURRENCY_SYMBOL} = ?, ${constants.COL_VERIFIED} = ?, ${constants.COL_LIVE_MODE} = ?, 
+        ${constants.COL_SUBSCRIPTION_PRICE} = ?, ${constants.COL_CREATOR_MODE_DESC_DISMISSED} = ?, ${constants.COL_CURRENCY_SYMBOL} = ?, ${constants.COL_VERIFIED} = ?, ${constants.COL_LIVE_MODE} = ?, 
         ${constants.COL_PROFILE_SETUP} = ? where ${constants.COL_USER_ID} = ?`;
         console.log("user_id"+user_id);
     db.query(sql, [firstname, username, lastname, password, creator_mode, phone_number, country, location, verification_doc, docs_verified, bio, dob, last_updated, 
-        profile_picture, cover_picture, subscribers, connections, subscription_price, currency_symbol, verified, live_mode, profile_setup, user_id], (err, result) => {
+        profile_picture, cover_picture, subscribers, connections, subscription_price, creator_mode_desc_dismissed, currency_symbol, verified, live_mode, profile_setup, user_id], (err, result) => {
             if (err) {
                 console.error('/updateUser: Error updating user: ' + err.message);
                 res.status(500).json({ message: '/updateUser: User update failed' });
@@ -70,6 +70,34 @@ app.post("/updateUser", (req, res) => {
                 res.json({ message: '/updateUser: User updated' });
             }
         })
+});
+
+app.get("/getAppUserByEmail", (req, res) => {
+    const email = req.query.email;
+    const sql = `SELECT * from ${constants.USER_TABLE} where ${constants.COL_EMAIL} = ?`;
+    db.query(sql, [email], (err, result) => {
+        if (err) {
+            console.error("/getAppUserByEmail: An error occurred: " + err);
+            res.status(500).json({ message: '/getAppUserByEmail: An error occurred, check console' });
+        }
+        else {
+            res.json(result);
+        }
+    });
+});
+
+app.get("/getAppUserByUsername", (req, res) => {
+    const username = req.query.username;
+    const sql = `SELECT * from ${constants.USER_TABLE} where ${constants.COL_USERNAME} = ?`;
+    db.query(sql, [username], (err, result) => {
+        if (err) {
+            console.error("/getAppUserByUsername: An error occurred: " + err);
+            res.status(500).json({ message: '/getAppUserByUsername: An error occurred, check console' });
+        }
+        else {
+            res.json(result);
+        }
+    });
 });
 
 app.get("/checkUsername", (req, res) => {

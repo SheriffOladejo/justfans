@@ -8,17 +8,37 @@ import 'react-datepicker/dist/react-datepicker.css';
 import AppUser from '../../models/AppUser';
 import { ToastContainer, toast } from 'react-toastify';
 import DbHelper from '../../utils/DbHelper';
+import Constants from '../../utils/Constants';
+import { initializeApp } from 'firebase/app';
+import { getStorage, ref, uploadBytesResumable, getDownloadURL } from 'firebase/storage';
+import LoadingScreen from '../LoadingScreen/LoadingScreen';
+import Cookies from 'js-cookie';
+
 
 function ProfileSetup () {
+
+      const dbHelper = new DbHelper();
+
+      const [selectedFile, setSelectedFile] = useState(null);
+      const [selectedPP, setSelectedPP] = useState(null);
       const [selectedDate, setSelectedDate] = useState('');
       const [dob, setDOB] = useState('');
+      const [bio, setBio] = useState('');
       const [showDatePicker, setShowDatePicker] = useState(false);
       const [_username, setUsername] = useState('');
       const [_firstname, setFirstname] = useState('');
       const [_lastname, setLastname] = useState('');
       const [stage, setStage] = useState(1);
+      const [isDragOver, setIsDragOver] = useState(false);
+      const [loading, setLoading] = useState(false);
+
+      const [imageUrl, setImageUrl] = useState('');
+
+      const [user, setUser] = useState(null);
 
       const location = useLocation();
+
+      const [toastMessage, setToastMessage] = useState("");
 
       const { 
         email_hash = '',
@@ -30,28 +50,82 @@ function ProfileSetup () {
         email = '',
         encodedPassword = ''
        } = location.state || {};
-      var user = new AppUser();
-      user.setUserName(username);
-      user.setFirstName(firstname);
-      user.setLastName(lastname);
-      user.setEmail(email);
-      user.setPassword(encodedPassword);
-      console.log("encoded password: " + encodedPassword);
-      user.setUserId(email_hash);
-      user.setProfileSetup(profile_setup);
 
       useEffect(() => {
+        setLoading(true);
+        const fetchUser = async () => {
+          const _u = await dbHelper.getAppUserByUsername(username);
+          setUser(_u);
+        };
+        fetchUser();
         if (profile_setup === "2") {
           setStage(2);
         }
         else if (profile_setup === "3") {
           setStage(3);
         }
-      });
+        
+        setLoading(false);
+      }, []);
 
-      const dbHelper = new DbHelper();
+      useEffect(() => {
+        if (user !== null) {
+
+        }
+        else {
+          //console.log("user is null: " + user);
+        }
+        
+      }, [user]);
+
+      useEffect(() => {
+        if (toastMessage !== "") {
+          toast(toastMessage);
+          setToastMessage("");
+        }
+      }, [toastMessage]);
 
       const datePickerRef = useRef(null);
+
+      const handleDrop = (e) => {
+        e.preventDefault();
+        const droppedFiles = e.dataTransfer.files;
+        setIsDragOver(false);
+        if (droppedFiles.length > 0) {
+          
+        }
+      };
+    
+      const handleDragOver = (e) => {
+        e.preventDefault();
+        setIsDragOver(true);
+      };
+
+      const fileInputRef = useRef();
+      const ppInputRef = useRef();
+
+      const openFileChooser = () => {
+        fileInputRef.current.click();
+      };
+
+      const openProfilePicChosser = () => {
+        ppInputRef.current.click();
+      }
+    
+      const handleFileChange = (e) => {
+        const selectedFile = e.target.files[0];
+        if (selectedFile) {
+          setSelectedFile(selectedFile);
+        }
+      };
+
+      const handlePPChange = (e) => {
+        const selectedPP = e.target.files[0];
+        if (selectedPP) {
+          setSelectedPP(selectedPP);
+          setImageUrl(URL.createObjectURL(selectedPP));
+        }
+      };
 
       const handleDateChange = (date) => {
         const options = {
@@ -88,7 +162,7 @@ function ProfileSetup () {
         'Ghana',
       ];
 
-      const [selectedCountry, setSelectedCountry] = useState('');
+      const [selectedCountry, setSelectedCountry] = useState('Nigeria');
 
       const handleCountryChange = (event) => {
         setSelectedCountry(event.target.value);
@@ -100,8 +174,67 @@ function ProfileSetup () {
 
       const navigate = useNavigate();
 
+      const uploadFile = async () => {
+        if (selectedFile === null && stage === 2) {
+          toast("Select a file");
+        }
+        else if (selectedPP === null && stage === 3) {
+          toast("Select a profile picture");
+        }
+        else {
+          setLoading(true);
+          const firebaseApp = initializeApp(Constants.FIREBASE_CONFIG);
+          const storage = getStorage(firebaseApp);
+          var storageRef;
+          var uploadTask;
+          if (bio === '') {
+            storageRef = ref(storage, `verificationFiles/${selectedFile.name}`);
+            uploadTask = uploadBytesResumable(storageRef, selectedFile);
+          }
+          else {
+            storageRef = ref(storage, `profilePictures/${selectedPP.name}`);
+            uploadTask = uploadBytesResumable(storageRef, selectedPP);
+          }
+          uploadTask.on('state_changed', 
+            (snapshot) => {
+              const progress = (snapshot.bytesTransferred / snapshot.totalBytes) * 100;
+              console.log(`Upload is ${progress}% complete`);
+            },
+            (error) => {
+              setLoading(false);
+              setToastMessage("Upload error");
+              console.error('Upload error:', error);
+            },
+            () => {
+              console.log('Upload successful!');
+              setLoading(false);
+              getDownloadURL(uploadTask.snapshot.ref).then((downloadURL) => {
+                if (bio === '') {
+                  user.setVerificationDoc(downloadURL);
+                  user.setCountry(selectedCountry);
+                  user.setProfileSetup("3");
+                  dbHelper.updateUser(user);
+                  setStage(3);
+                }
+                else {
+                  user.setBio(bio);
+                  user.setProfilePicture(downloadURL);
+                  user.setProfileSetup("true");
+                  dbHelper.updateUser(user);
+                  Cookies.set('username', username, { expires: 7 });
+                  Cookies.set('email', email, { expires: 7 });
+                  navigate('/main-page');
+                }
+              });
+            }
+          );
+        }
+      }
+
       const handleContinue = async () => {
         if (stage === 1) {
+          const currentDate = new Date();
+          const age = currentDate.getFullYear() - selectedDate.getFullYear();
           if (_firstname === "" && firstname === "") {
             toast("Firstname is required");
           }
@@ -114,153 +247,171 @@ function ProfileSetup () {
           else if (selectedDate === "" || selectedDate === undefined) {
             toast("DOB is required");
           }
+          else if (age < 18) {
+            toast("Minimum creator age is 18");
+          }
           else {
             user.setFirstName(_firstname !== "" ? _firstname : firstname);
             user.setLastName(_lastname !== "" ? _lastname : lastname);
             user.setUserName(username === '' ? _username : username);
-            console.log("username: " + username);
-            console.log("_username: " + _username);
-            console.log("user object username: " + user.getUserName());
             user.setDOB(dob);
-            console.log(dob);
             user.setProfileSetup("2");
             const response = await dbHelper.updateUser(user);
             setStage(stage + 1);
           }
         }
         else if (stage === 2) {
-          setStage(stage + 1);
+          await uploadFile();
         }
         else if (stage === 3) {
-          navigate('/main-page');
+          if (bio === '') {
+            toast("Bio is required");
+          }
+          else if (selectedPP === null) {
+            toast("Choose a profile picture");
+          } 
+          else {
+            uploadFile();
+          }
         }
       };
+
+      if (loading) {
+        return (
+          <div>
+        <Navbar />
+        <div className="dialog-container">
+          <div className="profile-dialog">
+            <div style={{ paddingTop:'100px', paddingBottom:'100px' }}><LoadingScreen/></div>
+        
+          </div>
+        </div> 
+      </div>
+        );
+      }
 
       return (
       <div>
         <Navbar />
         <div className="dialog-container">
           <div className="profile-dialog">
-            {stage === 1 && (
-              <div>
-                <h2>Set up your profile</h2>
-                <div className="input-row">
-                    <div className="input-group">
-                      <label>First Name</label>
-                      <input onChange={(e) => setFirstname(e.target.value)} value={_firstname} placeholder={firstname} type="text" />
-                    </div>
-                    <div className="input-group">
-                      <label>Last Name</label>
-                      <input onChange={(e) => setLastname(e.target.value)} value={_lastname} placeholder={lastname} type="text" />
-                    </div>
-                </div>
-                <div className="input-row">
-                    <div className="input-group">
-                      <label>Username</label>
-                      <input onChange={(e) => setUsername(e.target.value)} disabled={account_type === "google" ? false : true } value={_username} placeholder={username} type="text" />
-                    </div>
-                    <div className="input-group">
-                        <label>Date of Birth</label>
-                        <DatePicker
-                          selected={selectedDate}
-                          onChange={handleDateChange}
-                          showYearDropdown
-                          scrollableYearDropdown
-                          yearDropdownItemNumber={100}
-                          dateFormat="EEE MMMM d, yyyy"
-                          ref={datePickerRef}
-                          className="date-picker-input"
-                          onKeyDown={(e) => {
-                              e.preventDefault();
-                          }}
-                        />
-                    </div>
-                </div>
-              </div>
-            )}
-
-            {stage === 2 && (
-              <div>
-                <h2>Verify your identity</h2>
-                <div>
-                  <label style={{ fontFamily: 'Inter, sans-serif', fontSize: '14px' }} htmlFor="countrySelect">Country of residence</label>
-                  <div style={{ display: 'flex', borderRadius: '4px', border: '1px solid #ccc', padding: '4px 8px', marginTop: '10px', marginBottom: '10px' }}>
-                    <select value={selectedCountry} onChange={handleCountryChange} id="countrySelect" style={{ fontFamily: 'Inter, sans-serif', fontSize: '16px', color: '#667085', margin: '5px', border: 'none', outline: 'none', width: '100%', height: '100%' }}>
-                      {countries.map((country, index) => (
-                        <option key={index} value={country}>
-                          {country}
-                        </option>
-                      ))}
-                    </select>
-                  </div>
-                </div>
-                <label style={{ fontFamily: 'Inter, sans-serif', fontSize: '14px'}}>Provide a verification document</label>
-                <div style={{ marginTop: '10px', marginBottom: '30px', width: '100%', borderRadius: '4px', border: '1px dashed #F94F64', backgroundColor: '#FEDCE045' }}>
-                  <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', marginTop: '16px' }}>
-                    <img src="/images/export.png" alt="Upload Icon" style={{ cursor: 'pointer', width: '48px', height: '48px', color: '#F94F64' }} />
-                    <p style={{ fontWeight: '700', fontFamily: 'Inter, sans-serif', fontSize: '18px', marginTop: '8px', marginBottom: '8px' }}>
-                      Drag & drop files or <span style={{ color: '#F94F64', cursor: 'pointer' }}>browse</span>
-                    </p>
-                    <p style={{ fontFamily: 'Inter, sans-serif', fontSize: '12px' }}>Supported formats: JPEG, PNG, PDF, WORD</p>
-                  </div>
-                </div>
-              </div>
-            )}
-
-            {stage === 3 && (
-                <div>
-                    <h2>Almost done!</h2>
-                    <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
-                          <div
-                            style={{
-                              width: '80px',
-                              height: '80px',
-                              borderRadius: '50%',
-                              backgroundColor: '#FEF0F1',
-                              display: 'flex',
-                              justifyContent: 'center',
-                              alignItems: 'center',
-                            }}
-                          >
-                            <img src="/images/add_gallery.png" alt="Profile" style={{ cursor: 'pointer', maxWidth: '100%', maxHeight: '100%' }} />
-                          </div>
-                          <p style={{ fontFamily: 'Inter, sans-serif', fontSize: '14px', marginTop: '0px' }}>Upload a profile photo</p>
-                          <div style={{ marginBottom: '20px', display: 'flex', flexDirection: 'column', alignItems: 'flex-start', width: '100%' }}>
-                            <label style={{ marginBottom: '10px', fontFamily: 'Inter, sans-serif', fontSize: '14px' }} htmlFor="bioInput">Add a bio</label>
-                            <div style={{ display: 'flex', flexDirection: 'column', width: '100%' }}>
-                              <textarea
-                                id="bioInput"
-                                style={{
-                                  fontFamily: 'Inter, sans-serif',
-                                  width: '98.5%',
-                                  height: '100px',
-                                  border: '1px solid #ccc',
-                                  borderRadius: '4px',
-                                  marginBottom: '8px',
-                                  resize: 'none',
-                                }}
-                              />
-                            </div>
-                          </div>
-                        </div>
-                </div>
-            )}
-
-
-            <div className="navigation-buttons">
-              {stage > 1 && (
-                <div className="back-button" onClick={handleBack}>
-                  <img src="/images/profile_back.png" alt="Back" />
-                  Back
-                </div>
-              )}
+            {loading && <div><ToastContainer /><LoadingScreen/></div>} 
               {stage === 1 && (
-                <div></div>
+                <div>
+                  <h2>Set up your profile</h2>
+                  <div className="input-row">
+                      <div className="input-group">
+                        <label>First Name</label>
+                        <input onChange={(e) => setFirstname(e.target.value)} value={_firstname} placeholder={firstname} type="text" />
+                      </div>
+                      <div className="input-group">
+                        <label>Last Name</label>
+                        <input onChange={(e) => setLastname(e.target.value)} value={_lastname} placeholder={lastname} type="text" />
+                      </div>
+                  </div>
+                  <div className="input-row">
+                      <div className="input-group">
+                        <label>Username</label>
+                        <input onChange={(e) => setUsername(e.target.value)} disabled={account_type === "google" ? false : true } value={_username} placeholder={username} type="text" />
+                      </div>
+                      <div className="input-group">
+                          <label>Date of Birth</label>
+                          <DatePicker
+                            selected={selectedDate}
+                            onChange={handleDateChange}
+                            showYearDropdown
+                            scrollableYearDropdown
+                            yearDropdownItemNumber={100}
+                            dateFormat="EEE MMMM d, yyyy"
+                            ref={datePickerRef}
+                            className="date-picker-input"
+                            onKeyDown={(e) => {
+                                e.preventDefault();
+                            }}
+                          />
+                      </div>
+                  </div>
+                </div>
               )}
-              <button className="continue-button" onClick={handleContinue}>
-                {stage === 3 ? "Let's go" : "Continue"}
-              </button>
-            </div>
+
+              {stage === 2 && (
+                <div>
+                  <h2>Verify your identity</h2>
+                  <div>
+                    <label style={{ fontFamily: 'Inter, sans-serif', fontSize: '14px' }} htmlFor="countrySelect">Country of residence</label>
+                    <div style={{ display: 'flex', borderRadius: '4px', border: '1px solid #ccc', padding: '4px 8px', marginTop: '10px', marginBottom: '10px' }}>
+                      <select value={selectedCountry} onChange={handleCountryChange} id="countrySelect" style={{ fontFamily: 'Inter, sans-serif', fontSize: '16px', color: '#667085', margin: '5px', border: 'none', outline: 'none', width: '100%', height: '100%' }}>
+                        {countries.map((country, index) => (
+                          <option key={index} value={country}>
+                            {country}
+                          </option>
+                        ))}
+                      </select>
+                    </div>
+                  </div>
+                  <label style={{ fontFamily: 'Inter, sans-serif', fontSize: '14px'}}>Provide a verification document</label>
+                  <div onDrop={handleDrop} onDragOver={handleDragOver} onClick={openFileChooser} style={{ cursor: 'pointer', marginTop: '10px', marginBottom: '30px', width: '100%', borderRadius: '4px', border: '1px dashed #F94F64', backgroundColor: isDragOver ? '#FEDCE0' : '#FEDCE045' }}>
+                    <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', marginTop: '16px' }}>
+                      <img src="/images/export.png" alt="Upload Icon" style={{  width: '48px', height: '48px', color: '#F94F64' }} />
+                      <p style={{ fontWeight: '700', fontFamily: 'Inter, sans-serif', fontSize: '18px', marginTop: '8px', marginBottom: '8px' }}>
+                        Drag & drop files or <span style={{ color: '#F94F64' }}>browse</span>
+                      </p>
+                      <p style={{ fontFamily: 'Inter, sans-serif', fontSize: '12px' }}>Supported formats: JPEG, PNG, PDF, WORD</p>
+                    </div>
+                  </div>
+                  <input type="file" style={{ display: 'none' }} accept="image/jpeg, image/png, application/pdf, application/msword" ref={fileInputRef} onChange={handleFileChange} />
+                </div>
+              )}
+
+              {stage === 3 && (
+                  <div>
+                      <h2>Almost done!</h2>
+                      <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
+                            <div
+                              style={{
+                                width: '80px',
+                                height: '80px',
+                                borderRadius: '50%',
+                                backgroundColor: '#FEF0F1',
+                                display: 'flex',
+                                justifyContent: 'center',
+                                alignItems: 'center',
+                              }}
+                            >
+                              <img onClick={openProfilePicChosser}  src={imageUrl || "/images/add_gallery.png"} alt="Profile" style={{ cursor: 'pointer', maxWidth: '100%', maxHeight: '100%' }} />
+                            </div>
+                            <p style={{ fontFamily: 'Inter, sans-serif', fontSize: '14px', marginTop: '0px' }}>Upload a profile photo</p>
+                            <div style={{ marginBottom: '20px', display: 'flex', flexDirection: 'column', alignItems: 'flex-start', width: '100%' }}>
+                              <label style={{ marginBottom: '10px', fontFamily: 'Inter, sans-serif', fontSize: '14px' }} htmlFor="bioInput">Add a bio</label>
+                              <div style={{ display: 'flex', flexDirection: 'column', width: '100%' }}>
+                                <textarea
+                                  id="bioInput"
+                                  onChange={(e) => setBio(e.target.value)}
+                                  value={bio}
+                                  style={{
+                                    fontFamily: 'Inter, sans-serif',
+                                    width: '98.5%',
+                                    height: '100px',
+                                    border: '1px solid #ccc',
+                                    borderRadius: '4px',
+                                    marginBottom: '8px',
+                                    resize: 'none',
+                                  }}
+                                />
+                              </div>
+                            </div>
+                          </div><input type="file" style={{ display: 'none' }} accept="image/jpeg, image/png" ref={ppInputRef} onChange={handlePPChange} />
+                  </div>
+              )}
+
+
+              <div className="navigation-buttons">
+                <div></div>
+                <button className="continue-button" onClick={handleContinue}>
+                  {stage === 3 ? "Let's go" : "Continue"}
+                </button>
+              </div>
+            
             <ToastContainer/>
           </div>
         </div> 

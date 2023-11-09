@@ -6,10 +6,9 @@ import { useNavigate } from 'react-router-dom';
 import axios from 'axios';
 import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
-import { isValidEmail } from '../../utils/Utils';
+import { isValidEmail, stringToUint8Array, sha256 } from '../../utils/Utils';
 import { GoogleLogin } from 'react-google-login';
 import { gapi } from 'gapi-script';
-import Utils from '../../utils/Utils';
 import Constants from '../../utils/Constants';
 import { Base64 } from 'js-base64';
 import DbHelper from '../../utils/DbHelper';
@@ -77,7 +76,7 @@ function SignupSection () {
   
         gapi.load('client:auth2', start);
       }
-    });
+    }, []);
 
     useEffect(() => {
       createAccountGoogle();
@@ -93,8 +92,9 @@ function SignupSection () {
     const createAccountGoogle = async () => {
       if (isGoogleSignIn) {
         const account_type = "google";
-        const uint8Array = Utils.stringToUint8Array(email);
-        const email_hash = await Utils.sha256(uint8Array);
+        const uint8Array = stringToUint8Array(email);
+        const email_hash = await sha256(uint8Array);
+        
         const data = {
           "firstname": firstname,
           "lastname": lastname,
@@ -165,8 +165,8 @@ function SignupSection () {
                 setToastMessage("This email is already registered");
               }
               else {
-                const uint8Array = Utils.stringToUint8Array(email);
-                const email_hash = await Utils.sha256(uint8Array);
+                const uint8Array = stringToUint8Array(email);
+                const email_hash = await sha256(uint8Array);
                 
                 const data = {
                   "username": username,

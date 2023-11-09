@@ -1,10 +1,16 @@
-import React, { useState } from 'react';
 import ProfilePicture from '../ProfilePicture/ProfilePicture';
 import { useNavigate } from 'react-router-dom';
 import './SideBar.css';
+import DbHelper from '../../utils/DbHelper';
+import Cookies from 'js-cookie';
+import { isValidEmail } from '../../utils/Utils';
+import React, { useState, useEffect } from 'react';
 
 const SideBar = ({marginLeft, marginTop, pageIndex}) => {
+  const dbHelper = new DbHelper();
+
   const [selectedLink, setSelectedLink] = useState(pageIndex);
+  const [user, setUser] = useState(null);
 
   const navigate = useNavigate();
 
@@ -30,16 +36,25 @@ const SideBar = ({marginLeft, marginTop, pageIndex}) => {
     }
   };
 
+  useEffect(() => {
+    const username = Cookies.get('username');
+    const fetchUser = async () => {
+      const _u =  isValidEmail(username) ? await dbHelper.getAppUserByEmail(username) :await dbHelper.getAppUserByUsername(username);
+      setUser(_u);
+    };
+    fetchUser();
+}, []);
+
   return (
     <div className="sidebar" style={{ marginTop:`${marginTop}`, marginLeft:`${marginLeft}` }}>
       <div className="profile">
           <ProfilePicture zIndex={"1"}/>
-          <div>
+          <div style={{ width:'180px' }}>
             <span className="sidebar-display-name">
-              Sheriff
-              <img src="/images/verifiied.png" alt="Super user" className="sidebar-verified"  />
+              {user && user.getFirstName()} {user && user.getLastName()}
+              {user && user.getVerified() === "true" && <img src="/images/verifiied.png" alt="Super user" className="sidebar-verified"  />}
             </span>
-          <div className="sidebar-username">@BadNdBoujee</div>
+            <div className="sidebar-username">{user && user.getUserName()}</div>
           </div>
       </div>
       <ul className="navigation-links">

@@ -1,7 +1,7 @@
 import './Login.css';
 import React, { useState, useEffect } from 'react';
 import SignupSection from '../Signup/SignupSection';
-import Utils from '../../utils/Utils';
+import { isValidEmail, stringToUint8Array, sha256 } from '../../utils/Utils';
 import axios from 'axios';
 import { ToastContainer, toast } from 'react-toastify';  
 import Constants from '../../utils/Constants';
@@ -10,6 +10,7 @@ import { useNavigate } from 'react-router-dom';
 import { GoogleLogin } from 'react-google-login';
 import DbHelper from '../../utils/DbHelper';
 import LoadingScreen from '../LoadingScreen/LoadingScreen';
+import Cookies from 'js-cookie';
 
 function Login() {
 
@@ -55,7 +56,7 @@ function Login() {
 
   const loginGoogle = async () => {
     if (isGoogleSignIn) {
-      if (Utils.isValidEmail(username)) {
+      if (isValidEmail(username)) {
         const emailResponse = await dbHelper.checkForEmail(username);
         if (emailResponse.data.length !== 0) {
           const profile_setup = emailResponse.data[0]["profile_setup"];
@@ -66,11 +67,11 @@ function Login() {
           const username = emailResponse.data[0]["username"];
           const stage = emailResponse.data[0]["profile_setup"];
           const account_type = emailResponse.data[0]["account_type"];
+          const creator_mode = emailResponse.data[0]["creator_mode"];
 
           setLoading(false);
-
-          if (profile_setup !== "true") {
-            console.log("login user username: " + username);
+          console.log(creator_mode);
+          if (creator_mode === "creator" && profile_setup !== "true") {
             navigate('/profile-setup', {state: {
               profile_setup,
               firstname,
@@ -84,8 +85,14 @@ function Login() {
               account_type
             }});
           } 
-          else if (profile_setup === "true") {
+          else if (creator_mode === "creator" && profile_setup === "true") {
             setLoading(false);
+            Cookies.set('username', username, { expires: 7 });
+            navigate('/main-page');
+          }
+          else if (creator_mode === "fan") {
+            setLoading(false);
+            Cookies.set('username', username, { expires: 7 });
             navigate('/main-page');
           }
         }
@@ -104,13 +111,14 @@ function Login() {
 
   const login = async () => {
     if (username !== "") {
-      if (Utils.isValidEmail(username)) {
+      if (isValidEmail(username)) {
         setLoading(true);
         const emailResponse = await dbHelper.checkForEmail(username);
         if (emailResponse.data.length !== 0) {
           const encodedPassword = emailResponse.data[0]["password"];
           const _password = Base64.decode(encodedPassword);
           const account_type = emailResponse.data[0]["account_type"];
+          const creator_mode = emailResponse.data[0]["creator_mode"];
           if (account_type === "google") {
             setLoading(false);
             setToastMessage("User not found");
@@ -131,10 +139,9 @@ function Login() {
             const username = emailResponse.data[0]["username"];
             const stage = emailResponse.data[0]["profile_setup"];
 
-            if (profile_setup !== "true") {
+            console.log(creator_mode);
+            if (creator_mode === "creator" && profile_setup !== "true") {
               navigate('/profile-setup', {state: {
-                username,
-                stage,
                 profile_setup,
                 firstname,
                 lastname,
@@ -142,11 +149,19 @@ function Login() {
                 verification_doc,
                 location,
                 email_hash,
-                account_type,
-                encodedPassword
+                username,
+                stage,
+                account_type
               }});
             } 
-            else if (profile_setup === "true") {
+            else if (creator_mode === "creator" && profile_setup === "true") {
+              setLoading(false);
+              Cookies.set('username', username, { expires: 7 });
+              navigate('/main-page');
+            }
+            else if (creator_mode === "fan") {
+              setLoading(false);
+              Cookies.set('username', username, { expires: 7 });
               navigate('/main-page');
             }
           }
@@ -162,8 +177,7 @@ function Login() {
           const encodedPassword = usernameResponse.data[0]["password"];
           const _password = Base64.decode(encodedPassword);
           const account_type = usernameResponse.data[0]["account_type"];
-          console.log(_password + " " + password);
-
+          const creator_mode = usernameResponse.data[0]["creator_mode"];
           if (account_type === "google") {
             setLoading(false);
             setToastMessage("User not found");
@@ -183,10 +197,9 @@ function Login() {
             const username = usernameResponse.data[0]["username"];
             const stage = usernameResponse.data[0]["profile_setup"];
 
-            if (profile_setup !== "true") {
+            console.log(creator_mode);
+            if (creator_mode === "creator" && profile_setup !== "true") {
               navigate('/profile-setup', {state: {
-                username,
-                stage,
                 profile_setup,
                 firstname,
                 lastname,
@@ -194,11 +207,19 @@ function Login() {
                 verification_doc,
                 location,
                 email_hash,
-                account_type,
-                encodedPassword
+                username,
+                stage,
+                account_type
               }});
             } 
-            else if (profile_setup === "true") {
+            else if (creator_mode === "creator" && profile_setup === "true") {
+              setLoading(false);
+              Cookies.set('username', username, { expires: 7 });
+              navigate('/main-page');
+            }
+            else if (creator_mode === "fan") {
+              setLoading(false);
+              Cookies.set('username', username, { expires: 7 });
               navigate('/main-page');
             }
           }
@@ -238,7 +259,6 @@ function Login() {
 
   const onGoogleFailure = (res) => {
     setLoading(false);
-    setToastMessage("Google login failure");
     console.log("Google login failure: ", res);
   }
 

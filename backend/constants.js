@@ -30,6 +30,7 @@ const COL_VERIFIED = 'verified';
 const COL_LIVE_MODE = 'live_mode';
 const COL_PROFILE_SETUP = 'profile_setup';
 const COL_ACCOUNT_TYPE = "account_type";
+const COL_CREATOR_MODE_DESC_DISMISSED = "creator_mode_desc_dismissed";
 
 const BASE_API_URL = "http://localhost:4000";
 
@@ -66,4 +67,5 @@ module.exports = {
     COL_DATE_JOINED,
     COL_DOB,
     COL_ACCOUNT_TYPE,
+    COL_CREATOR_MODE_DESC_DISMISSED,
   };

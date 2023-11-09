@@ -1,4 +1,8 @@
 import './ProfilePicture.css';
+import Cookies from 'js-cookie';
+import DbHelper from '../../utils/DbHelper';
+import { isValidEmail } from '../../utils/Utils';
+import React, { useState, useEffect } from 'react';
 
 function ProfilePicture ({ 
     url,
@@ -11,7 +15,19 @@ function ProfilePicture ({
     zIndex }) {
     var boxShadow = "0 0 0 1px #ffffff";
 
-    if (hasStory) {
+    const dbHelper = new DbHelper();
+    const [user, setUser] = useState(null);
+
+    useEffect(() => {
+        const username = Cookies.get('username');
+        const fetchUser = async () => {
+          const _u =  isValidEmail(username) ? await dbHelper.getAppUserByEmail(username) :await dbHelper.getAppUserByUsername(username);
+          setUser(_u);
+        };
+        fetchUser();
+    }, []);
+
+    if (!hasStory) {
         boxShadow = "0 0 0 1px #f94f64";
     }
     return (
@@ -22,8 +38,9 @@ function ProfilePicture ({
             marginLeft: `${marginLeft}`,
             zIndex: `${zIndex}`,
             }}>
-          <div className={`${isOnline ? 'online-indicator' : ''}`}></div>
-          <img src="/images/profile-picture.png" alt="Profile" />
+          
+          <img src={user && user.getProfilePicture()} alt="Profile" />
+          <div className={`${!isOnline ? 'online-indicator' : ''}`}></div>
         </div>
     );
 }

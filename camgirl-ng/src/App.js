@@ -13,9 +13,14 @@ import Messages from './components/Messages/Messages';
 import Subscriptions from './components/Subscriptions/Subscriptions';
 import Dashboard from './components/Dashboard/Dashboard';
 import Settings from './components/Settings/Settings';
+import { initializeApp } from 'firebase/app';
+import Constants from './utils/Constants';
 
 
 function App() {
+  
+  const firebaseApp = initializeApp(Constants.FIREBASE_CONFIG);
+
   return (
     <Router>
       <Routes>

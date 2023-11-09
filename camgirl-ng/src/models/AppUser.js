@@ -4,7 +4,7 @@ class AppUser {
       dob, country, location, verification_doc, docs_verified, bio, date_joined,
       last_updated, profile_picture, cover_picture, subscribers, connections,
       subscription_price, currency_symbol, currency, creator_mode, verified,
-      live_mode, profile_setup, account_type
+      live_mode, profile_setup, account_type, creator_mode_desc_dismissed
     ) {
       this.id = id;
       this.user_id = user_id;
@@ -34,6 +34,15 @@ class AppUser {
       this.live_mode = live_mode;
       this.profile_setup = profile_setup;
       this.account_type = account_type;
+      this.creator_mode_desc_dismissed = creator_mode_desc_dismissed;
+    }
+
+    getCreatorModeDescDismissed() {
+      return this.creator_mode_desc_dismissed;
+    }
+
+    setCreatorModeDescDismissed(creator_mode_desc_dismissed) {
+      this.creator_mode_desc_dismissed = creator_mode_desc_dismissed;
     }
 
     getAccountType() {

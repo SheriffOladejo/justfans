@@ -1,3 +1,7 @@
+
+
+import Cookies from 'js-cookie';
+
 function isValidEmail(email) {
     // Regular expression for a basic email validation
     const emailPattern = /^[a-zA-Z0-9._-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,4}$/;
@@ -10,6 +14,20 @@ function stringToUint8Array(str) {
     return encoder.encode(str);
 }
 
+function isUserSignedIn () {
+    const username = Cookies.get('username');
+    const email = Cookies.get('email');
+    if (username === null && email === null) {
+        return {"message":"expired_cookie"};
+    }
+    else if (email !== null) {
+        return username;
+    }
+    else if (username !== null) {
+        return email;
+    }
+}
+
 async function sha256(message) {
     const buffer = await crypto.subtle.digest("SHA-256", message);
     const array = Array.from(new Uint8Array(buffer));
@@ -17,8 +35,9 @@ async function sha256(message) {
 }
   
 
-module.exports = {
+export {
     isValidEmail,
     stringToUint8Array,
-    sha256
+    sha256,
+    isUserSignedIn,
 };
