@@ -295,7 +295,7 @@ function Login() {
               onClick={togglePasswordVisibility}
             />
           </div>
-          <button onClick={login} type="button" style={{ width: '372px', marginTop: '30px', fontFamily: 'Inter, sans-serif', fontWeight: '700' }}>Log in</button>
+          <button onClick={login} type="button" style={{ marginTop: '30px', fontFamily: 'Inter, sans-serif', fontWeight: '700' }}>Log in</button>
         </form>
         <p style={{ fontFamily: 'Inter, sans-serif', fontSize: '14px', cursor: 'pointer' }}>Forgot password?</p>
         <div className="or-container">

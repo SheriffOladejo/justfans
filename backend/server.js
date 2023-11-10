@@ -30,9 +30,130 @@ app.get("/api", (req, res) => {
     res.json({ "users": ["userOne", "userTwo", "userThree"] });
 });
 
+// Posts and comments methods
+
+app.get("/getPostsByUserID/:user_id", (req, res) => {
+    const user_id = req.params.user_id;
+
+    const sql = `SELECT * FROM ${constants.POST_TABLE} WHERE ${constants.COL_POST_USER_ID} = ?`;
+
+    db.query(sql, [user_id], (err, result) => {
+        if (err) {
+            console.error('/getPostsByUserID: Error retrieving posts: ' + err.message);
+            res.status(500).json({ message: '/getPostsByUserID: Failed to retrieve posts' });
+        } else {
+            res.json({ posts: result });
+        }
+    });
+});
+
+
+app.post("/deletePost", (req, res) => {
+    const { post_id } = req.body;
+
+    const sql = `DELETE FROM ${constants.POST_TABLE} WHERE ${constants.COL_POST_ID} = ?`;
+
+    db.query(sql, [post_id], (err, result) => {
+        if (err) {
+            console.error('/deletePost: Error deleting post: ' + err.message);
+            res.status(500).json({ message: '/deletePost: Delete post failed' });
+        } else {
+            if (result.affectedRows > 0) {
+                res.json({ message: '/deletePost: Post deleted successfully' });
+            } else {
+                res.status(404).json({ message: '/deletePost: Post not found' });
+            }
+        }
+    });
+});
+
+
+app.post("/createPost", (req, res) => {
+    const { user_id, caption, attachment_file, comments_privacy, comments,
+    attachment_file_name, attachment_type, post_privacy, post_type, creation_date, 
+    reactions, likes, tips } = req.body;
+    const sql = `INSERT INTO ${constants.POST_TABLE} (${constants.COL_POST_USER_ID}, ${constants.COL_CAPTION}, ${constants.COL_ATTACHMENT_FILE},
+        ${constants.COL_COMMENTS_PRIVACY}, ${constants.COL_COMMENTS}, ${constants.COL_ATTACHMENT_FILE_NAME}, ${constants.COL_ATTACHMENT_TYPE}, 
+        ${constants.COL_POST_PRIVACY}, ${constants.COL_POST_TYPE}, ${constants.COL_CREATION_DATE}, ${constants.COL_REACTIONS}, 
+        ${constants.COL_LIKES}, ${constants.COL_TIPS}) VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?)`;
+        db.query(sql, [user_id, caption, attachment_file, comments_privacy, comments, attachment_file_name, attachment_type, post_privacy,
+        post_type, creation_date, reactions, likes, tips], (err, result) => {
+            if (err) {
+                console.error('/createPost: Error inserting post: ' + err.message);
+                res.status(500).json({ message: '/createPost: Create post failed' });
+            }
+            else {
+                res.json({ message: '/createPost: Post creation complete' });
+            }
+        });
+});
+
+app.post("/updatePost", (req, res) => {
+    const {
+        post_id,
+        user_id,
+        caption,
+        attachment_file,
+        comments_privacy,
+        comments,
+        attachment_file_name,
+        attachment_type,
+        post_privacy,
+        post_type,
+        creation_date,
+        reactions,
+        likes,
+        tips
+    } = req.body;
+
+    const sql = `UPDATE ${constants.POST_TABLE} 
+                 SET ${constants.COL_POST_USER_ID} = ?,
+                     ${constants.COL_CAPTION} = ?,
+                     ${constants.COL_ATTACHMENT_FILE} = ?,
+                     ${constants.COL_COMMENTS_PRIVACY} = ?,
+                     ${constants.COL_COMMENTS} = ?,
+                     ${constants.COL_ATTACHMENT_FILE_NAME} = ?,
+                     ${constants.COL_ATTACHMENT_TYPE} = ?,
+                     ${constants.COL_POST_PRIVACY} = ?,
+                     ${constants.COL_POST_TYPE} = ?,
+                     ${constants.COL_CREATION_DATE} = ?,
+                     ${constants.COL_REACTIONS} = ?,
+                     ${constants.COL_LIKES} = ?,
+                     ${constants.COL_TIPS} = ?
+                 WHERE ${constants.COL_POST_ID} = ?`;
+
+    db.query(
+        sql,
+        [
+            user_id,
+            caption,
+            attachment_file,
+            comments_privacy,
+            comments,
+            attachment_file_name,
+            attachment_type,
+            post_privacy,
+            post_type,
+            creation_date,
+            reactions,
+            likes,
+            tips,
+            post_id
+        ],
+        (err, result) => {
+            if (err) {
+                console.error('/updatePost: Error updating post: ' + err.message);
+                res.status(500).json({ message: '/updatePost: Update post failed' });
+            } else {
+                res.json({ message: '/updatePost: Post update complete' });
+            }
+        }
+    );
+});
+
+
 app.post("/signup", (req, res) => {
     const { user_id, account_type, username, firstname, lastname, email, password, date_joined, creator_mode } = req.body;
-    console.log("username "+username);
     const sql = `INSERT INTO ${constants.USER_TABLE} (${constants.COL_USER_ID}, ${constants.COL_USERNAME}, ${constants.COL_FIRSTNAME},
         ${constants.COL_LASTNAME}, ${constants.COL_EMAIL}, ${constants.COL_PASSWORD}, ${constants.COL_CREATOR_MODE}, ${constants.COL_DATE_JOINED}, 
         ${constants.COL_ACCOUNT_TYPE}) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)`;

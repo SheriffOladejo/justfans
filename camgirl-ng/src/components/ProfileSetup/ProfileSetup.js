@@ -5,7 +5,6 @@ import './ProfileSetup.css';
 import Navbar from './Navbar';
 import DatePicker from 'react-datepicker';
 import 'react-datepicker/dist/react-datepicker.css';
-import AppUser from '../../models/AppUser';
 import { ToastContainer, toast } from 'react-toastify';
 import DbHelper from '../../utils/DbHelper';
 import Constants from '../../utils/Constants';
