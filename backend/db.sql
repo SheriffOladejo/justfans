@@ -1,8 +1,8 @@
-CREATE TABLE justfans_db.justfans_post (
+CREATE TABLE justfans_db.justfans_posts (
     id INTEGER PRIMARY KEY AUTO_INCREMENT,
-    post_id INTEGER NOT NULL,
+    post_id INTEGER,
     user_id VARCHAR(200) NOT NULL,
-    caption TEXT,
+    caption TEXT CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci,
     post_link TEXT,
     post_link_title TEXT,
     post_link_image TEXT,
@@ -12,16 +12,15 @@ CREATE TABLE justfans_db.justfans_post (
     post_share TEXT,
     post_privacy INTEGER,
     post_type TEXT,
-    creation_date INTEGER,
+    creation_date BIGINT,
     comments_privacy INTEGER,
     comments TEXT,
     reactions TEXT,
     likes TEXT,
-    tips TEXT,
-    FOREIGN KEY (post_id) REFERENCES justfans_db.justfans_user(id)
+    tips TEXT
 );
 
-CREATE TABLE justfans_db.justfans_user (
+CREATE TABLE justfans_db.justfans_users (
     id INTEGER PRIMARY KEY AUTO_INCREMENT,
     user_id VARCHAR(200) DEFAULT '',
     username VARCHAR(200) DEFAULT '',

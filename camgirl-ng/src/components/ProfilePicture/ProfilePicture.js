@@ -40,7 +40,7 @@ function ProfilePicture ({
             }}>
           
           <img src={user && user.getProfilePicture()} alt="Profile" />
-          <div className={`${!isOnline ? 'online-indicator' : ''}`}></div>
+          <div className={`${isOnline ? 'online-indicator' : ''}`}></div>
         </div>
     );
 }

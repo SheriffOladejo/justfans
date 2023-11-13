@@ -17,15 +17,10 @@ function stringToUint8Array(str) {
 function isUserSignedIn () {
     const username = Cookies.get('username');
     const email = Cookies.get('email');
-    if (username === null && email === null) {
-        return {"message":"expired_cookie"};
-    }
-    else if (email !== null) {
-        return username;
-    }
-    else if (username !== null) {
-        return email;
-    }
+    return {
+        "email": email,
+        "username": username
+    };
 }
 
 async function sha256(message) {

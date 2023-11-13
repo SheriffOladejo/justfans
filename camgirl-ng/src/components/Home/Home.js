@@ -2,14 +2,27 @@ import Stories from '../Home/Stories/Stories';
 import './Home.css';
 import FeedItem from '../Home/Feed/FeedItem';
 import ProfilePicture from '../ProfilePicture/ProfilePicture';
-import { useState, useRef } from 'react';
+import { useState, useRef, useEffect } from 'react';
 import TextareaAutosize from 'react-textarea-autosize';
-import { ToastContainer } from 'react-toastify';
+import { ToastContainer, toast } from 'react-toastify';
 import ReactPlayer from 'react-player';
-import Picker from 'emoji-mart';
+import EmojiPicker from 'emoji-picker-react';
+import Post  from '../../models/Post';
+import AppUser from '../../models/AppUser';
+import Navbar from '../ProfileSetup/Navbar';
+import DbHelper from '../../utils/DbHelper';
+import { isUserSignedIn } from '../../utils/Utils';
+import { getStorage, ref, uploadBytesResumable, getDownloadURL } from 'firebase/storage';
+import Constants from '../../utils/Constants';
+import { initializeApp } from 'firebase/app';
+import LoadingScreen from '../LoadingScreen/LoadingScreen';
+
 
 function Home () {
 
+    const dbHelper = new DbHelper();
+
+    const [loading, setLoading] = useState(false);
     const [postText, setPostText] = useState('');
     const [showEmojiPicker, setShowEmojiPicker] = useState(false);
     const textareaRef = useRef(null);
@@ -17,7 +30,10 @@ function Home () {
     const [selectedImage, setSelectedImage] = useState(null);
     const [selectedVideo, setSelectedVideo] = useState(null);
     const [selectedGif, setSelectedGif] = useState(null);
+    const [user, setUser] = useState(null);
     const [attachmentType, setAttachmentType] = useState('');
+    const [attachmentFileName, setAttachmentFileName] = useState('');
+    const [attachmentFile, setAttachmentFile] = useState('');
 
     const attachmentRef = useRef();
     const gifRef = useRef();
@@ -26,27 +42,95 @@ function Home () {
         event.preventDefault();
     }
 
+    const uploadAttachment = async () => {
+      if (attachmentFileName === '') {
+        return;
+      }
+      setLoading(true);
+      const firebaseApp = initializeApp(Constants.FIREBASE_CONFIG);
+      const storage = getStorage(firebaseApp);
+      var storageRef;
+      var uploadTask;
+      if (selectedGif !== null) {
+        storageRef = ref(storage, `attachmentFiles/${selectedGif.name}`);
+        uploadTask = uploadBytesResumable(storageRef, selectedGif);
+      }
+      else if (selectedImage !== null) {
+        storageRef = ref(storage, `attachmentFiles/${selectedImage.name}`);
+        uploadTask = uploadBytesResumable(storageRef, selectedImage);
+      }
+      else if (selectedVideo !== null) {
+        storageRef = ref(storage, `attachmentFiles/${selectedVideo.name}`);
+        uploadTask = uploadBytesResumable(storageRef, selectedVideo);
+      }
+      uploadTask.on('state_changed', 
+        (snapshot) => {
+          const progress = (snapshot.bytesTransferred / snapshot.totalBytes) * 100;
+          console.log(`Upload is ${progress}% complete`);
+          setLoading(false);
+        },
+        (error) => {
+          setLoading(false);
+          toast("Upload error");
+          console.error('Upload error:', error);
+        },
+        () => {
+          console.log('Upload successful!');
+          getDownloadURL(uploadTask.snapshot.ref).then((downloadURL) => {
+            setAttachmentFile(downloadURL);
+            setLoading(false);
+          });
+        }
+      );
+    }
+
     const handleEmojiSelect = (emoji) => {
       const { selectionStart, selectionEnd } = textareaRef.current;
   
       const newText =
         postText.substring(0, selectionStart) +
-        emoji.native +
+        emoji["emoji"] +
         postText.substring(selectionEnd);
   
       setPostText(newText);
   
-      const newCursorPosition = selectionStart + emoji.native.length;
+      const newCursorPosition = selectionStart + emoji["emoji"].length;
       textareaRef.current.setSelectionRange(newCursorPosition, newCursorPosition);
   
       setShowEmojiPicker(false);
     };
+
+    useEffect(() => {
+      if (attachmentFile !== '') {
+        createPost();
+      }
+    }, [attachmentFile]);
+
+    useEffect(() => {
+      const fetchUser = async () => {
+        const signinData = isUserSignedIn();
+        
+        const username = signinData["username"];
+        const email = signinData["email"];
+        var _u = null;
+        if (email === null) {
+          _u = await dbHelper.getAppUserByUsername(username);
+        }
+        else {
+          _u = await dbHelper.getAppUserByEmail(email);
+        }
+        setUser(_u);
+      };
+      fetchUser();
+    }, []);
 
     const removeAttachment = () => {
       setSelectedVideo(null);
       setSelectedImage(null);
       setSelectedGif(null);
       setAttachmentType('');
+      setAttachmentFile('');
+      setAttachmentFileName('');
 
       if (attachmentRef.current) {
         attachmentRef.current.value = '';
@@ -70,11 +154,13 @@ function Home () {
           setSelectedVideo(null);
           setSelectedGif(null);
           setAttachmentType('image');
+          setAttachmentFileName(selectedFile.name);
         } else if (isVideo) {
           setSelectedVideo(selectedFile);
           setSelectedImage(null);
           setSelectedGif(null);
           setAttachmentType('video');
+          setAttachmentFileName(selectedFile.name);
         } else {
           console.error('Invalid file type. Please select an image or a video.');
         }
@@ -85,6 +171,7 @@ function Home () {
       const selectedFile = e.target.files[0];
       if (selectedFile) {
         setSelectedGif(selectedFile);
+        setAttachmentFileName(selectedFile.name);
         setAttachmentType('gif');
       }
     }
@@ -116,8 +203,47 @@ function Home () {
       },
     ];
 
-    const post = () => {
+    const createPost = async () => {
+      if (attachmentFile === '' && attachmentFileName !== '') {
+        uploadAttachment();
+      }
+      else {
+        setLoading(true);
+        const post = new Post();
+        post.setUserId(user.getUserId());
+        post.setCaption(postText === null ? "" : postText);
+        post.setAttachmentFile(attachmentFile);
+        post.setAttachmentFileName(attachmentFileName);
+        post.setAttachmentType(attachmentType);
+        post.setPostPrivacy(0);
+        post.setCreationDate(Date.now());
+        post.setCommentsPrivacy(0);
+        post.setLikes(0);
+        post.setTips(0);
+        dbHelper.createPost(post);
+        setAttachmentFile('');
+        setAttachmentFileName('');
+        setAttachmentType('');
+        setSelectedGif(null);
+        setSelectedImage(null);
+        setSelectedVideo(null);
+        setPostText('');
+        setLoading(false);
+      }
+    }
 
+    if (loading) {
+      return (
+        <div>
+      <Navbar />
+      <div className="dialog-container">
+        <div className="profile-dialog">
+          <div style={{ paddingTop:'100px', paddingBottom:'100px' }}><LoadingScreen/></div>
+      
+        </div>
+      </div> 
+    </div>
+      );
     }
 
     return (
@@ -143,10 +269,8 @@ function Home () {
                       onChange={(e) => setPostText(e.target.value)}
                     />
                     {showEmojiPicker && (
-                      <Picker
-                        set="emojione"
-                        onSelect={handleEmojiSelect}
-                        style={{ position: 'absolute', bottom: '50px', right: '10px' }}
+                      <EmojiPicker
+                        onEmojiClick={handleEmojiSelect}
                       />
                     )}
 
@@ -197,7 +321,7 @@ function Home () {
                     <img src="/images/live.png" alt="Live Video" />
                   </div>
                 </div>
-                <button className="post-button" onClick={post} disabled={!postText}>
+                <button className="post-button" onClick={createPost} disabled={ !postText && !selectedImage && !selectedVideo && !selectedGif }>
                   Post
                 </button>
                 <input type="file" style={{ display: 'none' }} accept="image/gif" ref={gifRef} onChange={handleGifAttachment} />

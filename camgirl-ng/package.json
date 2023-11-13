@@ -13,6 +13,7 @@
     "@testing-library/user-event": "^13.5.0",
     "axios": "^1.5.1",
     "emoji-mart": "^5.5.2",
+    "emoji-picker-react": "^4.5.15",
     "firebase": "^10.5.2",
     "gapi-script": "^1.2.0",
     "js-base64": "^3.7.5",

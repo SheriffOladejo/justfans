@@ -25,157 +25,150 @@ class Post {
         this.tips = tips;
     }
 
-    // Getter methods
-    get id() {
+    getId() {
         return this.id;
     }
 
-    get post_id() {
-        return this.post_id;
-    }
-
-    get user_id() {
+    getUserId() {
         return this.user_id;
     }
 
-    get caption() {
+    getCaption() {
         return this.caption;
     }
 
-    get post_link() {
+    getPostLink() {
         return this.post_link;
     }
 
-    get post_link_title() {
+    getPostLinkTitle() {
         return this.post_link_title;
     }
 
-    get post_link_image() {
+    getPostLinkImage() {
         return this.post_link_image;
     }
 
-    get attachment_file() {
+    getAttachmentFile() {
         return this.attachment_file;
     }
 
-    get attachment_file_name() {
+    getAttachmentFileName() {
         return this.attachment_file_name;
     }
 
-    get attachment_type() {
+    getAttachmentType() {
         return this.attachment_type;
     }
 
-    get post_share() {
+    getPostShare() {
         return this.post_share;
     }
 
-    get post_privacy() {
+    getPostPrivacy() {
         return this.post_privacy;
     }
 
-    get post_type() {
+    getPostType() {
         return this.post_type;
     }
 
-    get creation_date() {
+    getCreationDate() {
         return this.creation_date;
     }
 
-    get comments_privacy() {
+    getCommentsPrivacy() {
         return this.comments_privacy;
     }
 
-    get comments() {
+    getComments() {
         return this.comments;
     }
 
-    get reactions() {
+    getReactions() {
         return this.reactions;
     }
 
-    get likes() {
+    getLikes() {
         return this.likes;
     }
 
-    get tips() {
+    getTips() {
         return this.tips;
     }
 
-    // Setter methods
-    set id(value) {
+    // Setter methods with camelCase naming
+    setId(value) {
         this.id = value;
     }
 
-    set post_id(value) {
-        this.post_id = value;
-    }
-
-    set user_id(value) {
+    setUserId(value) {
         this.user_id = value;
     }
 
-    set caption(value) {
+    setCaption(value) {
         this.caption = value;
     }
 
-    set post_link(value) {
+    setPostLink(value) {
         this.post_link = value;
     }
 
-    set post_link_title(value) {
+    setPostLinkTitle(value) {
         this.post_link_title = value;
     }
 
-    set post_link_image(value) {
+    setPostLinkImage(value) {
         this.post_link_image = value;
     }
 
-    set attachment_file(value) {
+    setAttachmentFile(value) {
         this.attachment_file = value;
     }
 
-    set attachment_file_name(value) {
+    setAttachmentFileName(value) {
         this.attachment_file_name = value;
     }
 
-    set attachment_type(value) {
+    setAttachmentType(value) {
         this.attachment_type = value;
     }
 
-    set post_share(value) {
+    setPostShare(value) {
         this.post_share = value;
     }
 
-    set post_privacy(value) {
+    setPostPrivacy(value) {
         this.post_privacy = value;
     }
 
-    set post_type(value) {
+    setPostType(value) {
         this.post_type = value;
     }
 
-    set creation_date(value) {
+    setCreationDate(value) {
         this.creation_date = value;
     }
 
-    set comments_privacy(value) {
+    setCommentsPrivacy(value) {
         this.comments_privacy = value;
     }
 
-    set comments(value) {
+    setComments(value) {
         this.comments = value;
     }
 
-    set reactions(value) {
+    setReactions(value) {
         this.reactions = value;
     }
 
-    set likes(value) {
+    setLikes(value) {
         this.likes = value;
     }
 
-    set tips(value) {
+    setTips(value) {
         this.tips = value;
     }
 }
+
+export default Post; 

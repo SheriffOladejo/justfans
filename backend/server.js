@@ -15,7 +15,8 @@ const db = mysql.createConnection({
     host: constants.HOST,
     user: constants.USER,
     password: constants.PASSWORD,
-    database: constants.DATABASE
+    database: constants.DATABASE,
+    charset: 'utf8mb4',
 });
 
 db.connect((err) => {
@@ -24,10 +25,6 @@ db.connect((err) => {
     } else {
         console.log('SQL connected');
     }
-});
-
-app.get("/api", (req, res) => {
-    res.json({ "users": ["userOne", "userTwo", "userThree"] });
 });
 
 // Posts and comments methods
@@ -107,8 +104,7 @@ app.post("/updatePost", (req, res) => {
     } = req.body;
 
     const sql = `UPDATE ${constants.POST_TABLE} 
-                 SET ${constants.COL_POST_USER_ID} = ?,
-                     ${constants.COL_CAPTION} = ?,
+                 SET ${constants.COL_CAPTION} = ?,
                      ${constants.COL_ATTACHMENT_FILE} = ?,
                      ${constants.COL_COMMENTS_PRIVACY} = ?,
                      ${constants.COL_COMMENTS} = ?,
@@ -125,7 +121,6 @@ app.post("/updatePost", (req, res) => {
     db.query(
         sql,
         [
-            user_id,
             caption,
             attachment_file,
             comments_privacy,

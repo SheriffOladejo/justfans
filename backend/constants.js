@@ -3,7 +3,7 @@ const USER = 'root';
 const PASSWORD = 'password';
 const DATABASE = 'justfans_db';
 
-const POST_TABLE = "justfans_post";
+const POST_TABLE = "justfans_posts";
 const COL_ID = "id";
 const COL_POST_ID = "post_id";
 const COL_POST_USER_ID = "user_id";
