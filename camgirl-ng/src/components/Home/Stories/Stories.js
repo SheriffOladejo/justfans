@@ -1,8 +1,8 @@
 import './Stories.css';
 import React from 'react';
 import { useState, useRef } from 'react';
-import { ScrollMenu, VisibilityContext, VisibilityProvider } from 'react-horizontal-scrolling-menu';
-import ProfilePicture from '../../ProfilePicture/ProfilePicture';
+import { ScrollMenu, VisibilityContext } from 'react-horizontal-scrolling-menu';
+//import 'react-horizontal-scrolling-menu/dist/styles.css';
 
 function Stories () {
 
@@ -136,13 +136,13 @@ function Stories () {
           onClick={() => scrollPrev()}
           style={{
             cursor: 'pointer',
-            width: '20px',
-            height: '20px',
+            width: '25px',
+            height: '25px',
             backgroundColor: 'white',
-            borderRadius: '50%',
             display: 'flex',
             justifyContent: 'center',
             alignItems: 'center',
+            borderRadius: '50%',
             marginTop: '5px',
             padding: '10px',
             marginRight: '5px',
@@ -150,8 +150,8 @@ function Stories () {
         >
           <img
             src="/images/left-chevron.png"
-            alt="Chevron Left"
-            style={{ width: '5px', height: '5px', cursor: 'pointer' }}
+            alt="Chevron Right"
+            style={{ width: '10px', height: '10px' }}
           />
         </div>
       );

@@ -24,7 +24,7 @@ function App() {
   return (
     <Router>
       <Routes>
-        <Route exact path="/" element={<Splash/>} />
+        <Route exact path="/" element={<MainPage/>} />
         <Route path="/signup" element={<Signup/>} />
         <Route path="/profile-setup" element={<ProfileSetup/>} />
         <Route path="/main-page" element={<MainPage/>} />

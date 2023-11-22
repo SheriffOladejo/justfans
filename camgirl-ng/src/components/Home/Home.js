@@ -289,11 +289,11 @@ function Home () {
                         /> 
                       }
                       { attachmentType !== '' &&
-                        <div style={{ display:'flex', flexDirection:'row' }}>
+                        <div style={{ display:'flex', flexDirection:'row', alignItems:'center', justifyContent:'center' }}>
                           <div onClick={removeAttachment} className="home-post-attachment-close-container">
                             <img className="home-post-attachment-close" src="/images/close.png"/>
                           </div>
-                          { (selectedImage || selectedVideo) && <h4  className="home-post-attachment-edit">Edit</h4> }
+                          { (selectedImage || selectedVideo) && <div className="home-post-attachment-edit-container"><h4 className="home-post-attachment-edit">Edit</h4></div>}
                         </div>
                       }
                     </div>

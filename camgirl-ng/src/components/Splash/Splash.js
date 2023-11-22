@@ -4,6 +4,7 @@ import { useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import styled, { keyframes } from 'styled-components';
 import SplashScreenWrapper from './SplashScreenWrapper';
+import LoadingScreen from '../LoadingScreen/LoadingScreen';
 
 const growShrink = keyframes`
   0% { transform: scale(1); }
@@ -31,9 +32,7 @@ function Splash () {
     }, [navigate]);
 
     return (
-        <AnimatedSplashScreen>
-            <SplashScreenWrapper/>
-        </AnimatedSplashScreen>
+        <LoadingScreen/>
     );
 }
 

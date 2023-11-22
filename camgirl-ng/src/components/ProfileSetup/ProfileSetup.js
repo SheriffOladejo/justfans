@@ -27,7 +27,7 @@ function ProfileSetup () {
       const [_username, setUsername] = useState('');
       const [_firstname, setFirstname] = useState('');
       const [_lastname, setLastname] = useState('');
-      const [stage, setStage] = useState(1);
+      const [stage, setStage] = useState(3);
       const [isDragOver, setIsDragOver] = useState(false);
       const [loading, setLoading] = useState(false);
 
@@ -38,6 +38,10 @@ function ProfileSetup () {
       const location = useLocation();
 
       const [toastMessage, setToastMessage] = useState("");
+
+      const [isMobile, setIsMobile] = useState(false);
+      const [isTablet, setIsTablet] = useState(false);
+      const [isDesktop, setIsDesktop] = useState(false);
 
       const { 
         email_hash = '',
@@ -65,6 +69,34 @@ function ProfileSetup () {
         }
         
         setLoading(false);
+      }, []);
+
+      useEffect(() => {
+        const handleResize = () => {
+          if (window.innerWidth <= 600) {
+            setIsMobile(true);
+            setIsDesktop(false);
+            setIsTablet(false);
+          } else if (window.innerWidth <= 1024) {
+            setIsTablet(true);
+            setIsMobile(false);
+            setIsDesktop(false);
+          }
+          else {
+            setIsDesktop(true);
+            setIsMobile(false);
+            setIsTablet(false);
+          }
+        };
+    
+        handleResize();
+    
+        window.addEventListener('resize', handleResize);
+    
+        return () => {
+          window.removeEventListener('resize', handleResize);
+        };
+    
       }, []);
 
       useEffect(() => {
@@ -232,6 +264,10 @@ function ProfileSetup () {
 
       const handleContinue = async () => {
         if (stage === 1) {
+          if (selectedDate === "" || selectedDate === undefined || selectedDate === null) {
+            toast("DOB is required");
+            return;
+          }
           const currentDate = new Date();
           const age = currentDate.getFullYear() - selectedDate.getFullYear();
           if (_firstname === "" && firstname === "") {
@@ -243,7 +279,7 @@ function ProfileSetup () {
           else if (_username === "" && username === "") {
             toast("Username is required");
           }
-          else if (selectedDate === "" || selectedDate === undefined) {
+          else if (selectedDate === "" || selectedDate === undefined || selectedDate === null) {
             toast("DOB is required");
           }
           else if (age < 18) {
@@ -289,29 +325,165 @@ function ProfileSetup () {
         );
       }
 
+      if (isMobile) {
+        return (
+          <div className='profile-setup-container'>
+            <img src="/images/justfans_black_red.png" style={{ width:'120px', alignSelf:'flex-start' }}/>
+            <div style={{ width:'400px', marginTop:'20px'}}>
+              <div className='progress_bar'>
+
+              </div>
+              <div style={{ width:`${stage * 33}%` }} className='progress'></div>
+              {stage === 1 && (
+                <div>
+                  <h2>Set up your profile</h2>
+                  <div>
+                      <div className="input-group">
+                        <label>First Name</label>
+                        <input onChange={(e) => setFirstname(e.target.value)} value={_firstname} placeholder={firstname === "" ? "Firstname" : firstname} type="text" />
+                      </div>
+                      <div className="input-group">
+                        <label>Last Name</label>
+                        <input onChange={(e) => setLastname(e.target.value)} value={_lastname} placeholder={lastname === "" ? "Lastname" : lastname} type="text" />
+                      </div>
+                  </div>
+                  <div>
+                      <div className="input-group">
+                        <label>Username</label>
+                        <input onChange={(e) => setUsername(e.target.value)} disabled={account_type === "google" ? false : true } value={_username} placeholder={username === "" ? "Username" : username} type="text" />
+                      </div>
+                      <div className="input-group">
+                          <label>Date of Birth</label>
+                          <DatePicker
+                            selected={selectedDate}
+                            onChange={handleDateChange}
+                            showYearDropdown
+                            scrollableYearDropdown
+                            yearDropdownItemNumber={100}
+                            dateFormat="EEE MMMM d, yyyy"
+                            ref={datePickerRef}
+                            className="date-picker-input"
+                            onKeyDown={(e) => {
+                                e.preventDefault();
+                            }}
+                          />
+                      </div>
+                  </div>
+                </div>
+              )}
+              {stage === 2 && (
+                <div>
+                  <h2>Verify your identity</h2>
+                  <div>
+                    <label style={{ fontFamily: 'Inter, sans-serif', fontSize: '14px' }} htmlFor="countrySelect">Country of residence</label>
+                    <div style={{ display: 'flex', borderRadius: '4px', border: '1px solid #ccc', padding: '4px 8px', marginTop: '10px', marginBottom: '10px' }}>
+                      <select value={selectedCountry} onChange={handleCountryChange} id="countrySelect" style={{ fontFamily: 'Inter, sans-serif', fontSize: '16px', color: '#667085', margin: '5px', border: 'none', outline: 'none', width: '100%', height: '100%' }}>
+                        {countries.map((country, index) => (
+                          <option key={index} value={country}>
+                            {country}
+                          </option>
+                        ))}
+                      </select>
+                    </div>
+                  </div>
+                  <div style={{ height:'20px' }}/>
+                  <label style={{ fontFamily: 'Inter, sans-serif', fontSize: '14px'}}>Provide a verification document</label>
+                  <div onDrop={handleDrop} onDragOver={handleDragOver} onClick={openFileChooser} style={{ cursor: 'pointer', marginTop: '10px', marginBottom: '30px', width: '100%', borderRadius: '4px', border: '1px dashed #F94F64', backgroundColor: isDragOver ? '#FEDCE0' : '#FEDCE045' }}>
+                    <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', marginTop: '16px' }}>
+                      <img src="/images/export.png" alt="Upload Icon" style={{  width: '48px', height: '48px', color: '#F94F64' }} />
+                      <p style={{ alignSelf:'center', fontWeight: '700', fontFamily: 'Inter, sans-serif', fontSize: '18px', marginTop: '8px', marginBottom: '8px' }}>
+                        Drag & drop files or <span style={{ color: '#F94F64' }}>browse</span>
+                      </p>
+                      <p style={{ alignSelf:'center', fontFamily: 'Inter, sans-serif', fontSize: '12px' }}>Supported formats: JPEG, PNG, PDF, WORD</p>
+                    </div>
+                  </div>
+                  <input type="file" style={{ display: 'none' }} accept="image/jpeg, image/png, application/pdf, application/msword" ref={fileInputRef} onChange={handleFileChange} />
+                </div>
+              )}
+              {stage === 3 && (
+                  <div>
+                      <h2>Almost done!</h2>
+                      <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
+                            <div
+                              style={{
+                                width: '80px',
+                                height: '80px',
+                                borderRadius: '50%',
+                                backgroundColor: '#FEF0F1',
+                                display: 'flex',
+                                justifyContent: 'center',
+                                alignItems: 'center',
+                              }}
+                            >
+                              <img onClick={openProfilePicChosser}  src={imageUrl || "/images/add_gallery.png"} alt="Profile" style={{ cursor: 'pointer', maxWidth: '100%', maxHeight: '100%' }} />
+                            </div>
+                            <p style={{ alignSelf:'center', color:'#707070', fontFamily: 'Inter, sans-serif', fontSize: '14px', marginTop: '10px', fontWeight:'600' }}>Upload a profile photo</p>
+                            <div style={{ marginBottom: '20px', display: 'flex', flexDirection: 'column', alignItems: 'flex-start', width: '100%' }}>
+                              <label style={{ color:'#707070', fontWeight:'600' , marginBottom: '10px', fontFamily: 'Inter, sans-serif', fontSize: '14px' }} htmlFor="bioInput">Add a bio</label>
+                              <div style={{ display: 'flex', flexDirection: 'column', width: '100%' }}>
+                                <textarea
+                                  id="bioInput"
+                                  onChange={(e) => setBio(e.target.value)}
+                                  value={bio}
+                                  style={{
+                                    fontFamily: 'Inter, sans-serif',
+                                    width: '98.5%',
+                                    height: '100px',
+                                    border: '1px solid #ccc',
+                                    borderRadius: '4px',
+                                    marginBottom: '8px',
+                                    resize: 'none',
+                                    padding: '5px'
+                                  }}
+                                />
+                              </div>
+                            </div>
+                          </div><input type="file" style={{ display: 'none' }} accept="image/jpeg, image/png" ref={ppInputRef} onChange={handlePPChange} />
+                  </div>
+              )}
+
+              <div className="navigation-buttons">
+                <div></div>
+                <button className="continue-button" onClick={handleContinue}>
+                  {stage === 3 ? "Let's go" : "Continue"}
+                </button>
+              </div>
+            
+            <ToastContainer/>
+            </div>
+          </div>
+        );
+      }
+
       return (
       <div>
-        <Navbar />
+        {!isMobile && <Navbar /> }
         <div className="dialog-container">
           <div className="profile-dialog">
             {loading && <div><ToastContainer /><LoadingScreen/></div>} 
+            <div style={{ width:'500px' }}>
+              <div className='progress_bar'>
+
+              </div>
+              <div style={{ width:`${stage * 33}%` }} className='progress'></div>
+            </div>
               {stage === 1 && (
                 <div>
                   <h2>Set up your profile</h2>
                   <div className="input-row">
                       <div className="input-group">
                         <label>First Name</label>
-                        <input onChange={(e) => setFirstname(e.target.value)} value={_firstname} placeholder={firstname} type="text" />
+                        <input onChange={(e) => setFirstname(e.target.value)} value={_firstname} placeholder={firstname === "" ? "Firstname" : firstname} type="text" />
                       </div>
                       <div className="input-group">
                         <label>Last Name</label>
-                        <input onChange={(e) => setLastname(e.target.value)} value={_lastname} placeholder={lastname} type="text" />
+                        <input onChange={(e) => setLastname(e.target.value)} value={_lastname} placeholder={lastname === "" ? "Lastname" : lastname} type="text" />
                       </div>
                   </div>
                   <div className="input-row">
                       <div className="input-group">
                         <label>Username</label>
-                        <input onChange={(e) => setUsername(e.target.value)} disabled={account_type === "google" ? false : true } value={_username} placeholder={username} type="text" />
+                        <input onChange={(e) => setUsername(e.target.value)} disabled={account_type === "google" ? false : true } value={_username === "" ? "Username" : _username} placeholder={username} type="text" />
                       </div>
                       <div className="input-group">
                           <label>Date of Birth</label>
@@ -348,14 +520,15 @@ function ProfileSetup () {
                       </select>
                     </div>
                   </div>
+                  <div style={{ height:'20px' }}/>
                   <label style={{ fontFamily: 'Inter, sans-serif', fontSize: '14px'}}>Provide a verification document</label>
                   <div onDrop={handleDrop} onDragOver={handleDragOver} onClick={openFileChooser} style={{ cursor: 'pointer', marginTop: '10px', marginBottom: '30px', width: '100%', borderRadius: '4px', border: '1px dashed #F94F64', backgroundColor: isDragOver ? '#FEDCE0' : '#FEDCE045' }}>
                     <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', marginTop: '16px' }}>
                       <img src="/images/export.png" alt="Upload Icon" style={{  width: '48px', height: '48px', color: '#F94F64' }} />
-                      <p style={{ fontWeight: '700', fontFamily: 'Inter, sans-serif', fontSize: '18px', marginTop: '8px', marginBottom: '8px' }}>
+                      <p style={{ alignSelf:'center', fontWeight: '700', fontFamily: 'Inter, sans-serif', fontSize: '18px', marginTop: '8px', marginBottom: '8px' }}>
                         Drag & drop files or <span style={{ color: '#F94F64' }}>browse</span>
                       </p>
-                      <p style={{ fontFamily: 'Inter, sans-serif', fontSize: '12px' }}>Supported formats: JPEG, PNG, PDF, WORD</p>
+                      <p style={{ alignSelf:'center', fontFamily: 'Inter, sans-serif', fontSize: '12px' }}>Supported formats: JPEG, PNG, PDF, WORD</p>
                     </div>
                   </div>
                   <input type="file" style={{ display: 'none' }} accept="image/jpeg, image/png, application/pdf, application/msword" ref={fileInputRef} onChange={handleFileChange} />
@@ -379,9 +552,9 @@ function ProfileSetup () {
                             >
                               <img onClick={openProfilePicChosser}  src={imageUrl || "/images/add_gallery.png"} alt="Profile" style={{ cursor: 'pointer', maxWidth: '100%', maxHeight: '100%' }} />
                             </div>
-                            <p style={{ fontFamily: 'Inter, sans-serif', fontSize: '14px', marginTop: '0px' }}>Upload a profile photo</p>
+                            <p style={{ color:'#707070', fontWeight:'600' , fontFamily: 'Inter, sans-serif', fontSize: '14px', marginTop: '10px' }}>Upload a profile photo</p>
                             <div style={{ marginBottom: '20px', display: 'flex', flexDirection: 'column', alignItems: 'flex-start', width: '100%' }}>
-                              <label style={{ marginBottom: '10px', fontFamily: 'Inter, sans-serif', fontSize: '14px' }} htmlFor="bioInput">Add a bio</label>
+                              <label style={{ color:'#707070', fontWeight:'600' , marginBottom: '10px', fontFamily: 'Inter, sans-serif', fontSize: '14px' }} htmlFor="bioInput">Add a bio</label>
                               <div style={{ display: 'flex', flexDirection: 'column', width: '100%' }}>
                                 <textarea
                                   id="bioInput"
@@ -395,6 +568,7 @@ function ProfileSetup () {
                                     borderRadius: '4px',
                                     marginBottom: '8px',
                                     resize: 'none',
+                                    padding: '5px'
                                   }}
                                 />
                               </div>

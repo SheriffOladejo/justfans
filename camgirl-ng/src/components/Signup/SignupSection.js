@@ -49,6 +49,10 @@ function SignupSection () {
 
     const [isGoogleSignIn, setGoogleSignIn] = useState(false);
 
+    const [isMobile, setIsMobile] = useState(false);
+    const [isTablet, setIsTablet] = useState(false);
+    const [isDesktop, setIsDesktop] = useState(false);
+
     const toggleShowLogin = () => {
         setShowLogin(!showLogin);
     };
@@ -88,6 +92,34 @@ function SignupSection () {
         setToastMessage("");
       }
     }, [toastMessage]);
+
+    useEffect(() => {
+      const handleResize = () => {
+        if (window.innerWidth <= 600) {
+          setIsMobile(true);
+          setIsDesktop(false);
+          setIsTablet(false);
+        } else if (window.innerWidth <= 1024) {
+          setIsTablet(true);
+          setIsMobile(false);
+          setIsDesktop(false);
+        }
+        else {
+          setIsDesktop(true);
+          setIsMobile(false);
+          setIsTablet(false);
+        }
+      };
+  
+      handleResize();
+  
+      window.addEventListener('resize', handleResize);
+  
+      return () => {
+        window.removeEventListener('resize', handleResize);
+      };
+  
+    }, []);
 
     const createAccountGoogle = async () => {
       if (isGoogleSignIn) {
@@ -250,10 +282,14 @@ function SignupSection () {
         );
     }
 
+    if (loading) {
+      return (<div><LoadingScreen/></div>)
+    }
+
     return (
       <div className='signup-container'>
-        {loading && <div><ToastContainer /><LoadingScreen left="50%" width="50%" /></div>} 
         {!loading && <div className="signup-column">
+        { isMobile && <img src="/images/justfans_black_red.png" style={{ width:'120px', alignSelf:'flex-start' }}/> }
           <h2 style={{textAlign: 'left'}}>
             <span style={{ fontWeight: '700', fontFamily: 'Inter, sans-serif', fontSize: '33px', color: 'black' }}>Create</span>{' '}
             <span style={{ fontWeight: '700', fontFamily: 'Inter, sans-serif', fontSize: '33px', color: '#F94F64'}}>Your Account</span>
@@ -272,6 +308,7 @@ function SignupSection () {
                 onChange={(e) => setUsername(e.target.value)}
                 type="text"
                 placeholder="Username"
+                className='signup-username'
                 style={{ width: '350px', fontFamily: 'Inter, sans-serif', marginTop: '0px' }}
             />
             <input
@@ -279,11 +316,13 @@ function SignupSection () {
                 onChange={(e) => setEmail(e.target.value)}
                 type="text"
                 placeholder="Email address"
+                className='signup-email'
                 style={{ width: '350px', fontFamily: 'Inter, sans-serif', marginTop: '20px' }}
             />
             <div>
               <div className="password-input-container">
                 <input
+                    className='signup-password'
                     value={password}
                     onChange={(e) => {setPassword(e.target.value);setEncodedPassword(Base64.encode(e.target.value));}}
                     type={showPassword ? 'text' : 'password'}
@@ -293,12 +332,13 @@ function SignupSection () {
                 <img
                   src={showPassword ? '/images/eye-icon-open.png' : '/images/eye-icon-closed.png'}
                   alt={showPassword ? 'Hide Password' : 'Show Password'}
-                  className="eye-icon"
+                  className="signup-eye-icon"
                   onClick={togglePasswordVisibility}
                 />
               </div>
               <div className="password-input-container">
                 <input
+                    className='signup-confirm-password'
                     value={confirmPassword}
                     onChange={(e) => setConfirmPassword(e.target.value)}
                     type={showConfirmPassword ? 'text' : 'password'}
@@ -308,7 +348,7 @@ function SignupSection () {
                 <img
                   src={showConfirmPassword ? '/images/eye-icon-open.png' : '/images/eye-icon-closed.png'}
                   alt={showConfirmPassword ? 'Hide Password' : 'Show Password'}
-                  className="eye-icon"
+                  className="signup-eye-icon"
                   onClick={toggleConfirmPasswordVisibility}
                 />
               </div>
@@ -327,10 +367,10 @@ function SignupSection () {
             </div>
             <button onClick={createAccount} type="button" style={{ marginTop: '20px', width: '372px', fontFamily: 'Inter, sans-serif', fontWeight: '700' }}>Create account</button>
           </form>
-          <div className="or-container">
-            <div className="line"></div>
-            <div className="or-text">or</div>
-            <div className="line"></div>
+          <div className="signup-or-container">
+            <div className="signup-line"></div>
+            <div className="signup-or-text">or</div>
+            <div className="signup-line"></div>
           </div>
           <GoogleLogin
             clientId={Constants.GOOGLE_CLIENT_ID}

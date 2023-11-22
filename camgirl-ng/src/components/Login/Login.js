@@ -33,6 +33,10 @@ function Login() {
 
   const [isGoogleSignIn, setGoogleSignIn] = useState(false);
 
+  const [isMobile, setIsMobile] = useState(false);
+  const [isTablet, setIsTablet] = useState(false);
+  const [isDesktop, setIsDesktop] = useState(false);
+
   const toggleSignupVisibility = () => {
     setShowSignup(!showSignup);
   };
@@ -40,6 +44,34 @@ function Login() {
   const togglePasswordVisibility = () => {
     setShowPassword(!showPassword);
   };
+
+  useEffect(() => {
+    const handleResize = () => {
+      if (window.innerWidth <= 600) {
+        setIsMobile(true);
+        setIsDesktop(false);
+        setIsTablet(false);
+      } else if (window.innerWidth <= 1024) {
+        setIsTablet(true);
+        setIsMobile(false);
+        setIsDesktop(false);
+      }
+      else {
+        setIsDesktop(true);
+        setIsMobile(false);
+        setIsTablet(false);
+      }
+    };
+
+    handleResize();
+
+    window.addEventListener('resize', handleResize);
+
+    return () => {
+      window.removeEventListener('resize', handleResize);
+    };
+
+  }, []);
 
   useEffect(() => {
     loginGoogle();
@@ -56,8 +88,11 @@ function Login() {
 
   const loginGoogle = async () => {
     if (isGoogleSignIn) {
+      Cookies.set('username', username, { expires: 7 });
+            navigate('/main-page');
       if (isValidEmail(username)) {
         const emailResponse = await dbHelper.checkForEmail(username);
+        console.log("emailResponse: " + emailResponse)
         if (emailResponse.data.length !== 0) {
           const profile_setup = emailResponse.data[0]["profile_setup"];
           const dob = emailResponse.data[0]["dob"];
@@ -262,10 +297,14 @@ function Login() {
     console.log("Google login failure: ", res);
   }
 
+  if (loading) {
+    return <LoadingScreen/>
+  }
+
   return (
     <div className='login-container'>
-      {loading && <LoadingScreen left="50%" width="50%" />} 
       {!loading && <div className="login-column">
+        { isMobile && <img src="/images/justfans_black_red.png" style={{ width:'120px', alignSelf:'flex-start' }}/> }
         <h2 style={{ textAlign:'left' }}>
           <span style={{ fontWeight: '700', color: 'black', fontFamily: 'Inter, sans-serif', fontSize: '33px' }}>Log</span>{' '}
           <span style={{ color: '#F94F64', fontFamily: 'Inter, sans-serif', fontSize: '33px', fontWeight: '700' }}>In</span>
@@ -274,50 +313,60 @@ function Login() {
           <span style={{ fontWeight: '500', color: 'black', fontFamily: 'Inter, sans-serif', fontSize: '14px' }}>Don't have an account?</span>{' '}
           <span onClick={toggleSignupVisibility}  style={{ fontFamily: 'Inter, sans-serif', fontSize: '14px', fontWeight: '500', color: '#F94F64', cursor: 'pointer' }}>Sign up</span>
         </p>
-        <form>
-          <input  value={username}
-                  onChange={(e) => setUsername(e.target.value)}
-                  type="text"
-                  placeholder="Email or Username"
-                  style={{ width: '350px', fontFamily: 'Inter, sans-serif' }} />
-          <div>
+        <form style={{ padding:'0px', width:'100%' }}>
+          <input 
+              value={username}
+              onChange={(e) => setUsername(e.target.value)}
+              type="text"
+              placeholder="Email or Username"
+              className='login-username' />
+          <div className='login-password-container'>
             <input
               value={password}
               onChange={(e) => setPassword(e.target.value)}
               type={showPassword ? 'text' : 'password'}
               placeholder="Password"
-              style={{ width: '350px', marginTop: '20px', fontFamily: 'Inter, sans-serif' }}
+              className='login-password'
             />
             <img
               src={showPassword ? '/images/eye-icon-open.png' : '/images/eye-icon-closed.png'}
               alt={showPassword ? 'Hide Password' : 'Show Password'}
-              className="eye-icon"
+              className="login-eye-icon"
               onClick={togglePasswordVisibility}
             />
           </div>
-          <button onClick={login} type="button" style={{ marginTop: '30px', fontFamily: 'Inter, sans-serif', fontWeight: '700' }}>Log in</button>
+          <button onClick={login} type="button" style={{ height:'40px', marginTop: '30px', fontFamily: 'Inter, sans-serif', fontWeight: '700' }}>Log in</button>
         </form>
-        <p style={{ fontFamily: 'Inter, sans-serif', fontSize: '14px', cursor: 'pointer' }}>Forgot password?</p>
-        <div className="or-container">
-          <div className="line"></div>
-          <div className="or-text">or</div>
-          <div className="line"></div>
+        <p className={isMobile ? 'login-forgot' : ''} style={{ fontFamily: 'Inter, sans-serif', fontSize: '14px', cursor: 'pointer' }}>Forgot password?</p>
+        <div
+         style={{ 
+          display:'flex', 
+          flexDirection:'row', 
+          justifyContent:'space-between', 
+          width: '100%', 
+          marginTop:'20px',
+          marginBottom:'40px',
+          height:'12px',
+          alignItems:'center' }}>
+            <div className="login-line"/>
+            <div className="login-or-text">or</div>
+            <div className="login-line"/>
         </div>
         <GoogleLogin
-            clientId={Constants.GOOGLE_CLIENT_ID}
-            render={renderProps => (
-              <button onClick={() => {setLoading(true); renderProps.onClick();}} disabled={renderProps.disabled} className="google-button" >
-                <img src='/images/google_logo.png' alt="Google Logo" className="google-logo" />
-                Sign in with Google
-              </button>
-            )}
-            buttonText="Sign up with Google"
-            onSuccess={onGoogleSuccess}
-            onFailure={onGoogleFailure}
-            cookiePolicy={'single_host_origin'}
-            isSignedIn={false}
-          />
-          <ToastContainer />
+          clientId={Constants.GOOGLE_CLIENT_ID}
+          render={renderProps => (
+            <button onClick={() => {setLoading(true); renderProps.onClick();}} disabled={renderProps.disabled} className="login-google-button" >
+              <img src='/images/google_logo.png' alt="Google Logo" className="google-logo" />
+              Sign in with Google
+            </button>
+          )}
+          buttonText="Sign up with Google"
+          onSuccess={onGoogleSuccess}
+          onFailure={onGoogleFailure}
+          cookiePolicy={'single_host_origin'}
+          isSignedIn={false}
+        />
+        <ToastContainer />
       </div>}
     </div>
   );

@@ -14,6 +14,7 @@
   justify-content: center;
   cursor: pointer;
   transition: background-color 0.3s, color 0.3s;
+  padding-left: 5px;
 }
 
 .option.selected {
@@ -32,7 +33,7 @@
   transition: color 0.3s;
   font-family: 'Inter', sans-serif;
   margin-right: 10px;
-  margin-left: 10px;
+  width: 40px;
 }
 
 .option:hover .icon {

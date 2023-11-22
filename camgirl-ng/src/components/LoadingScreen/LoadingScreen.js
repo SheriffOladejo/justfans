@@ -9,7 +9,7 @@ function LoadingScreen({ width, left }) {
 
   return (
     <div className="loading-screen" style={{ width:`${width}`, left:`${left}` }}>
-      <img src="/images/logo102.png" alt="Logo" className="logo" />
+      <img src="/images/logo_big.png" alt="Logo" className="logo" />
       <div className="circular-progress">
         <div className="inner"></div>
         <div className="outer"></div>

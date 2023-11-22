@@ -60,20 +60,20 @@ button {
   margin-right: 10px;
 }
 
-.or-container {
+.signup-or-container {
   display: flex;
   max-width: 370px;
   align-items: center;
   margin: 20px 0;
 }
 
-.line {
+.signup-line {
   flex: 1;
   height: 0.5px;
   background-color: #000;
 }
 
-.or-text {
+.signup-or-text {
   margin: 0 10px;
   color: #000;
   font-size: 16;
@@ -81,10 +81,12 @@ button {
   font-family: 'Inter', sans-serif;
 }
 
-.eye-icon {
+.signup-eye-icon {
+  position: relative;
   width: 20px;
   height: 20px;
-  margin-left: -25px;
+  margin-bottom: -5px;
+  margin-left: -30px;
   cursor: pointer;
 }
 
@@ -127,4 +129,44 @@ input[type='checkbox']:checked + .checkbox-custom {
   cursor: pointer;
 }
 
+.signup-username {
+  width: 100%;
+  margin: 0px;
+  height: 40px;
+  padding: 0px;
+  padding-left: 15px;
+}
+
+.signup-email {
+  width: 100%;
+  margin: 0px;
+  height: 40px;
+  padding: 0px;
+  padding-left: 15px;
+}
+
+.signup-password {
+  width: 100%;
+  margin: 0px;
+  height: 40px;
+  padding: 0px;
+  padding-left: 15px;
+}
+
+.signup-confirm-password {
+  width: 100%;
+  margin: 0px;
+  height: 40px;
+  padding: 0px;
+  padding-left: 15px;
+}
+
+
+@media only screen and (max-width: 600px) {
+  .signup-container {
+    width: 100%;
+    height: auto;
+    
+  }
+}
 
