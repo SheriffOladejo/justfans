@@ -4,7 +4,7 @@ import { useState, useRef } from 'react';
 import { ScrollMenu, VisibilityContext } from 'react-horizontal-scrolling-menu';
 //import 'react-horizontal-scrolling-menu/dist/styles.css';
 
-function Stories () {
+function Stories ({isMobile}) {
 
     const dummyData = [
       {
@@ -101,6 +101,24 @@ function Stories () {
           );
     };
 
+    const scrollMenuRef = useRef(null);
+
+    const handleArrowClickLeft = () => {
+      if (scrollMenuRef.current) {
+        console.log("scrolling");
+        const { scrollPrev } = scrollMenuRef.current.state.visibilityContext;
+        scrollPrev();
+      }
+    };
+  
+    // Function to handle right arrow click
+    const handleArrowClickRight = () => {
+      if (scrollMenuRef.current) {
+        const { scrollNext } = scrollMenuRef.current.state.visibilityContext;
+        scrollNext();
+      }
+    };
+
     const RightArrow = () => {
       const { isLastItemVisible, scrollNext } = React.useContext(VisibilityContext);
       return (
@@ -150,7 +168,7 @@ function Stories () {
         >
           <img
             src="/images/left-chevron.png"
-            alt="Chevron Right"
+            alt="Chevron left"
             style={{ width: '10px', height: '10px' }}
           />
         </div>
@@ -166,28 +184,49 @@ function Stories () {
       );
     };
 
+    if (isMobile) {
+      return (
+        <div className="image-scrolling-menu">
+          <ScrollMenu
+            arrowDisabledClass="arrow-disabled"
+            hideArrows={false} // Set this to true if you want to hide the arrows
+            alignCenter={true} // Set this to true if you want the menu to be centered
+            wheel={false} // Set this to true if you want to enable scrolling with the mouse wheel
+            transitionDuration={10}
+          >
+            {items.map(({ id, content, index }) => (
+              <StoryCard
+                  key={id}
+                  content={content}
+                  isActive={index === currentIndex}
+              />
+            ))}
+          </ScrollMenu>
+      </div>
+      );
+    }
+
     return (
 
-    <div className="image-scrolling-menu" style={{ maxWidth: '600px' }}>
-        
-        <ScrollMenu
-          LeftArrow={LeftArrow}
-          RightArrow={RightArrow}
-          arrowDisabledClass="arrow-disabled"
-          hideArrows={false} // Set this to true if you want to hide the arrows
-          alignCenter={true} // Set this to true if you want the menu to be centered
-          wheel={true} // Set this to true if you want to enable scrolling with the mouse wheel
-          translate={3}
-        >
-          {items.map(({ id, content, index }) => (
-            <StoryCard
-                key={id}
-                content={content}
-                isActive={index === currentIndex}
-            />
-          ))}
-        </ScrollMenu>
-    </div>
+      <div className="image-scrolling-menu">
+
+          <div style={{ color:'#EBEBEB', height:'40px' }} onClick={handleArrowClickLeft}>
+
+          </div>
+          
+          <ScrollMenu
+            LeftArrow={LeftArrow}
+            RightArrow={RightArrow}
+          >
+            {items.map(({ id, content, index }) => (
+              <StoryCard
+                  key={id}
+                  content={content}
+                  isActive={index === currentIndex}
+              />
+            ))}
+          </ScrollMenu>
+      </div>
     );
 }
 

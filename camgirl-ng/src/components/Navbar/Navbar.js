@@ -6,6 +6,7 @@ import DbHelper from '../../utils/DbHelper';
 import React, { useState, useEffect } from 'react';
 import Cookies from 'js-cookie';
 import { isValidEmail } from '../../utils/Utils';
+import MyDrawer from '../Drawer/Drawer';
 
 function Navbar () {
     const dbHelper = new DbHelper();
@@ -14,6 +15,44 @@ function Navbar () {
 
     const [user, setUser] = useState(null); 
     const [showCreatorDesc, setShowCreatorDesc] = useState(true);
+
+    const [isMobile, setIsMobile] = useState(false);
+    const [isTablet, setIsTablet] = useState(false);
+    const [isDesktop, setIsDesktop] = useState(false);
+
+    const [toggleDrawer, setToggleDrawer] = useState(false);
+
+    useEffect(() => {
+        const handleResize = () => {
+          if (window.innerWidth <= 600) {
+            setIsMobile(true);
+            setIsDesktop(false);
+            setIsTablet(false);
+          } else if (window.innerWidth <= 1024) {
+            setIsTablet(true);
+            setIsMobile(false);
+            setIsDesktop(false);
+          }
+          else {
+            setIsDesktop(true);
+            setIsMobile(false);
+            setIsTablet(false);
+          }
+        };
+    
+        handleResize();
+    
+        window.addEventListener('resize', handleResize);
+    
+        return () => {
+          window.removeEventListener('resize', handleResize);
+        };
+    
+    }, []);
+
+    useEffect(() => {
+        
+    }, [toggleDrawer]);
 
     useEffect(() => {
         const username = Cookies.get('username');
@@ -28,6 +67,47 @@ function Navbar () {
         setShowCreatorDesc(false);
         user.setCreatorModeDescDismissed("true");
         dbHelper.updateUser(user);
+    }
+
+    const openDrawer = () => {
+        setToggleDrawer(true);
+    }
+
+    const closeDrawer = () => {
+        setToggleDrawer(false);
+    }
+
+    if (isMobile) {
+        return (
+            <nav className='navbar'>
+                <div className='mobile-nav-container'>
+                    <ProfilePicture handleClick={openDrawer} marginLeft='0px'/>
+                    <img src="/images/justfans_black_red.png"/>
+                    <div>
+                        <label className="switch">
+                            <input type="checkbox" className="switch-input" />
+                            <span className="switch-slider">
+                                <img src="/images/switch-image.png" alt="Switch" className="switch-image" />
+                            </span>
+                        </label>
+                        {user && user.getCreatorModeDescDismissed() === "" && showCreatorDesc &&(
+                        <div className='switch-desc-container'>
+                            <div className='switch-triangle'/>
+                            <div className='switch-desc'>
+                            <p className='switch-desc-text'>Switch between creator and fan mode. First time creators are required to provide additional information to complete the process</p>
+                            <img
+                                src='/images/close.png'
+                                style={{ width: '10px', height: '10px', cursor: 'pointer' }}
+                                onClick={handleDescDismissed}
+                            />
+                            </div>
+                        </div>
+                        )}
+                    </div>
+                </div>
+                <MyDrawer close={closeDrawer} toggle={toggleDrawer} />
+            </nav>
+        );
     }
 
     return (

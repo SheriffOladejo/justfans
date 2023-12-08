@@ -6,6 +6,8 @@ import SecondarySideBar from '../SecondarySideBar/SecondarySideBar';
 import ProfilePicture from '../ProfilePicture/ProfilePicture';
 import PostCommentItem from '../Adapters/Post/PostComment';
 import { useNavigate } from 'react-router-dom';
+import { useState, useEffect, useRef } from 'react';
+import TextareaAutosize from 'react-textarea-autosize';
 
 function PostComment ({comment_id}) {
 
@@ -17,11 +19,47 @@ function PostComment ({comment_id}) {
       navigate(-1);
     };
 
+    const [isMobile, setIsMobile] = useState(false);
+    const [isTablet, setIsTablet] = useState(false);
+    const [isDesktop, setIsDesktop] = useState(false);
+
+    const [comment, setComment] = useState('');
+
+    const textareaRef = useRef(null);
+
+    useEffect(() => {
+      const handleResize = () => {
+        if (window.innerWidth <= 600) {
+          setIsMobile(true);
+          setIsDesktop(false);
+          setIsTablet(false);
+        } else if (window.innerWidth <= 1024) {
+          setIsTablet(true);
+          setIsMobile(false);
+          setIsDesktop(false);
+        }
+        else {
+          setIsDesktop(true);
+          setIsMobile(false);
+          setIsTablet(false);
+        }
+      };
+  
+      handleResize();
+  
+      window.addEventListener('resize', handleResize);
+  
+      return () => {
+        window.removeEventListener('resize', handleResize);
+      };
+  
+    }, []);
+
     return (
-        <div style={{ backgroundColor: '#EBEBEB', paddingBottom: '60px' }}>
-            <Navbar/>
-            <div className="post-comment-page">
-              <SideBar pageIndex={1} />
+        <div className='comment-page-container'>
+            {!isMobile && <Navbar/>}
+            <div className={isMobile ? '' : 'post-comment-page'} >
+              { !isMobile && <SideBar pageIndex={1} /> }
               <div>
                 <div className="post-back-container">
                     <div onClick={backPressed} className="post-comment-back-container">
@@ -72,11 +110,17 @@ function PostComment ({comment_id}) {
                     </div>
                   </div>
                   <div className="post-comment-box">
-                    <ProfilePicture hasStory={true} marginLeft="0px" marginRight="0px" zIndex={"1"}/>
-                    <div style={{marginLeft:'0px', width: '430px', marginRight:'30px'}}>
-                      <input className="post-comment-input" placeholder="Post your reply"/>
+                    <ProfilePicture hasStory={true} marginLeft="0px" marginRight="10px" zIndex={"1"}/>
+                    <div className='post-comment-box-row'>
+                      <TextareaAutosize
+                        className="post-comment-input"
+                        placeholder="Post your reply"
+                        ref={textareaRef}
+                        value={comment}
+                        onChange={(e) => setComment(e.target.value)}
+                      />
                     </div>
-                    <div className="post-comment-reply-button-inactive">
+                    <div className={comment === "" ? "post-comment-reply-button-inactive" : "post-comment-reply-button-active"}>
                       <p className="post-comment-reply-button-text">Reply</p>
                     </div>
                   </div>
@@ -89,7 +133,7 @@ function PostComment ({comment_id}) {
                   </div>
                 </div>
               </div>
-              <SecondarySideBar/>
+              {!isMobile && <SecondarySideBar/>}
             </div>
         </div>
     );

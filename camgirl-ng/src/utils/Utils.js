@@ -1,6 +1,25 @@
-
-
 import Cookies from 'js-cookie';
+
+function isMobile () {
+    if (window.innerWidth <= 600) {
+        return true;
+    }
+    return false;
+}
+
+function isTablet () {
+    if (window.innerWidth <= 1024) {
+        return true;
+    }
+    return false;
+}
+
+function isDesktop() {
+    if (window.innerWidth > 1024) {
+        return true;
+    }
+    return false;
+}
 
 function isValidEmail(email) {
     // Regular expression for a basic email validation
@@ -35,4 +54,7 @@ export {
     stringToUint8Array,
     sha256,
     isUserSignedIn,
+    isTablet,
+    isMobile,
+    isDesktop,
 };

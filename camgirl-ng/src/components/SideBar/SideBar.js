@@ -54,7 +54,7 @@ const SideBar = ({marginLeft, marginTop, pageIndex}) => {
               {user && user.getFirstName()} {user && user.getLastName()}
               {user && user.getVerified() === "true" && <img src="/images/verifiied.png" alt="Super user" className="sidebar-verified"  />}
             </span>
-            <div className="sidebar-username">{user && user.getUserName()}</div>
+            <div className="sidebar-username">@{user && user.getUserName()}</div>
           </div>
       </div>
       <ul className="navigation-links">

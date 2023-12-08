@@ -1,0 +1,21 @@
+.make-post-button {
+  position: fixed;
+  bottom: 60px;
+  right: 20px;
+  background-color: #F94F64;
+  color: white;
+  border: none;
+  border-radius: 50%;
+  width: 40px;
+  height: 40px;
+  padding: 5px;
+  cursor: pointer;
+  transition: background-color 0.3s, transform 0.3s;
+}
+
+.makepost-icon {
+  width: 20px;
+  height: 20px;
+}
+  
+  

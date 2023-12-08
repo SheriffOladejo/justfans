@@ -1,0 +1,50 @@
+.createPost-container {
+    width: 100%;
+}
+
+.createPost-button-container {
+    width: 100%;
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+}
+
+.createPost-button {
+    background-color: #F94F64;
+    color: white;
+    border: none;
+    height: 40px;
+    width: 70px;
+    font-family: 'Lato', sans-serif;
+    font-size: 14px;
+    font-weight: 500;
+    align-self: center;
+    padding-left: 15px;
+    padding-right: 15px;
+    border-radius: 4px;
+    cursor: pointer;
+    margin-bottom: 10px;
+    margin-top: 15px;
+    margin-right: 25px;
+}
+
+.createPost-button:disabled {
+    background-color: #FDC4CB; 
+    color: #ffffff; 
+    cursor: auto; 
+  }
+
+.createPost-back-button {
+    align-self: center;
+    margin-left: 25px;
+    width: 20px;
+    height: 20px;
+    margin-top: 15px;
+}
+
+.create-post-gif-div {
+    display: flex;
+    align-items: center;
+    width: 100%;
+    justify-content: center;
+}

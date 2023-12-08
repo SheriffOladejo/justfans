@@ -7,6 +7,7 @@ import React, { useState, useEffect } from 'react';
 function ProfilePicture ({ 
     url,
     username, 
+    handleClick,
     hasStory, 
     isOnline, 
     marginTop, 
@@ -38,8 +39,9 @@ function ProfilePicture ({
             marginLeft: `${marginLeft}`,
             zIndex: `${zIndex}`,
             }}>
+            <img src='/images/profile-picture.png' alt="Profile" onClick={handleClick} />
           
-          <img src={user && user.getProfilePicture()} alt="Profile" />
+          {/* <img src={user && user.getProfilePicture()} alt="Profile" /> */}
           <div className={`${isOnline ? 'online-indicator' : ''}`}></div>
         </div>
     );

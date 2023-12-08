@@ -1,8 +1,10 @@
 import React from 'react';
 import './FeedItem.css';
 import ProfilePicture from '../../ProfilePicture/ProfilePicture';
-import { useEffect } from 'react';
+import { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
+import TextareaAutosize from 'react-textarea-autosize';
+import { useRef } from 'react';
 
 function FeedItem({ postId, profilePicture, displayName, username, postTime, caption, mediaUrl }) {
 
@@ -16,10 +18,46 @@ function FeedItem({ postId, profilePicture, displayName, username, postTime, cap
     navigate('/post-comment', {state: {  }});
   }
 
+  const textareaRef = useRef(null);
+
+  const [isMobile, setIsMobile] = useState(false);
+  const [isTablet, setIsTablet] = useState(false);
+  const [isDesktop, setIsDesktop] = useState(false);
+
+  const [comment, setComment] = useState('');
+
+  useEffect(() => {
+    const handleResize = () => {
+      if (window.innerWidth <= 600) {
+        setIsMobile(true);
+        setIsDesktop(false);
+        setIsTablet(false);
+      } else if (window.innerWidth <= 1024) {
+        setIsTablet(true);
+        setIsMobile(false);
+        setIsDesktop(false);
+      }
+      else {
+        setIsDesktop(true);
+        setIsMobile(false);
+        setIsTablet(false);
+      }
+    };
+
+    handleResize();
+
+    window.addEventListener('resize', handleResize);
+
+    return () => {
+      window.removeEventListener('resize', handleResize);
+    };
+
+  }, []);
+
   return (
     <div className="post-card">
       <div className="user-info">
-        <ProfilePicture marginLeft="0px" zIndex={"1"}/>
+        <ProfilePicture marginLeft="0px" zIndex={"0"}/>
         <div className="user-details">
           <div className="name-username">
             <p className="display-name">Sheriff</p>
@@ -38,7 +76,7 @@ function FeedItem({ postId, profilePicture, displayName, username, postTime, cap
         <div className="emoji">😀</div>
         <div className="emoji">😂</div>
         <div className="emoji">😎</div>
-        <div className="text">Daniel jams and 20 others reacted</div>
+        <div className="feeditem-text">Daniel jams and 20 others reacted</div>
       </div>
       <div className="reaction-container">
         <div className="reaction">
@@ -66,10 +104,16 @@ function FeedItem({ postId, profilePicture, displayName, username, postTime, cap
         </div>
       </div>
       <div className="feed-comment-container">
-        <div style={{ display: 'flex', displayDirection: 'row', alignItems: 'center'}}>
+        <div style={{ width:'100%', display: 'flex', displayDirection: 'row', alignItems: 'center'}}>
           <img src="/images/profile-picture.png" alt={"Sheriff's Profile"} className="comment-user-profile-picture" />
           <div className="comment-box">
-            <input placeholder="Add a comment" className="feed-item-input"/>
+            <TextareaAutosize
+              className="feed-item-input"
+              placeholder="Add a comment"
+              ref={textareaRef}
+              value={comment}
+              onChange={(e) => setComment(e.target.value)}
+            />
             <a href='#' onClick={sendComment} style={{ paddingRight: '10px' }}>
               <img
                 src="/images/send.png"

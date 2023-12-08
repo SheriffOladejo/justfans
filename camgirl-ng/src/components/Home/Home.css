@@ -1,5 +1,5 @@
 .home-container {
-  max-width: 600px;
+  width: 600px;
 }
 
 .create-post-container {
@@ -160,7 +160,9 @@
   gap: 5px;
   margin-top: 15px;
   margin-left: 15px;
-  width: 100px;
+  padding-left: 10px;
+  padding-right: 10px;
+  width: 175px;
   height: 30px;
   display: flex;
   flex-direction: row;
@@ -173,24 +175,37 @@
 .home-post-publicity-text {
   color: black;
   font-family: 'Lato';
-  font-size: 13px;
+  font-size: 12px;
   font-weight: 400;
+  width: 120px;
+  align-self: center;
 }
 
 .home-post-publicity-icon {
-  margin-left: 5px;
   width: 16px;
   height: 16px;
+  position: relative;
+  right: 5px;
 }
 
 .home-post-publicity-icon-arrow {
   width: 10px;
   height: 10px;
+  position: relative;
+  left: 20px;
 }
 
 .element img {
   width: 16px;
   height: 16px;
+}
+
+h5 {
+  font-family: 'Inter', sans-serif;
+}
+
+p {
+  font-family: 'Inter', sans-serif;
 }
 
 .post-media {
@@ -206,6 +221,89 @@
   flex-direction: row;
   align-items: center;
   margin-top: 15px;
+}
+
+.filter-container {
+  display: flex;
+  justify-content: center;
+  flex-direction: row;
+  align-items: center;
+  background-color: #EBEBEB;
+  border-radius: 8px;
+  margin-left: 5px;
+  margin-right: 5px;
+}
+
+.publicity-dropdown-container {
+  width: 300px;
+  height: 260px;
+  border: 1px solid #EBEBEB;
+  border-radius: 8px;
+  margin: 15px;
+  padding: 10px;
+  box-shadow: #EBEBEB;
+  background-color: white;
+  position: absolute;
+  margin-top: 50px;
+}
+
+.publicity-desc {
+  font-size: 14px;
+  font-weight: 400;
+}
+
+.publicity-dropdown {
+  position: relative;
+  display: inline-block;
+}
+
+.publicity-dropdown-trigger {
+  cursor: pointer;
+}
+
+.publicity-dropdown-list {
+  background-color: white;
+  border: 1px solid #EBEBEB;
+  border-radius: 5px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  z-index: 1;
+}
+
+.publicity-dropdown-list div {
+  padding: 8px;
+  cursor: pointer;
+}
+
+.publicity-dropdown-list div:hover {
+  background-color: #f0f0f0;
+}
+
+
+@media only screen and (max-width: 600px) {
+  .stories-container {
+    width: auto;
+    background-color: white;
+  }
+
+  .home-container {
+    background-color: black;
+    width: 100%;
+  }
+
+  .publicity-dropdown-container {
+    width: 220px;
+    height: auto;
+    border: 1px solid #EBEBEB;
+    border-radius: 8px;
+    margin: 15px;
+    padding: 10px;
+    box-shadow: #EBEBEB;
+    background-color: white;
+    position: absolute;
+    margin-top: 50px;
+  }
+  
+
 }
 
 

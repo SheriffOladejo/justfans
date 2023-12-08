@@ -167,6 +167,7 @@ button {
     font-family: 'Inter', sans-serif;
     height: 40px;
     padding: 0px;
+    font-size: 14px;
     padding-left: 2%;
   }
   
@@ -175,6 +176,7 @@ button {
     margin: 0px;
     margin-right: 3px;
     margin-top: 30px;
+    font-size: 14px;
     font-family: 'Inter', sans-serif;
     padding: 0px;
     padding-left: 2%;

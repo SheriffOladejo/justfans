@@ -35,3 +35,9 @@
 .visible {
   visibility: visible !important;
 }
+
+.image-scrolling-menu {
+  margin-left: 10px;
+  margin-right: 10px;
+  align-items: center;
+}

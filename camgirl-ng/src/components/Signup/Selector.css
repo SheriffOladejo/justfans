@@ -39,3 +39,15 @@
 .option:hover .icon {
   filter: brightness(1.2);
 }
+
+@media only screen and (max-width: 600px) {
+  .selector-container {
+    display: flex;
+    max-width: 200px;
+    height: 40px;
+    border-radius: 8px;
+    margin-left: 15px;
+    overflow: hidden;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  }
+}

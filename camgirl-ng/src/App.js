@@ -2,6 +2,7 @@ import React from 'react';
 import { useEffect } from 'react';
 import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
 
+import SelectGif from './components/SelectGif/SelectGif';
 import Signup from './components/Signup/Signup';
 import Splash from './components/Splash/Splash';
 import ProfileSetup from './components/ProfileSetup/ProfileSetup';
@@ -13,6 +14,7 @@ import Messages from './components/Messages/Messages';
 import Subscriptions from './components/Subscriptions/Subscriptions';
 import Dashboard from './components/Dashboard/Dashboard';
 import Settings from './components/Settings/Settings';
+import CreatePost from './components/CreatePost/CreatePost';
 import { initializeApp } from 'firebase/app';
 import Constants from './utils/Constants';
 
@@ -35,6 +37,8 @@ function App() {
         <Route path="/subscriptions" element={<Subscriptions/>} />
         <Route path="/dashboard" element={<Dashboard/>} />
         <Route path="/settings" element={<Settings/>} />
+        <Route path='/selectGif' element={<SelectGif/>} />
+        <Route path='/create-post' element={<CreatePost/>} />
       </Routes>
     </Router>
   );

@@ -21,7 +21,7 @@ function PostCommentItem () {
                 <div className="post-comment-like-container">
                   <img className="post-comment-like" src="/images/like.png" alt="Like"/>
                 </div>
-                <p className="post-time">120k</p>
+                <p className="post-likes">120k</p>
             </div>
             <div  className="post-comment-like-container">
               <img src="/images/more.png" alt="More" />

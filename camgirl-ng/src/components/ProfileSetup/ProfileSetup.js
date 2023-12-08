@@ -329,30 +329,28 @@ function ProfileSetup () {
         return (
           <div className='profile-setup-container'>
             <img src="/images/justfans_black_red.png" style={{ width:'120px', alignSelf:'flex-start' }}/>
-            <div style={{ width:'400px', marginTop:'20px'}}>
+            <div style={{marginTop:'20px'}}>
               <div className='progress_bar'>
 
               </div>
               <div style={{ width:`${stage * 33}%` }} className='progress'></div>
               {stage === 1 && (
-                <div>
-                  <h2>Set up your profile</h2>
-                  <div>
-                      <div className="input-group">
-                        <label>First Name</label>
-                        <input onChange={(e) => setFirstname(e.target.value)} value={_firstname} placeholder={firstname === "" ? "Firstname" : firstname} type="text" />
-                      </div>
-                      <div className="input-group">
-                        <label>Last Name</label>
-                        <input onChange={(e) => setLastname(e.target.value)} value={_lastname} placeholder={lastname === "" ? "Lastname" : lastname} type="text" />
-                      </div>
+                <div className='stage-container'>
+                  <h2 style={{ alignSelf:'center'}}>Set up your profile</h2>
+                  <div className="input-group">
+                    <label>First Name</label>
+                    <input onChange={(e) => setFirstname(e.target.value)} value={_firstname} placeholder={firstname === "" ? "Firstname" : firstname} type="text" />
+                  </div>
+                  <div className="input-group">
+                    <label>Last Name</label>
+                    <input onChange={(e) => setLastname(e.target.value)} value={_lastname} placeholder={lastname === "" ? "Lastname" : lastname} type="text" />
                   </div>
                   <div>
                       <div className="input-group">
                         <label>Username</label>
                         <input onChange={(e) => setUsername(e.target.value)} disabled={account_type === "google" ? false : true } value={_username} placeholder={username === "" ? "Username" : username} type="text" />
                       </div>
-                      <div className="input-group">
+                      <div className="date-group">
                           <label>Date of Birth</label>
                           <DatePicker
                             selected={selectedDate}
@@ -427,15 +425,14 @@ function ProfileSetup () {
                                   value={bio}
                                   style={{
                                     fontFamily: 'Inter, sans-serif',
-                                    width: '98.5%',
                                     height: '100px',
                                     border: '1px solid #ccc',
                                     borderRadius: '4px',
-                                    marginBottom: '8px',
                                     resize: 'none',
                                     padding: '5px'
                                   }}
                                 />
+                                <p className='max-words'>300 words max</p>
                               </div>
                             </div>
                           </div><input type="file" style={{ display: 'none' }} accept="image/jpeg, image/png" ref={ppInputRef} onChange={handlePPChange} />
@@ -562,15 +559,14 @@ function ProfileSetup () {
                                   value={bio}
                                   style={{
                                     fontFamily: 'Inter, sans-serif',
-                                    width: '98.5%',
                                     height: '100px',
                                     border: '1px solid #ccc',
                                     borderRadius: '4px',
-                                    marginBottom: '8px',
                                     resize: 'none',
                                     padding: '5px'
                                   }}
                                 />
+                                <p className='max-words'>300 words max</p>
                               </div>
                             </div>
                           </div><input type="file" style={{ display: 'none' }} accept="image/jpeg, image/png" ref={ppInputRef} onChange={handlePPChange} />

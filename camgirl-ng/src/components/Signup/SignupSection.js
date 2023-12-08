@@ -289,13 +289,13 @@ function SignupSection () {
     return (
       <div className='signup-container'>
         {!loading && <div className="signup-column">
-        { isMobile && <img src="/images/justfans_black_red.png" style={{ width:'120px', alignSelf:'flex-start' }}/> }
-          <h2 style={{textAlign: 'left'}}>
+        { isMobile && <img className='signup-logo' src="/images/justfans_black_red.png" style={{ width:'120px', alignSelf:'flex-start' }}/> }
+          <h2 className='signup-create-account-text' style={{textAlign: 'left'}}>
             <span style={{ fontWeight: '700', fontFamily: 'Inter, sans-serif', fontSize: '33px', color: 'black' }}>Create</span>{' '}
             <span style={{ fontWeight: '700', fontFamily: 'Inter, sans-serif', fontSize: '33px', color: '#F94F64'}}>Your Account</span>
           </h2>
 
-          <p style={{ }}>
+          <p className='signup-already-have-account' style={{ }}>
             <span style={{ fontFamily: 'Inter, sans-serif', fontWeight: '500', fontSize: '14px', color: 'black' }}>Already have an account?</span>{' '}
             <span onClick={toggleShowLogin} style={{ fontFamily: 'Inter, sans-serif', fontWeight: '500', fontSize: '14px', color: '#F94F64', cursor: 'pointer' }}>Log in</span>
           </p>
@@ -309,7 +309,7 @@ function SignupSection () {
                 type="text"
                 placeholder="Username"
                 className='signup-username'
-                style={{ width: '350px', fontFamily: 'Inter, sans-serif', marginTop: '0px' }}
+                style={{ fontFamily: 'Inter, sans-serif', marginTop: '0px' }}
             />
             <input
                 value={email}
@@ -317,7 +317,7 @@ function SignupSection () {
                 type="text"
                 placeholder="Email address"
                 className='signup-email'
-                style={{ width: '350px', fontFamily: 'Inter, sans-serif', marginTop: '20px' }}
+                style={{ fontFamily: 'Inter, sans-serif', marginTop: '20px' }}
             />
             <div>
               <div className="password-input-container">
@@ -327,7 +327,7 @@ function SignupSection () {
                     onChange={(e) => {setPassword(e.target.value);setEncodedPassword(Base64.encode(e.target.value));}}
                     type={showPassword ? 'text' : 'password'}
                     placeholder="Password"
-                    style={{ width: '350px', fontFamily: 'Inter, sans-serif', marginTop: '20px' }}
+                    style={{ fontFamily: 'Inter, sans-serif', marginTop: '20px' }}
                 />
                 <img
                   src={showPassword ? '/images/eye-icon-open.png' : '/images/eye-icon-closed.png'}
@@ -343,7 +343,7 @@ function SignupSection () {
                     onChange={(e) => setConfirmPassword(e.target.value)}
                     type={showConfirmPassword ? 'text' : 'password'}
                     placeholder="Confirm Password"
-                    style={{ width: '350px', fontFamily: 'Inter, sans-serif', marginTop: '20px' }}
+                    style={{ fontFamily: 'Inter, sans-serif', marginTop: '20px' }}
                 />
                 <img
                   src={showConfirmPassword ? '/images/eye-icon-open.png' : '/images/eye-icon-closed.png'}
@@ -365,7 +365,7 @@ function SignupSection () {
                 <span className="terms-link" style={{ cursor: 'pointer', marginTop: '20px' }}>Terms & Conditions</span>
               </label>
             </div>
-            <button onClick={createAccount} type="button" style={{ marginTop: '20px', width: '372px', fontFamily: 'Inter, sans-serif', fontWeight: '700' }}>Create account</button>
+            <button onClick={createAccount} className='signup-button' type="button">Create account</button>
           </form>
           <div className="signup-or-container">
             <div className="signup-line"></div>

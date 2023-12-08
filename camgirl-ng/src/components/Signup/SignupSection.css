@@ -101,6 +101,7 @@ button {
 .checkbox-label {
   position: relative;
   padding-left: 25px;
+  font-size: 12px;
 }
 
 input[type='checkbox'] {
@@ -127,14 +128,16 @@ input[type='checkbox']:checked + .checkbox-custom {
 .terms-link {
   color: #f94f64;
   cursor: pointer;
+  font-size: 12px;
 }
 
 .signup-username {
-  width: 100%;
+  width: 350px;
   margin: 0px;
   height: 40px;
   padding: 0px;
   padding-left: 15px;
+  font-size: 14px;
 }
 
 .signup-email {
@@ -143,30 +146,163 @@ input[type='checkbox']:checked + .checkbox-custom {
   height: 40px;
   padding: 0px;
   padding-left: 15px;
+  font-size: 14px;
+  width: 350px;
 }
 
 .signup-password {
-  width: 100%;
+  width: 350px;
   margin: 0px;
   height: 40px;
   padding: 0px;
   padding-left: 15px;
+  font-size: 14px;
 }
 
 .signup-confirm-password {
-  width: 100%;
+  width: 350px;
   margin: 0px;
   height: 40px;
   padding: 0px;
   padding-left: 15px;
+  font-size: 14px;
+}
+
+.signup-button {
+  margin-top: 20px;
+  width: 372px;
+  font-family: 'Inter', sans-serif;
+  font-weight: 700;
 }
 
 
 @media only screen and (max-width: 600px) {
-  .signup-container {
-    width: 100%;
-    height: auto;
-    
+
+  .signup-or-container {
+    display: flex;
+    max-width: 320px;
+    align-items: center;
+    margin-left: 20px;
   }
+  
+  .google-button {
+    display: flex;
+    align-items: center;
+    align-self: center;
+    justify-content: center;
+    background-color: #4285F4;
+    color: white;
+    border: none;
+    border-radius: 16px;
+    padding: 10px;
+    cursor: pointer;
+    font-weight: 700;
+    width: 320px;
+    font-family: 'Inter', sans-serif
+  }
+
+  .signup-button {
+    width: 320px;
+    margin-left: 20px;
+    height: 40px;
+    font-family: 'Inter', sans-serif;
+    font-weight: 700;
+  }
+
+  .checkbox-container {
+    font-size: 12px;
+    display: flex;
+    align-items: center;
+    margin-top: 20px;
+    width: 320px;
+    margin-left: 20px;
+  }
+
+  .signup-container {
+    height: 100vh;
+    width: 100%;
+    padding: 0px;
+    margin: 0px;
+    background-color: white;
+  }
+
+  .signup-column {
+    display: flex;
+    flex-direction: column;
+    padding: 0px;
+    margin: 0px;
+  }
+
+  .signup-create-account-text {
+    margin-left: 20px;
+  }
+
+  .signup-already-have-account{
+    margin-left: 20px;
+    margin-top: 0px;
+  }
+
+  .signup-logo {
+    margin-left: 20px;
+    margin-top: 20px;
+  }
+
+  .signup-eye-icon {
+    position: relative;
+    width: 20px;
+    height: 20px;
+    margin-bottom: -20px;
+    right: 10px;
+    cursor: pointer;
+  }
+
+  .password-input-container {
+    align-items: center;
+    display: flex;
+    flex-direction: row;
+    justify-content: center;
+  }
+
+  .signup-password {
+    width: 320px;
+    margin: 0px;
+    margin-right: 10px;
+    height: 40px;
+    padding: 0px;
+    padding-left: 15px;
+    font-size: 14px;
+  }
+
+  .signup-confirm-password {
+    width: 320px;
+    margin: 0px;
+    margin-right: 10px;
+    height: 40px;
+    padding: 0px;
+    padding-left: 15px;
+    font-size: 14px;
+  }
+
+  .signup-username {
+    width: 320px;
+    align-self: center;
+    margin: 0px;
+    height: 40px;
+    padding: 0px;
+    padding-left: 15px;
+    font-size: 14px;
+  }
+
+  .signup-email {
+    width: 320px;
+    align-self: center;
+    margin: 0px;
+    height: 40px;
+    padding: 0px;
+    padding-left: 15px;
+    font-size: 14px;
+  }
+  
+
 }
 

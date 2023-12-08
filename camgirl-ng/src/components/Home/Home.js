@@ -16,6 +16,10 @@ import { getStorage, ref, uploadBytesResumable, getDownloadURL } from 'firebase/
 import Constants from '../../utils/Constants';
 import { initializeApp } from 'firebase/app';
 import LoadingScreen from '../LoadingScreen/LoadingScreen';
+import SelectGif from '../SelectGif/SelectGif';
+import { PUBLICITY_OPTIONS } from '../../utils/Constants';
+import BottomNav from '../BottomNav/BottomNav';
+import MyDrawer from '../Drawer/Drawer';
 
 
 function Home () {
@@ -37,6 +41,57 @@ function Home () {
 
     const attachmentRef = useRef();
     const gifRef = useRef();
+
+    const [isMobile, setIsMobile] = useState(false);
+    const [isTablet, setIsTablet] = useState(false);
+    const [isDesktop, setIsDesktop] = useState(false);
+
+    const [selectedPublicity, setSelectedPublicity] = useState('Everyone');
+    const [isPublicityDropdownOpen, setIsPublicityDropdownOpen] = useState(false);
+
+    const [showGifs, setShowGifs] = useState(false);
+
+    const togglePublicityDropdown = () => {
+      setIsPublicityDropdownOpen(!isPublicityDropdownOpen);
+    };
+
+    const toggleShowGifs = () => {
+      setShowGifs(!showGifs);
+    }
+
+    const handlePublicityOptionClick = (option) => {
+      setSelectedPublicity(option);
+      setIsPublicityDropdownOpen(false);
+    };
+
+    useEffect(() => {
+      const handleResize = () => {
+        if (window.innerWidth <= 600) {
+          setIsMobile(true);
+          setIsDesktop(false);
+          setIsTablet(false);
+        } else if (window.innerWidth <= 1024) {
+          setIsTablet(true);
+          setIsMobile(false);
+          setIsDesktop(false);
+        }
+        else {
+          setIsDesktop(true);
+          setIsMobile(false);
+          setIsTablet(false);
+        }
+      };
+  
+      handleResize();
+  
+      window.addEventListener('resize', handleResize);
+  
+      return () => {
+        window.removeEventListener('resize', handleResize);
+      };
+  
+    }, []);
+
 
     const showFilterOptions = (event) => {
         event.preventDefault();
@@ -167,14 +222,13 @@ function Home () {
       }
     }
 
-    const handleGifAttachment = (e) => {
-      const selectedFile = e.target.files[0];
-      if (selectedFile) {
-        setSelectedGif(selectedFile);
-        setAttachmentFileName(selectedFile.name);
-        setAttachmentType('gif');
-      }
-    }
+    const handleGifAttachment = (selectedGif) => {
+      setSelectedGif(selectedGif);
+      setAttachmentFileName('gif');
+      setAttachmentType('gif');
+      setShowGifs(false);
+    };
+  
 
     const openFileChooser = () => {
       attachmentRef.current.click();
@@ -232,6 +286,19 @@ function Home () {
       }
     }
 
+    const removeDialogs = async () => {
+      if (showEmojiPicker) {
+        setShowEmojiPicker(false);
+      }
+      if (showGifs) {
+        setShowGifs(false);
+      }
+      if (isPublicityDropdownOpen) {
+        setIsPublicityDropdownOpen(false);
+      }
+      
+    }
+
     if (loading) {
       return (
         <div>
@@ -246,8 +313,50 @@ function Home () {
       );
     }
 
+    if (isMobile) {
+      return (
+        <div className='home-container'>
+          
+          <div className='stories-container'>
+            <Stories isMobile={true}/>
+          </div>
+          <div className='divider'></div>
+          <div className='filter-posts'>
+            <img src="/images/filter.png" alt="Filter" style={{ width: '16px', height: '16px' }} />
+            <p style={{ fontSize: '13px', fontWeight: '400', fontFamily: 'Inter' }}>Filter posts:</p>
+            <div className='filter-container'>
+              <p style={{ fontSize: '13px', fontWeight: '400', fontFamily: 'Inter', marginLeft: '5px' }}>Free</p>
+              <a href='#' onClick={showFilterOptions} style={{ paddingRight: '10px' }}>
+                <img src="/images/chevron-down.png" alt="Filter" style={{ width: '10px', height: '10px', marginLeft: '5px' }} />
+              </a>
+            </div>
+          </div>
+          <div className='divider'></div>
+          
+          <div>
+            {feedData.map((item, index) => (
+              <FeedItem
+                key={index}
+                profilePicture={item.profilePicture}
+                displayName={item.displayName}
+                username={item.username}
+                postTime={item.postTime}
+                caption={item.caption}
+                mediaUrl={item.mediaUrl}
+              />
+            ))}
+          </div>
+
+          <ToastContainer/>
+
+          <BottomNav/>
+
+        </div>
+      );
+    }
+
     return (
-        <div className="home-container">
+        <div onClick={removeDialogs} className="home-container">
           <Stories />
           <div className="create-post-container">
               <div className="textfield-and-profile">
@@ -256,11 +365,24 @@ function Home () {
                   </div>
                   
                   <div className='home-create-post'>
-                    <div className="home-post-publicity">
+                    <div className="home-post-publicity" onClick={togglePublicityDropdown}>
                       <img className="home-post-publicity-icon" src="/images/globe.png" alt="Image" />
-                      <p className="home-post-publicity-text">Everyone</p>
+                      <p className="home-post-publicity-text">{selectedPublicity}</p>
                       <img className="home-post-publicity-icon-arrow" src="/images/chevron-down.png" alt="Image" />
                     </div>
+                    {isPublicityDropdownOpen && (
+                      <div className='publicity-dropdown-container'>
+                        <h5>Who can view and reply?</h5>
+                        <p className='publicity-desc'>Choose who can view and reply this post</p>
+                        <div className="publicity-dropdown-list">
+                          {PUBLICITY_OPTIONS.map((option) => (
+                            <div className='publicity-desc' key={option} onClick={() => handlePublicityOptionClick(option)}>
+                              {option}
+                            </div>
+                          ))}
+                        </div>
+                      </div>
+                      )}
                     <TextareaAutosize
                       className="textfield"
                       placeholder="What's happening!?"
@@ -269,16 +391,18 @@ function Home () {
                       onChange={(e) => setPostText(e.target.value)}
                     />
                     {showEmojiPicker && (
-                      <EmojiPicker
-                        onEmojiClick={handleEmojiSelect}
-                      />
+                      <div className="home-emoji-picker">
+                        <EmojiPicker
+                          onEmojiClick={handleEmojiSelect}
+                        />
+                      </div>
                     )}
 
                     <div className="home-post-attachment-container">
                       
                       { (selectedGif || selectedImage) && 
                         <img className="home-post-attachment-media" 
-                        src={selectedGif === null ? URL.createObjectURL(selectedImage) : URL.createObjectURL(selectedGif)}/> 
+                        src={selectedGif === null ? URL.createObjectURL(selectedImage) : selectedGif}/> 
                       }
                       { selectedVideo && 
                         <ReactPlayer
@@ -314,11 +438,11 @@ function Home () {
                   <div className="element" onClick={openFileChooser}>
                     <img src="/images/image.png" alt="Image" />
                   </div>
-                  <div className="element" onClick={openGifChooser}>
+                  <div className="element" onClick={toggleShowGifs}>
                     <img src="/images/gif.png" alt="Gif" />
                   </div>
                   <div className="element">
-                    <img src="/images/live.png" alt="Live Video" />
+                    <img style={{ marginTop: '5px' }} src="/images/live.png" alt="Live Video" />
                   </div>
                 </div>
                 <button className="post-button" onClick={createPost} disabled={ !postText && !selectedImage && !selectedVideo && !selectedGif }>
@@ -329,6 +453,7 @@ function Home () {
                 <input type="file" style={{ display: 'none' }} accept="image/jpeg, image/png, video/mp4" ref={attachmentRef} onChange={handlePostAttachment} />
               </div>
           </div>
+          {showGifs && <SelectGif onSelect={handleGifAttachment} />}
           <div className='filter-posts'>
             <img src="/images/filter.png" alt="Filter" style={{ width: '16px', height: '16px' }} />
             <p style={{ fontSize: '13px', fontWeight: '400', fontFamily: 'Inter' }}>Filter posts:</p>
