@@ -236,7 +236,7 @@ app.get("/checkEmail", (req, res) => {
     db.query(sql, [email], (err, result) => {
         if (err) {
             console.error("/checkEmail: An error occurred: " + err);
-            res.status(500).json({ message: '/checkEmail: An error occurred, check console' });
+            res.status(500).json({ message: '/checkEmail: An error occurred.' + err });
         }
         else {
             res.json(result);

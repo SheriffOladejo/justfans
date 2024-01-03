@@ -63,7 +63,7 @@ const MainPage = () => {
       <div className="main-page">
         <SideBar marginTop='40px' pageIndex={1} />
         <Home/>
-        <SecondarySideBar marginTop='50px' />
+        <SecondarySideBar marginTop='40px' />
       </div>
       <FloatingButton />
     </div>

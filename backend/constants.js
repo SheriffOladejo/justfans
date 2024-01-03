@@ -1,9 +1,11 @@
 const HOST = 'localhost';
-const USER = 'root';
-const PASSWORD = 'password';
-const DATABASE = 'justfans_db';
+const USER = 'camgirln_developer';
+const PASSWORD = '8%mQt8jpzxXG';
+const DATABASE = 'camgirln_db';
 
-const POST_TABLE = "justfans_posts";
+const BASE_API_URL = "http://localhost:4000";
+
+const POST_TABLE = "camgirl_posts";
 const COL_ID = "id";
 const COL_POST_ID = "post_id";
 const COL_POST_USER_ID = "user_id";
@@ -24,7 +26,7 @@ const COL_REACTIONS = "reactions";
 const COL_LIKES = "likes";
 const COL_TIPS = "tips";
 
-const USER_TABLE = "justfans_user";
+const USER_TABLE = "camgirl_user";
 const COL_EMAIL = "email";
 const COL_USER_ID = 'user_id';
 const COL_USERNAME = 'username';
@@ -53,7 +55,7 @@ const COL_PROFILE_SETUP = 'profile_setup';
 const COL_ACCOUNT_TYPE = "account_type";
 const COL_CREATOR_MODE_DESC_DISMISSED = "creator_mode_desc_dismissed";
 
-const BASE_API_URL = "http://localhost:4000";
+
 
 module.exports = {
   HOST,

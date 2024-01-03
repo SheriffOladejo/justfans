@@ -1,4 +1,4 @@
-const BASE_API_URL = "http://localhost:4000";
+const BASE_API_URL = "https://www.camgirl.ng";
 const GOOGLE_CLIENT_ID = "731652107541-1a39e12v4vcl8kjth31ejijop0utp7ad.apps.googleusercontent.com";
 const FIREBASE_CONFIG = {
   apiKey: "AIzaSyDSO_rYRNWdvXBXacvlRz-i4rO4hoWnsmE",
@@ -11,7 +11,12 @@ const FIREBASE_CONFIG = {
 };
 const GIPHY_API_KEY = "ZTwrsVxPy6dmwBCIZyUKLTlbAm8dXwpm";
 
-const PUBLICITY_OPTIONS = ['Everyone - Free', 'My subscribers', 'Only me', 'Subscribed accounts', 'Verified accounts'];
+const PUBLICITY_OPTIONS = [
+  {title: "Everyone", image: "/images/globe.svg", desc: "Anyone on or off Camgirl"},
+  {title: "Friends", image: "/images/friends.svg", desc: "Your friends on Camgirl"}, 
+  {title: "Friends except", image: "/images/friends-except.svg", desc: "Only specific friends"}, 
+  {title: "Only me", image: "/images/padlock.svg", desc: ""}
+];
 
 module.exports = {
   BASE_API_URL,

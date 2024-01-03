@@ -6,7 +6,7 @@
     justify-content: center;
     gap: 20px;
     padding-top: 50px;
-    margin-top: 30px;
+    margin-top: 80px;
 }
 
 .dashboard-main-container {
@@ -508,4 +508,10 @@
     height:1.5px;
     margin-top:0px;
     margin-bottom:0px;
+}
+
+.dashboard-eye-icon {
+    width: 20px;
+    height: 20px;
+    cursor: pointer;
 }

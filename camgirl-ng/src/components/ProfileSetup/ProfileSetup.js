@@ -27,7 +27,7 @@ function ProfileSetup () {
       const [_username, setUsername] = useState('');
       const [_firstname, setFirstname] = useState('');
       const [_lastname, setLastname] = useState('');
-      const [stage, setStage] = useState(3);
+      const [stage, setStage] = useState(1);
       const [isDragOver, setIsDragOver] = useState(false);
       const [loading, setLoading] = useState(false);
 
@@ -55,6 +55,7 @@ function ProfileSetup () {
        } = location.state || {};
 
       useEffect(() => {
+        console.log("username is " + username);
         setLoading(true);
         const fetchUser = async () => {
           const _u = await dbHelper.getAppUserByUsername(username);
@@ -480,7 +481,7 @@ function ProfileSetup () {
                   <div className="input-row">
                       <div className="input-group">
                         <label>Username</label>
-                        <input onChange={(e) => setUsername(e.target.value)} disabled={account_type === "google" ? false : true } value={_username === "" ? "Username" : _username} placeholder={username} type="text" />
+                        <input onChange={(e) => setUsername(e.target.value)} disabled={account_type === "google" ? false : true } placeholder={username} value={username === "" ? _username : username}  type="text" />
                       </div>
                       <div className="input-group">
                           <label>Date of Birth</label>

@@ -45,7 +45,7 @@ function SignupSection () {
 
     const [showLogin, setShowLogin] = useState(false);
 
-    const [isChecked, setIsChecked] = useState(false);
+    const [isAcceptTerms, setIsAcceptTerms] = useState(false);
 
     const [isGoogleSignIn, setGoogleSignIn] = useState(false);
 
@@ -53,12 +53,14 @@ function SignupSection () {
     const [isTablet, setIsTablet] = useState(false);
     const [isDesktop, setIsDesktop] = useState(false);
 
+    const [isFirstLoad, setIsFirstLoad] = useState(false);
+
     const toggleShowLogin = () => {
         setShowLogin(!showLogin);
     };
 
     const handleCheckboxChange = () => {
-      setIsChecked(!isChecked);
+      setIsAcceptTerms(!isAcceptTerms);
     };
 
     const togglePasswordVisibility = () => {
@@ -115,6 +117,8 @@ function SignupSection () {
   
       window.addEventListener('resize', handleResize);
   
+      setIsFirstLoad(true);
+
       return () => {
         window.removeEventListener('resize', handleResize);
       };
@@ -165,7 +169,7 @@ function SignupSection () {
 
     const createAccount = async () => {
       if (email !== "") {
-        if (isChecked) {
+        if (isAcceptTerms) {
           if (username === "") {
             toast.error('Username is required');
           }
@@ -239,10 +243,20 @@ function SignupSection () {
           }
         }
         else {
-          toast("Read and accept terms and conditons");
+          toast("Read and accept Terms and Conditons");
         }
       }
     };
+
+    const googleButtonClicked = (renderProps) => {
+      if (!isAcceptTerms) {
+        toast.error("Read and accept Terms of Service");
+      }
+      else {
+        setLoading(true);
+        renderProps.onClick();
+      }
+    }
 
     const onGoogleSuccess = async (res) => {
       const mail = res.profileObj["email"];
@@ -357,7 +371,7 @@ function SignupSection () {
               <label className="checkbox-label">
                 <input
                     type="checkbox"
-                    checked={isChecked}
+                    checked={isAcceptTerms}
                     onChange={handleCheckboxChange}
                 />
                 <span className="checkbox-custom"></span>
@@ -375,7 +389,7 @@ function SignupSection () {
           <GoogleLogin
             clientId={Constants.GOOGLE_CLIENT_ID}
             render={renderProps => (
-              <button onClick={() => {setLoading(true); renderProps.onClick();}} disabled={renderProps.disabled} className="google-button" >
+              <button onClick={() => {googleButtonClicked(renderProps)}} disabled={renderProps.disabled} className="google-button" >
                 <img src='/images/google_logo.png' alt="Google Logo" className="google-logo" />
                 Sign up with Google
               </button>

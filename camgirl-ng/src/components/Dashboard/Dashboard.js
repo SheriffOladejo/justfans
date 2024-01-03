@@ -149,7 +149,7 @@ function Dashboard () {
                                             <img
                                                 src={showCardDetails ? '/images/eye-icon-open.png' : '/images/eye-icon-closed.png'}
                                                 alt={showCardDetails ? 'Hide' : 'Show'}
-                                                className="eye-icon"
+                                                className="dashboard-eye-icon"
                                                 onClick={toggleCardDetailsVisibility}
                                             />
                                         </div>

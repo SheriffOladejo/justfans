@@ -17,10 +17,9 @@ import Constants from '../../utils/Constants';
 import { initializeApp } from 'firebase/app';
 import LoadingScreen from '../LoadingScreen/LoadingScreen';
 import SelectGif from '../SelectGif/SelectGif';
-import { PUBLICITY_OPTIONS } from '../../utils/Constants';
 import BottomNav from '../BottomNav/BottomNav';
-import MyDrawer from '../Drawer/Drawer';
-
+import PublicityOptions from './PublicityOptions/PublicityOptions';
+import { PUBLICITY_OPTIONS } from '../../utils/Constants';
 
 function Home () {
 
@@ -46,7 +45,7 @@ function Home () {
     const [isTablet, setIsTablet] = useState(false);
     const [isDesktop, setIsDesktop] = useState(false);
 
-    const [selectedPublicity, setSelectedPublicity] = useState('Everyone');
+    const [selectedPublicity, setSelectedPublicity] = useState(PUBLICITY_OPTIONS[0].title);
     const [isPublicityDropdownOpen, setIsPublicityDropdownOpen] = useState(false);
 
     const [showGifs, setShowGifs] = useState(false);
@@ -238,6 +237,8 @@ function Home () {
       gifRef.current.click();
     };
 
+    
+
     const feedData = [
       {
         profilePicture: "/images/profile-picture.png",
@@ -313,6 +314,10 @@ function Home () {
       );
     }
 
+    const bottomNavHomeClicked = () => {
+      
+    }
+
     if (isMobile) {
       return (
         <div className='home-container'>
@@ -372,19 +377,25 @@ function Home () {
                     </div>
                     {isPublicityDropdownOpen && (
                       <div className='publicity-dropdown-container'>
-                        <h5>Who can view and reply?</h5>
-                        <p className='publicity-desc'>Choose who can view and reply this post</p>
+                        <p className='publicity-desc-title'>Who can see your post?</p>
+                        <p className='publicity-desc'>Your post will show up in Feed, on your profile and in search results.<br/><br/>Your default audience is set to Public, but you can change the audience of this specific post.</p>
                         <div className="publicity-dropdown-list">
-                          {PUBLICITY_OPTIONS.map((option) => (
-                            <div className='publicity-desc' key={option} onClick={() => handlePublicityOptionClick(option)}>
-                              {option}
-                            </div>
-                          ))}
+                          {PUBLICITY_OPTIONS.map((option) => 
+                            <PublicityOptions title={option.title} desc={option.desc} image={option.image} handlePublicityOptionClick={handlePublicityOptionClick} />
+                          )}
+                        </div>
+                        <div className="publicity-buttons-row">
+                          <button className="publicity-cancel-button">
+                            Cancel
+                          </button>
+                          <button className="publicity-done-button">
+                            Done
+                          </button>
                         </div>
                       </div>
                       )}
                     <TextareaAutosize
-                      className="textfield"
+                      className="home-create-post-textfield"
                       placeholder="What's happening!?"
                       ref={textareaRef}
                       value={postText}

@@ -1,4 +1,4 @@
-CREATE TABLE justfans_db.justfans_posts (
+CREATE TABLE camgirln_db.camgirl_post (
     id INTEGER PRIMARY KEY AUTO_INCREMENT,
     post_id INTEGER,
     user_id VARCHAR(200) NOT NULL,
@@ -20,7 +20,7 @@ CREATE TABLE justfans_db.justfans_posts (
     tips TEXT
 );
 
-CREATE TABLE justfans_db.justfans_users (
+CREATE TABLE camgirln_db.camgirl_user (
     id INTEGER PRIMARY KEY AUTO_INCREMENT,
     user_id VARCHAR(200) DEFAULT '',
     username VARCHAR(200) DEFAULT '',

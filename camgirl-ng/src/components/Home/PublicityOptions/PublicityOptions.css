@@ -1,0 +1,40 @@
+.publicity-option-item {
+    display: flex;
+    flex-direction: row;
+    height: auto;
+    width: auto;
+    margin: 0px;
+    padding: 0px;
+}
+
+.publicity-image-div {
+    width: 30px;
+    height: 30px;
+    border-radius: 50%;
+    background-color: #D9D9D9;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.publicity-option-desc {
+    font-size: 14px;
+    font-weight: 500;
+    color: #828282;
+    font-family: 'Inter';
+    margin: 0px;
+    padding: 0px;
+  }
+  
+  .publicity-option-desc-title {
+    font-size: 14px;
+    font-weight: 700;
+    font-family: 'Inter';
+    color: black;
+    margin: 0px;
+    padding: 0px;
+  }
+
+  .publicity-option-div {
+    margin-left: 0px;
+  }
