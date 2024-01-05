@@ -2,10 +2,14 @@ const express = require('express');
 const mysql = require('mysql');
 const constants = require('./constants');
 const cors = require('cors');
+const socketIo = require('socket.io');
+const http = require('http');
 
 const PORT = 4000;
 
 const app = express();
+const server = http.createServer(app);
+const io = socketIo(server);
 
 app.use(cors());
 
@@ -27,19 +31,31 @@ db.connect((err) => {
     }
 });
 
+io.on('connection', (socket) => {
+    console.log('A user connected');
+  
+    // Send a message to the browser console when the socket is connected
+    socket.emit('messageToConsole', 'Hello from the server!');
+  
+    socket.on('disconnect', () => {
+      console.log('User disconnected');
+    });
+  });
+
 // Posts and comments methods
 
-app.get("/getPostsByUserID/:user_id", (req, res) => {
-    const user_id = req.params.user_id;
+app.get("/getPostsByUserID", (req, res) => {
+    const user_id = req.query.user_id;
 
     const sql = `SELECT * FROM ${constants.POST_TABLE} WHERE ${constants.COL_POST_USER_ID} = ?`;
 
     db.query(sql, [user_id], (err, result) => {
         if (err) {
+            res.json({ posts: sql });
             console.error('/getPostsByUserID: Error retrieving posts: ' + err.message);
             res.status(500).json({ message: '/getPostsByUserID: Failed to retrieve posts' });
         } else {
-            res.json({ posts: result });
+            res.json(result);
         }
     });
 });
@@ -66,7 +82,8 @@ app.post("/deletePost", (req, res) => {
 
 
 app.post("/createPost", (req, res) => {
-    const { user_id, caption, attachment_file, comments_privacy, comments,
+    
+const { user_id, caption, attachment_file, comments_privacy, comments,
     attachment_file_name, attachment_type, post_privacy, post_type, creation_date, 
     reactions, likes, tips } = req.body;
     const sql = `INSERT INTO ${constants.POST_TABLE} (${constants.COL_POST_USER_ID}, ${constants.COL_CAPTION}, ${constants.COL_ATTACHMENT_FILE},
@@ -86,8 +103,9 @@ app.post("/createPost", (req, res) => {
 });
 
 app.post("/updatePost", (req, res) => {
+    console.error("updating post");
     const {
-        post_id,
+        id,
         user_id,
         caption,
         attachment_file,
@@ -133,12 +151,12 @@ app.post("/updatePost", (req, res) => {
             reactions,
             likes,
             tips,
-            post_id
+            id
         ],
         (err, result) => {
             if (err) {
                 console.error('/updatePost: Error updating post: ' + err.message);
-                res.status(500).json({ message: '/updatePost: Update post failed' });
+                res.json({ message: '/updatePost: Update post failed: ' + err.message });
             } else {
                 res.json({ message: '/updatePost: Post update complete' });
             }
@@ -202,6 +220,20 @@ app.get("/getAppUserByEmail", (req, res) => {
     });
 });
 
+app.get("/getAppUserByID", (req, res) => {
+    const user_id = req.query.user_id;
+    const sql = `SELECT * from ${constants.USER_TABLE} where ${constants.COL_USER_ID} = ?`;
+    db.query(sql, [user_id], (err, result) => {
+        if (err) {
+            console.error("/getAppUserByID: An error occurred: " + err);
+            res.status(500).json({ message: '/getAppUserByID: An error occurred, check console' });
+        }
+        else {
+            res.json(result);
+        }
+    });
+});
+
 app.get("/getAppUserByUsername", (req, res) => {
     const username = req.query.username;
     const sql = `SELECT * from ${constants.USER_TABLE} where ${constants.COL_USERNAME} = ?`;
@@ -236,7 +268,7 @@ app.get("/checkEmail", (req, res) => {
     db.query(sql, [email], (err, result) => {
         if (err) {
             console.error("/checkEmail: An error occurred: " + err);
-            res.status(500).json({ message: '/checkEmail: An error occurred.' + err });
+            res.status(500).json({ message: '/checkEmail: An error occurred. ' + err });
         }
         else {
             res.json(result);
@@ -245,5 +277,5 @@ app.get("/checkEmail", (req, res) => {
 });
 
 app.listen(PORT, () => {
-    console.log(`Server started on port ${PORT}`);
+    console.error(`Server started on port ${PORT}`);
 });

@@ -33,10 +33,12 @@ function Home () {
     const [selectedImage, setSelectedImage] = useState(null);
     const [selectedVideo, setSelectedVideo] = useState(null);
     const [selectedGif, setSelectedGif] = useState(null);
-    const [user, setUser] = useState(null);
+    const [user, setUser] = useState(new AppUser());
     const [attachmentType, setAttachmentType] = useState('');
     const [attachmentFileName, setAttachmentFileName] = useState('');
     const [attachmentFile, setAttachmentFile] = useState('');
+
+    const [posts, setPosts] = useState([]);
 
     const attachmentRef = useRef();
     const gifRef = useRef();
@@ -237,26 +239,34 @@ function Home () {
       gifRef.current.click();
     };
 
-    
+    useEffect(() => {
+      const getPosts = async () => {
+        const signinData = isUserSignedIn();
+          
+        const username = signinData["username"];
+        const email = signinData["email"];
+        var _u = null;
+        if (email === null) {
+          _u = await dbHelper.getAppUserByUsername(username);
+        }
+        else {
+          _u = await dbHelper.getAppUserByEmail(email);
+        }
+        
+        if (_u !== null) {
+          let user_id = _u.user_id;
+          let posts = await dbHelper.getPostsByUserID(user_id);
+          setPosts(posts);
+        }
+        else {
+          console.log("user cookie has expired");
+          // logout
+        }
+      }
 
-    const feedData = [
-      {
-        profilePicture: "/images/profile-picture.png",
-        displayName: "Sheriff",
-        username: "@deen",
-        postTime: "2hr ago",
-        caption: "Pretty windy day today! Decided to go do some adventuring and shooting outdoors a bit today ❤️",
-        mediaUrl: "/images/feed.png",
-      },
-      {
-        profilePicture: "/images/profile-picture.png",
-        displayName: "Sheriff",
-        username: "@deen",
-        postTime: "2hr ago",
-        caption: "Pretty windy day today! Decided to go do some adventuring and shooting outdoors a bit today ❤️",
-        mediaUrl: "/images/feed.png",
-      },
-    ];
+      getPosts();
+
+    }, []);
 
     const createPost = async () => {
       if (attachmentFile === '' && attachmentFileName !== '') {
@@ -270,11 +280,11 @@ function Home () {
         post.setAttachmentFile(attachmentFile);
         post.setAttachmentFileName(attachmentFileName);
         post.setAttachmentType(attachmentType);
-        post.setPostPrivacy(0);
+        post.setPostPrivacy(null);
         post.setCreationDate(Date.now());
-        post.setCommentsPrivacy(0);
-        post.setLikes(0);
-        post.setTips(0);
+        post.setCommentsPrivacy(null);
+        post.setLikes(null);
+        post.setTips(null);
         dbHelper.createPost(post);
         setAttachmentFile('');
         setAttachmentFileName('');
@@ -339,15 +349,14 @@ function Home () {
           <div className='divider'></div>
           
           <div>
-            {feedData.map((item, index) => (
+          {posts.map((item, index) => (
               <FeedItem
                 key={index}
-                profilePicture={item.profilePicture}
-                displayName={item.displayName}
-                username={item.username}
-                postTime={item.postTime}
+                postID={item.id}
+                userID={item.user_id}
+                postTime={item.creation_date}
                 caption={item.caption}
-                mediaUrl={item.mediaUrl}
+                mediaUrl={item.attachment_file}
               />
             ))}
           </div>
@@ -366,7 +375,7 @@ function Home () {
           <div className="create-post-container">
               <div className="textfield-and-profile">
                   <div>
-                    <ProfilePicture marginTop="15px" zIndex={"1"}/>
+                    <ProfilePicture url={user.getProfilePicture()} marginTop="15px" zIndex={"1"}/>
                   </div>
                   
                   <div className='home-create-post'>
@@ -475,15 +484,10 @@ function Home () {
           </div>
           <div style={{ width: '100%', height: '0.1px', backgroundColor: 'grey', marginBottom: '25px' }}/>
           <div>
-            {feedData.map((item, index) => (
+            {posts.map((item, index) => (
               <FeedItem
                 key={index}
-                profilePicture={item.profilePicture}
-                displayName={item.displayName}
-                username={item.username}
-                postTime={item.postTime}
-                caption={item.caption}
-                mediaUrl={item.mediaUrl}
+                post={item}
               />
             ))}
           </div>

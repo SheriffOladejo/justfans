@@ -5,9 +5,9 @@ const DATABASE = 'camgirln_db';
 
 const BASE_API_URL = "http://localhost:4000";
 
-const POST_TABLE = "camgirl_posts";
+const POST_TABLE = "camgirl_post";
 const COL_ID = "id";
-const COL_POST_ID = "post_id";
+const COL_POST_ID = "id";
 const COL_POST_USER_ID = "user_id";
 const COL_CAPTION = "caption";
 const COL_POST_LINK = "post_link";

@@ -39,7 +39,7 @@ function ProfilePicture ({
             marginLeft: `${marginLeft}`,
             zIndex: `${zIndex}`,
             }}>
-            <img src='/images/profile-picture.png' alt="Profile" onClick={handleClick} />
+            <img src={url} alt="Profile" onClick={handleClick} />
           
           {/* <img src={user && user.getProfilePicture()} alt="Profile" /> */}
           <div className={`${isOnline ? 'online-indicator' : ''}`}></div>

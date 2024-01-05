@@ -1,11 +1,10 @@
 class Post {
     constructor(
-        id, post_id, user_id, caption, post_link, post_link_title, post_link_image,
+        id, user_id, caption, post_link, post_link_title, post_link_image,
         attachment_file, attachment_file_name, attachment_type, post_share, post_privacy, 
         post_type, creation_date, comments_privacy, comments, reactions, likes, tips 
     ) {
         this.id = id;
-        this.post_id = post_id;
         this.user_id = user_id;
         this.caption = caption;
         this.post_link = post_link;
