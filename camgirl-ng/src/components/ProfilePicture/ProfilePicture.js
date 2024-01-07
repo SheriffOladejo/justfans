@@ -28,7 +28,7 @@ function ProfilePicture ({
         fetchUser();
     }, []);
 
-    if (!hasStory) {
+    if (hasStory) {
         boxShadow = "0 0 0 1px #f94f64";
     }
     return (

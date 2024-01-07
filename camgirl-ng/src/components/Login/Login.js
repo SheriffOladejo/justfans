@@ -88,7 +88,7 @@ function Login() {
 
   const loginGoogle = async () => {
     if (isGoogleSignIn) {
-      Cookies.set('username', username, { expires: 7 });
+      Cookies.set('username', username, { expires: 1 });
             navigate('/main-page');
       if (isValidEmail(username)) {
         const emailResponse = await dbHelper.checkForEmail(username);
@@ -122,12 +122,12 @@ function Login() {
           } 
           else if (creator_mode === "creator" && profile_setup === "true") {
             setLoading(false);
-            Cookies.set('username', username, { expires: 7 });
+            Cookies.set('username', username, { expires: 1 });
             navigate('/main-page');
           }
           else if (creator_mode === "fan") {
             setLoading(false);
-            Cookies.set('username', username, { expires: 7 });
+            Cookies.set('username', username, { expires: 1 });
             navigate('/main-page');
           }
         }
@@ -191,12 +191,12 @@ function Login() {
             } 
             else if (creator_mode === "creator" && profile_setup === "true") {
               setLoading(false);
-              Cookies.set('username', username, { expires: 7 });
+              Cookies.set('username', username, { expires: 1 });
               navigate('/main-page');
             }
             else if (creator_mode === "fan") {
               setLoading(false);
-              Cookies.set('username', username, { expires: 7 });
+              Cookies.set('username', username, { expires: 1 });
               navigate('/main-page');
             }
           }
@@ -249,12 +249,12 @@ function Login() {
             } 
             else if (creator_mode === "creator" && profile_setup === "true") {
               setLoading(false);
-              Cookies.set('username', username, { expires: 7 });
+              Cookies.set('username', username, { expires: 1 });
               navigate('/main-page');
             }
             else if (creator_mode === "fan") {
               setLoading(false);
-              Cookies.set('username', username, { expires: 7 });
+              Cookies.set('username', username, { expires: 1 });
               navigate('/main-page');
             }
           }

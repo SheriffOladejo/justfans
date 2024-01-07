@@ -1,6 +1,5 @@
 CREATE TABLE camgirln_db.camgirl_post (
     id INTEGER PRIMARY KEY AUTO_INCREMENT,
-    post_id AS (id),
     user_id VARCHAR(200) NOT NULL,
     caption TEXT CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci,
     post_link TEXT,

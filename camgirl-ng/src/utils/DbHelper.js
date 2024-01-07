@@ -20,29 +20,29 @@ class DbHelper {
     }
 
     async updatePost (post) {
-            const data = {
-                "post_id": post.getPostId(),
-                "user_id": post.getUserId(),
-                "caption": post.getCaption(),
-                "attachment_file": post.getAttachmentFile(),
-                "comments_privacy": post.getCommentsPrivacy(),
-                "comments": post.getComments(),
-                "attachment_file_name": post.getAttachmentFileName(),
-                "attachment_type": post.getAttachmentType(),
-                "post_privacy": post.getPostPrivacy(),
-                "post_type": post.getPostType(),
-                "creation_date": post.getCreationDate(),
-                "reactions": post.getReactions(),
-                "likes": post.getLikes(),
-                "tips": post.getTips(),
-            };
-            try {
-                const response = await axios.post(`${Constants.BASE_API_URL}/updatePost`, data);
-                return response;
-            }
-            catch (error) {
-                console.error("An error occurred: " + error);
-            }
+        const data = {
+            "post_id": post.getPostId(),
+            "user_id": post.getUserId(),
+            "caption": post.getCaption(),
+            "attachment_file": post.getAttachmentFile(),
+            "comments_privacy": post.getCommentsPrivacy(),
+            "comments": post.getComments(),
+            "attachment_file_name": post.getAttachmentFileName(),
+            "attachment_type": post.getAttachmentType(),
+            "post_privacy": post.getPostPrivacy(),
+            "post_type": post.getPostType(),
+            "creation_date": post.getCreationDate(),
+            "reactions": post.getReactions(),
+            "likes": post.getLikes(),
+            "tips": post.getTips(),
+        };
+        try {
+            const response = await axios.post(`${Constants.BASE_API_URL}/updatePost`, data);
+            return response;
+        }
+        catch (error) {
+            console.error("An error occurred: " + error);
+        }
     }
 
     async createPost (post) {
@@ -122,6 +122,58 @@ class DbHelper {
             console.log("getPostsByUserID error: " + error);
         }
         return list;
+    }
+
+    async getPostByID (post_id) {
+        var post = new Post();
+        try {
+            const data = {"post_id": post_id};
+            const response = await axios.get(`${Constants.BASE_API_URL}/getPostByID`, {params: data});
+            for (let i = 0; i < response.data.length; i++) {
+                const id = response.data[i]["id"];
+                const user_id = response.data[i]["user_id"];
+                const caption = response.data[i]["caption"];
+                const post_link = response.data[i]["post_link"];
+                const post_link_title = response.data[i]["post_link_title"];
+                const post_link_image = response.data[i]["post_link_image"];
+                const attachment_file = response.data[i]["attachment_file"];
+                const attachment_file_name = response.data[i]["attachment_file_name"];
+                const attachment_type = response.data[i]["attachment_type"];
+                const post_share = response.data[i]["post_share"];
+                const post_privacy = response.data[i]["post_privacy"];
+                const post_type = response.data[i]["post_type"];
+                const creation_date = response.data[i]["creation_date"];
+                const comments_privacy = response.data[i]["comments_privacy"];
+                const comments = response.data[i]["comments"];
+                const reactions = response.data[i]["reactions"];
+                const likes = response.data[i]["likes"];
+                
+                post = new Post(
+                    id,
+                    user_id,
+                    caption,
+                    post_link, 
+                    post_link_title, 
+                    post_link_image, 
+                    attachment_file,
+                    attachment_file_name, 
+                    attachment_type, 
+                    post_share, 
+                    post_privacy, 
+                    post_type, 
+                    creation_date,
+                    comments_privacy, 
+                    comments,
+                    reactions, 
+                    likes
+                );
+            }
+            
+        }
+        catch(error) {
+            console.log("getPostByID error: " + error);
+        }
+        return post;
     }
 
     async updatePost (post) {
@@ -426,6 +478,7 @@ class DbHelper {
             "subscribers": user.getSubscribers() === undefined ? 0 : user.getSubscribers(),
             "connections": user.getConnections() === undefined ? 0 : user.getConnections(),
             "subscription_price": user.getSubscriptionPrice() === undefined ? 0 : user.getSubscriptionPrice(),
+            "currency": user.getCurrencyy() === undefined ? "" : user.getCurrency(),
             "currency_symbol": user.getCurrencySymbol() === undefined ? "" : user.getCurrencySymbol(),
             "verified": user.getVerified() === undefined ? "" : user.getVerified(),
             "live_mode": user.getLiveMode() === undefined ? "" : user.getLiveMode(),

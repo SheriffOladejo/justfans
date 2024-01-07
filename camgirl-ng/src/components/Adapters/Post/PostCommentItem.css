@@ -1,13 +1,13 @@
 .post-comment-like-container {
-    width:30px;
-    height:30px;
-    background-color:#ffffff;
-    border-radius: 5px;
-    display:flex;
-    flex-direction:row;
-    justify-content:center;
-    align-items:center;
-    cursor: pointer;
+  width:30px;
+  height:30px;
+  background-color:#ffffff;
+  border-radius: 5px;
+  display:flex;
+  flex-direction:row;
+  justify-content:center;
+  align-items:center;
+  cursor: pointer;
 }
 
 .post-comment-like-container:hover {
@@ -34,7 +34,7 @@
   flex-direction: row;
   align-items: center;
   width: 100%;
-  margin-left: 65px;
+  margin-left: 55px;
   justify-content: space-between;
 }
 
@@ -45,13 +45,14 @@
 }
 
 .post-comment-item-container {
-    width: 100%;
-    height: auto;
-    margin-top:30px;
-    display:flex;
-    flex-direction:column;
-    align-items:start;
-    border-radius: 8px;
+  width: 550px;
+  height: auto;
+  background-color: white;
+  margin-top: 30px;
+  display:flex;
+  flex-direction:column;
+  align-items:start;
+  border-radius: 8px;
 }
 
 .post-comment-item-caption {
@@ -59,7 +60,7 @@
   margin: 8px 0;
   font-weight: 500;
   font-family: 'Inter', sans-serif;
-  margin-left: 65px;
+  margin-left: 58px;
 }
 
 .post-comment-item-reaction-container {

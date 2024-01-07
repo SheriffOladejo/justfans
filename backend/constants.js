@@ -49,6 +49,7 @@ const COL_SUBSCRIBERS = 'subscribers';
 const COL_CONNECTIONS = 'connections';
 const COL_SUBSCRIPTION_PRICE = 'subscription_price';
 const COL_CURRENCY_SYMBOL = 'currency_symbol';
+const COL_CURRENCY = "currency";
 const COL_VERIFIED = 'verified';
 const COL_LIVE_MODE = 'live_mode';
 const COL_PROFILE_SETUP = 'profile_setup';
@@ -84,6 +85,7 @@ module.exports = {
   COL_CONNECTIONS,
   COL_SUBSCRIPTION_PRICE,
   COL_CURRENCY_SYMBOL,
+  COL_CURRENCY,
   COL_VERIFIED,
   COL_LIVE_MODE,
   COL_PROFILE_SETUP,

@@ -1,0 +1,177 @@
+.send-tip-modal-main {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, 0.5);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 2;
+}
+
+.send-tip-modal-child {
+    background: white;
+    height: 290px;
+    width: 350px; 
+    margin: auto;
+    padding: 2%;
+    border: "2px solid #000";
+    border-radius: 10px;
+    box-shadow: "2px solid black";
+}
+
+.send-tip-title {
+    font-family: "Inter";
+    font-size: 15px;
+    font-weight: 700;
+    color: black;
+}
+
+.send-tip-input {
+    border: 1px solid #D0D5DD;
+    border-radius: 8px;
+    font-size: 16px;
+    width: 90%;
+    font-family: 'Inter', sans-serif;
+    padding-left: 20px;
+    margin-top: 10px;
+}
+
+.send-tip-input::placeholder {
+    color: #D0D5DD;
+}
+
+.send-tip-minimum {
+    font-size: 10px;
+    font-family: 'Inter', sans-serif;
+    color: #707070;
+    font-weight: 400;
+}
+
+.template-amount-div {
+    padding-left: 10px;
+    padding-right: 10px;
+    padding-top: 5px;
+    padding-bottom: 5px;
+    background-color: #F5F5F5;
+    border-radius: 20px;
+    align-items: center;
+    display: flex;
+    justify-content: center;
+    cursor: pointer;
+}
+
+.template-amount {
+    font-family: 'Inter';
+    font-size: 12px;
+    color: #020312;
+    font-weight: 500;
+}
+
+.template-amount:hover {
+    text-decoration: underline;
+}
+
+.send-tip-template-list {
+    list-style: none;
+    padding: 0;
+    display: flex;
+    gap: 10px;
+    justify-content: space-between;
+}
+
+.sendtip-checkbox-label {
+    position: relative;
+    padding-left: 25px;
+    font-size: 12px;
+    padding-top: 5px;
+    cursor: pointer;
+}
+
+.sendtip-checkbox-label:hover {
+    text-decoration: underline;
+}
+
+.sendtip-checkbox-custom {
+    position: absolute;
+    top: 2px;
+    left: 0;
+    width: 16px;
+    height: 16px;
+    border: 2px solid #ccc;
+    border-radius: 14px;
+    background-color: transparent;
+    transition: border-color 0.3s;
+  }
+  
+.send-tip-anonymous-label {
+    font-size: 12px;
+    font-family: 'Inter';
+    font-weight: 400;
+    color: #9EA0A4;
+    display: flex;
+    align-items: center;
+    cursor: pointer;
+}
+
+.send-tip-anonymous-check {
+    display: flex;
+    z-index: 0;
+    color: black;
+    cursor: pointer;
+}
+
+
+  .send-tip-anonymous-label input {
+    cursor: pointer;
+    margin-right: 5px; /* Adjust the spacing between the checkbox and the label text */
+  }
+
+.send-tip-buttons-row {
+    display: flex;
+    justify-content: space-around;
+    align-items: center;
+    padding-top: 15px;
+    padding-bottom: 15px;
+    margin-top: 10px;
+}
+  
+.send-tip-done-button {
+    background-color: #F94F64;
+    color: white;
+    border: none;
+    padding: 0px 20px;
+    border-radius: 6px;
+    cursor: pointer;
+    font-family: 'Lato';
+    font-weight: 700;
+    font-family: 'Lato';
+}
+
+.send-tip-button-div {
+    display: flex;
+    flex-direction: row;
+    gap: 5px;
+}
+  
+.send-tip-cancel-button {
+    background-color: white;
+    color: black;
+    border: none;
+    padding: 10px 20px;
+    border-radius: 6px;
+    cursor: pointer;
+    font-weight: 700;
+    font-family: 'Lato';
+}
+
+/* .send-tip-template-list li {
+    margin-right: 10px;
+    padding: 5px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    display: flex;
+    align-items: center;
+} */

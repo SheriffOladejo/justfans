@@ -37,6 +37,17 @@ class AppUser {
       this.creator_mode_desc_dismissed = creator_mode_desc_dismissed;
     }
 
+    toString() {
+      return `AppUser { 
+        id: ${this.id}, 
+        user_id: ${this.user_id}, 
+        username: ${this.username}, 
+        email: ${this.email}, 
+        // ... include other properties ...
+        profile_setup: ${this.profile_setup} 
+      }`;
+    }
+
     getCreatorModeDescDismissed() {
       return this.creator_mode_desc_dismissed;
     }

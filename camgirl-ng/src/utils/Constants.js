@@ -18,10 +18,17 @@ const PUBLICITY_OPTIONS = [
   {title: "Only me", image: "/images/padlock.svg", desc: ""}
 ];
 
+const ATTACHMENT_GIF = "gif";
+const ATTACHMENT_IMAGE = "image";
+const ATTACHMENT_VIDEO = "video";
+
 module.exports = {
   BASE_API_URL,
   GOOGLE_CLIENT_ID,
   FIREBASE_CONFIG,
   GIPHY_API_KEY,
   PUBLICITY_OPTIONS,
+  ATTACHMENT_GIF,
+  ATTACHMENT_IMAGE,
+  ATTACHMENT_VIDEO,
 };

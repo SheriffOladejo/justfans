@@ -13,13 +13,13 @@ import Navbar from '../ProfileSetup/Navbar';
 import DbHelper from '../../utils/DbHelper';
 import { isUserSignedIn } from '../../utils/Utils';
 import { getStorage, ref, uploadBytesResumable, getDownloadURL } from 'firebase/storage';
-import Constants from '../../utils/Constants';
+import { FIREBASE_CONFIG, PUBLICITY_OPTIONS, ATTACHMENT_GIF, ATTACHMENT_IMAGE, ATTACHMENT_VIDEO } from '../../utils/Constants';
 import { initializeApp } from 'firebase/app';
 import LoadingScreen from '../LoadingScreen/LoadingScreen';
 import SelectGif from '../SelectGif/SelectGif';
 import BottomNav from '../BottomNav/BottomNav';
 import PublicityOptions from './PublicityOptions/PublicityOptions';
-import { PUBLICITY_OPTIONS } from '../../utils/Constants';
+import { scrollToTop } from '../../utils/Utils';
 
 function Home () {
 
@@ -103,7 +103,7 @@ function Home () {
         return;
       }
       setLoading(true);
-      const firebaseApp = initializeApp(Constants.FIREBASE_CONFIG);
+      const firebaseApp = initializeApp(FIREBASE_CONFIG);
       const storage = getStorage(firebaseApp);
       var storageRef;
       var uploadTask;
@@ -180,6 +180,38 @@ function Home () {
       fetchUser();
     }, []);
 
+    useEffect(() => {
+      const getPosts = async () => {
+        const signinData = isUserSignedIn();
+          
+        const username = signinData["username"];
+        const email = signinData["email"];
+        var _u = null;
+        if (email !== null) {
+          _u = await dbHelper.getAppUserByEmail(email);
+        }
+        else if (username !== null) {
+          _u = await dbHelper.getAppUserByUsername(username);
+        }
+        else {
+          console.log("login cookie has expired");
+        }
+
+      
+        
+        if (_u !== null) {
+          let user_id = _u.user_id;
+          let posts = await dbHelper.getPostsByUserID(user_id);
+          setPosts(posts);
+        }
+        else {
+        }
+      }
+
+      getPosts();
+
+    }, []);
+
     const removeAttachment = () => {
       setSelectedVideo(null);
       setSelectedImage(null);
@@ -209,13 +241,13 @@ function Home () {
           setSelectedImage(selectedFile);
           setSelectedVideo(null);
           setSelectedGif(null);
-          setAttachmentType('image');
+          setAttachmentType(ATTACHMENT_IMAGE);
           setAttachmentFileName(selectedFile.name);
         } else if (isVideo) {
           setSelectedVideo(selectedFile);
           setSelectedImage(null);
           setSelectedGif(null);
-          setAttachmentType('video');
+          setAttachmentType(ATTACHMENT_VIDEO);
           setAttachmentFileName(selectedFile.name);
         } else {
           console.error('Invalid file type. Please select an image or a video.');
@@ -225,8 +257,8 @@ function Home () {
 
     const handleGifAttachment = (selectedGif) => {
       setSelectedGif(selectedGif);
-      setAttachmentFileName('gif');
-      setAttachmentType('gif');
+      setAttachmentFileName(ATTACHMENT_GIF);
+      setAttachmentType(ATTACHMENT_GIF);
       setShowGifs(false);
     };
   
@@ -238,35 +270,6 @@ function Home () {
     const openGifChooser = () => {
       gifRef.current.click();
     };
-
-    useEffect(() => {
-      const getPosts = async () => {
-        const signinData = isUserSignedIn();
-          
-        const username = signinData["username"];
-        const email = signinData["email"];
-        var _u = null;
-        if (email === null) {
-          _u = await dbHelper.getAppUserByUsername(username);
-        }
-        else {
-          _u = await dbHelper.getAppUserByEmail(email);
-        }
-        
-        if (_u !== null) {
-          let user_id = _u.user_id;
-          let posts = await dbHelper.getPostsByUserID(user_id);
-          setPosts(posts);
-        }
-        else {
-          console.log("user cookie has expired");
-          // logout
-        }
-      }
-
-      getPosts();
-
-    }, []);
 
     const createPost = async () => {
       if (attachmentFile === '' && attachmentFileName !== '') {
@@ -328,6 +331,8 @@ function Home () {
       
     }
 
+    scrollToTop(window);
+
     if (isMobile) {
       return (
         <div className='home-container'>
@@ -352,11 +357,7 @@ function Home () {
           {posts.map((item, index) => (
               <FeedItem
                 key={index}
-                postID={item.id}
-                userID={item.user_id}
-                postTime={item.creation_date}
-                caption={item.caption}
-                mediaUrl={item.attachment_file}
+                post={item}
               />
             ))}
           </div>
@@ -494,6 +495,7 @@ function Home () {
           <ToastContainer/>
         </div>
     );
+  
 }
 
 export default Home;

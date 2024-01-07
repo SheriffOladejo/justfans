@@ -1,6 +1,5 @@
 import React, { useState, useEffect, useRef } from 'react';
-import { useLocation } from 'react-router-dom';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, useLocation } from 'react-router-dom';
 import './ProfileSetup.css';
 import Navbar from './Navbar';
 import DatePicker from 'react-datepicker';
@@ -253,8 +252,8 @@ function ProfileSetup () {
                   user.setProfilePicture(downloadURL);
                   user.setProfileSetup("true");
                   dbHelper.updateUser(user);
-                  Cookies.set('username', username, { expires: 7 });
-                  Cookies.set('email', email, { expires: 7 });
+                  Cookies.set('username', username, { expires: 1 });
+                  Cookies.set('email', email, { expires: 1 });
                   navigate('/main-page');
                 }
               });

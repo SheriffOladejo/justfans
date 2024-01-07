@@ -7,7 +7,8 @@ import TextareaAutosize from 'react-textarea-autosize';
 import { useRef } from 'react';
 import DbHelper from '../../../utils/DbHelper';
 import AppUser from '../../../models/AppUser';
-import { isUserSignedIn } from '../../../utils/Utils';
+import { isUserSignedIn, calculateTimeAgo, getAppUser } from '../../../utils/Utils';
+import SendTipModal from '../../Modals/SendTipModal/SendTipModal';
 
 function FeedItem({ post }) {
 
@@ -16,7 +17,12 @@ function FeedItem({ post }) {
   const navigate = useNavigate();
 
   const openComment = (event) => {
-    navigate('/post-comment', {state: {  }});
+    let post_id = post.getId();
+    let owner_id = postOwner.getUserId();
+    navigate('/post-comment', {state: {
+      post_id,
+      owner_id
+    }});
   }
 
   const textareaRef = useRef(null);
@@ -36,6 +42,8 @@ function FeedItem({ post }) {
 
   const [comment, setComment] = useState('');
 
+  const [showTipModal, setShowTipModal] = useState(false);
+ 
   useEffect(() => {
     const getCounts = () => {
       if (post.getLikes() !== null) {
@@ -43,61 +51,36 @@ function FeedItem({ post }) {
         if (likes > 0) {
           setLikesCount(`${likes}`);
         }
+        else {
+          setLikesCount('');
+        }
       }
       if (post.getComments() !== null) {
         let comments = JSON.parse(post.getComments()).comments.length;
         if (comments > 0) {
           setCommentsCount(`${comments}`);
         }
+        else {
+          setCommentsCount('');
+        }
       }
     }
     getCounts();
   });
-
+  
   useEffect(() => {
     const fetchUser = async () => {
-      const signinData = isUserSignedIn();
-      
-      const username = signinData["username"];
-      const email = signinData["email"];
-      var _u = null;
-      if (email === null) {
-        _u = await dbHelper.getAppUserByUsername(username);
-      }
-      else {
-        _u = await dbHelper.getAppUserByEmail(email);
-      }
-      setUser(_u);
+      let user = await getAppUser();
+      user.setCurrency("NGN");
+      user.setCurrencySymbol("\u20A6");
+
+      setUser(user);
     };
     fetchUser();
   }, []);
 
   useEffect(() => {
-    const calculateTimeAgo = () => {
-      const currentTime = new Date().getTime();
-      const timeDifference = currentTime - post.getCreationDate();
-
-      const seconds = Math.floor(timeDifference / 1000);
-      const minutes = Math.floor(seconds / 60);
-      const hours = Math.floor(minutes / 60);
-      const days = Math.floor(hours / 24);
-
-      let result = '';
-
-      if (days > 0) {
-        result = `${days}${days === 1 ? ' day' : ' days'} ago`;
-      } else if (hours > 0) {
-        result = `${hours}${hours === 1 ? 'hr' : 'hrs'} ago`;
-      } else if (minutes > 0) {
-        result = `${minutes}${minutes === 1 ? 'min' : 'min'} ago`;
-      } else {
-        result = `${seconds}${seconds === 1 ? 's' : 's'} ago`;
-      }
-
-      setTimeAgo(result);
-    };
-
-    calculateTimeAgo();
+    setTimeAgo(calculateTimeAgo(post.getCreationDate()));
   }, []);
 
   useEffect(() => {
@@ -118,8 +101,6 @@ function FeedItem({ post }) {
   },[]);
 
   useEffect(() => {
-    console.log("post comment: " + post.getComments());
-    console.log("post likes: " + post.getLikes());
     const handleResize = () => {
       if (window.innerWidth <= 600) {
         setIsMobile(true);
@@ -229,8 +210,17 @@ function FeedItem({ post }) {
     }
   }
 
+  const closeTipModal = () => {
+    setShowTipModal(false);
+  };
+
+  const openTipModal = () => {
+    setShowTipModal(true);
+  };
+
   return (
     <div className="post-card">
+      <SendTipModal isOpen={showTipModal} onClose={closeTipModal} currency={user.getCurrency()} currency_symbol={user.getCurrencySymbol()}></SendTipModal>
       <div className="user-info">
         <ProfilePicture url={postOwner.getProfilePicture()} marginLeft="0px" zIndex={"0"}/>
         <div className="user-details">
@@ -268,7 +258,7 @@ function FeedItem({ post }) {
           </div>
           <p className="reaction-text">{commentsCount}</p>
         </div>
-        <div className="reaction">
+        <div onClick={openTipModal} className="reaction">
           <div className="reaction-icon">
             <img src="/images/tip.png" alt="Tip" />
           </div>
