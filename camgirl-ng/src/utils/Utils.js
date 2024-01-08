@@ -39,6 +39,7 @@ function isUserSignedIn () {
     const email = Cookies.get('email');
     if (username === null && email === null) {
         console.log("user cookie has expired");
+        alert("user cookie has expired");
     }
     return {
         "email": email,
@@ -53,14 +54,12 @@ async function getAppUser() {
     const username = signinData["username"];
     const email = signinData["email"];
     var user = null;
-    if (email === null) {
+    if (email === null || email === undefined) {
       user = await dbHelper.getAppUserByUsername(username);
     }
     else {
       user = await dbHelper.getAppUserByEmail(email);
     }
-    user.setCurrency("NGN");
-    user.setCurrencySymbol("\u20A6");
 
     return user;
 }

@@ -71,6 +71,7 @@ function FeedItem({ post }) {
   useEffect(() => {
     const fetchUser = async () => {
       let user = await getAppUser();
+      console.log()
       user.setCurrency("NGN");
       user.setCurrencySymbol("\u20A6");
 

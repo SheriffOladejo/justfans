@@ -11,7 +11,7 @@ import Post  from '../../models/Post';
 import AppUser from '../../models/AppUser';
 import Navbar from '../ProfileSetup/Navbar';
 import DbHelper from '../../utils/DbHelper';
-import { isUserSignedIn } from '../../utils/Utils';
+import { getAppUser, isUserSignedIn } from '../../utils/Utils';
 import { getStorage, ref, uploadBytesResumable, getDownloadURL } from 'firebase/storage';
 import { FIREBASE_CONFIG, PUBLICITY_OPTIONS, ATTACHMENT_GIF, ATTACHMENT_IMAGE, ATTACHMENT_VIDEO } from '../../utils/Constants';
 import { initializeApp } from 'firebase/app';
@@ -164,17 +164,7 @@ function Home () {
 
     useEffect(() => {
       const fetchUser = async () => {
-        const signinData = isUserSignedIn();
-        
-        const username = signinData["username"];
-        const email = signinData["email"];
-        var _u = null;
-        if (email === null) {
-          _u = await dbHelper.getAppUserByUsername(username);
-        }
-        else {
-          _u = await dbHelper.getAppUserByEmail(email);
-        }
+        var _u = await getAppUser();
         setUser(_u);
       };
       fetchUser();
@@ -186,19 +176,10 @@ function Home () {
           
         const username = signinData["username"];
         const email = signinData["email"];
-        var _u = null;
-        if (email !== null) {
-          _u = await dbHelper.getAppUserByEmail(email);
-        }
-        else if (username !== null) {
-          _u = await dbHelper.getAppUserByUsername(username);
-        }
-        else {
-          console.log("login cookie has expired");
-        }
 
-      
-        
+
+        var _u = await getAppUser();
+
         if (_u !== null) {
           let user_id = _u.user_id;
           let posts = await dbHelper.getPostsByUserID(user_id);

@@ -93,16 +93,7 @@ function PostComment () {
         const username = signinData["username"];
         const email = signinData["email"];
 
-        var _u = null;
-        if (email !== null) {
-          _u = await dbHelper.getAppUserByEmail(email);
-        }
-        else if (username !== null) {
-          _u = await dbHelper.getAppUserByUsername(email);
-        }
-        else {
-          console.log("login cookie has expired");
-        }
+        var _u = await getAppUser();
         
         if (_u !== null) {
           setPostOwner(_u);

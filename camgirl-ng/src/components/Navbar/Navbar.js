@@ -4,8 +4,8 @@ import ProfilePicture from '../ProfilePicture/ProfilePicture';
 import './Navbar.css';
 import DbHelper from '../../utils/DbHelper';
 import React, { useState, useEffect } from 'react';
-import Cookies from 'js-cookie';
-import { isValidEmail } from '../../utils/Utils';
+import AppUser from '../../models/AppUser';
+import { getAppUser } from '../../utils/Utils';
 import MyDrawer from '../Drawer/Drawer';
 
 function Navbar () {
@@ -13,7 +13,7 @@ function Navbar () {
     const notifCount = 300;
     const messageCount = 100;
 
-    const [user, setUser] = useState(null); 
+    const [user, setUser] = useState(new AppUser()); 
     const [showCreatorDesc, setShowCreatorDesc] = useState(true);
 
     const [isMobile, setIsMobile] = useState(false);
@@ -55,9 +55,8 @@ function Navbar () {
     }, [toggleDrawer]);
 
     useEffect(() => {
-        const username = Cookies.get('username');
         const fetchUser = async () => {
-          const _u =  isValidEmail(username) ? await dbHelper.getAppUserByEmail(username) :await dbHelper.getAppUserByUsername(username);
+          const _u = await getAppUser();
           setUser(_u);
         };
         fetchUser();
@@ -81,7 +80,7 @@ function Navbar () {
         return (
             <nav className='navbar'>
                 <div className='mobile-nav-container'>
-                    <ProfilePicture handleClick={openDrawer} marginLeft='0px'/>
+                    <ProfilePicture url={user.getProfilePicture()} handleClick={openDrawer} marginLeft='0px'/>
                     <img src="/images/justfans_black_red.png"/>
                     <div>
                         <label className="switch">

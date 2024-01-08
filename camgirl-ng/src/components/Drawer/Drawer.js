@@ -1,10 +1,11 @@
-import React from "react"; 
+import React, { useState } from "react"; 
 import Box from "@mui/material/Box"; 
 import Drawer from "@mui/material/Drawer"; 
-import Button from "@mui/material/Button"; 
+import AppUser from "../../models/AppUser";
 import './Drawer.css';
 import ProfilePicture from '../ProfilePicture/ProfilePicture';
 import { useEffect } from "react";
+import { getAppUser } from "../../utils/Utils";
 
 function MyDrawer({toggle, close}) { 
 
@@ -12,7 +13,16 @@ function MyDrawer({toggle, close}) {
         left: false,
     });
 
-    //useEffect(() => {toggleDrawer(toggle)}, []);
+    const [user, setUser] = useState(new AppUser());
+
+    useEffect(() => {
+        const fetchUser = async () => {
+          let _u = await getAppUser();
+          setUser(_u);
+        };
+        fetchUser();
+      }, []);
+
     useEffect(() => {
         setState((prevState) => ({
             ...prevState,
@@ -52,7 +62,7 @@ function MyDrawer({toggle, close}) {
                     <img alt="logo" src="/images/justfans_black_red.png"/>
                     <img className="drawer-settings-icon" alt="Settings" src="/images/settings-pink.png"/>
                 </div>
-                <ProfilePicture marginLeft={'20px'} marginTop={'10px'} marginBottom={'10px'}/>
+                <ProfilePicture url={user.getProfilePicture()} marginLeft={'20px'} marginTop={'10px'} marginBottom={'10px'}/>
                 <div>
                     <span className="drawer-display-name">
                         Sheriff Oladejo

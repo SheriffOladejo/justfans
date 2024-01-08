@@ -2,15 +2,15 @@ import ProfilePicture from '../ProfilePicture/ProfilePicture';
 import { useNavigate } from 'react-router-dom';
 import './SideBar.css';
 import DbHelper from '../../utils/DbHelper';
-import Cookies from 'js-cookie';
-import { isValidEmail } from '../../utils/Utils';
+import AppUser from '../../models/AppUser';
+import { getAppUser } from '../../utils/Utils';
 import React, { useState, useEffect } from 'react';
 
 const SideBar = ({marginLeft, marginTop, pageIndex}) => {
   const dbHelper = new DbHelper();
 
   const [selectedLink, setSelectedLink] = useState(pageIndex);
-  const [user, setUser] = useState(null);
+  const [user, setUser] = useState(new AppUser());
 
   const navigate = useNavigate();
 
@@ -37,18 +37,17 @@ const SideBar = ({marginLeft, marginTop, pageIndex}) => {
   };
 
   useEffect(() => {
-    const username = Cookies.get('username');
     const fetchUser = async () => {
-      const _u =  isValidEmail(username) ? await dbHelper.getAppUserByEmail(username) :await dbHelper.getAppUserByUsername(username);
-      setUser(_u);
+      let user = await getAppUser();
+      setUser(user);
     };
     fetchUser();
-}, []);
+  }, []);
 
   return (
     <div className="sidebar" style={{ marginTop:`${marginTop}`, marginLeft:`${marginLeft}` }}>
       <div className="profile">
-          <ProfilePicture zIndex={"1"}/>
+          <ProfilePicture url={user.getProfilePicture()}  zIndex={"1"}/>
           <div style={{ width:'180px' }}>
             <span className="sidebar-display-name">
               {user && user.getFirstName()} {user && user.getLastName()}

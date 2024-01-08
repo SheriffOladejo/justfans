@@ -1,7 +1,7 @@
 import './Login.css';
 import React, { useState, useEffect } from 'react';
 import SignupSection from '../Signup/SignupSection';
-import { isValidEmail, stringToUint8Array, sha256 } from '../../utils/Utils';
+import { isValidEmail, isUserSignedIn } from '../../utils/Utils';
 import axios from 'axios';
 import { ToastContainer, toast } from 'react-toastify';  
 import Constants from '../../utils/Constants';
@@ -232,7 +232,6 @@ function Login() {
             const username = usernameResponse.data[0]["username"];
             const stage = usernameResponse.data[0]["profile_setup"];
 
-            console.log(creator_mode);
             if (creator_mode === "creator" && profile_setup !== "true") {
               navigate('/profile-setup', {state: {
                 profile_setup,
