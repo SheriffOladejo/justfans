@@ -234,10 +234,12 @@ function PostComment () {
 
     const closeTipModal = () => {
       setShowTipModal(false);
+      document.body.style.overflow = "";
     };
   
     const openTipModal = () => {
       setShowTipModal(true);
+      document.body.style.overflow = "hidden";
     };
   
     const makeComment = async (event) => {

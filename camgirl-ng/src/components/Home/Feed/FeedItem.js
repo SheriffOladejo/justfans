@@ -7,7 +7,7 @@ import TextareaAutosize from 'react-textarea-autosize';
 import { useRef } from 'react';
 import DbHelper from '../../../utils/DbHelper';
 import AppUser from '../../../models/AppUser';
-import { isUserSignedIn, calculateTimeAgo, getAppUser } from '../../../utils/Utils';
+import { calculateTimeAgo, getAppUser } from '../../../utils/Utils';
 import SendTipModal from '../../Modals/SendTipModal/SendTipModal';
 
 function FeedItem({ post }) {
@@ -213,10 +213,12 @@ function FeedItem({ post }) {
 
   const closeTipModal = () => {
     setShowTipModal(false);
+    document.body.style.overflow = "";
   };
 
   const openTipModal = () => {
     setShowTipModal(true);
+    document.body.style.overflow = "hidden";
   };
 
   return (

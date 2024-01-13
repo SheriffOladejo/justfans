@@ -13,8 +13,6 @@ import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 
 
-
-
 function BottomNav () {
 
     const [value, setValue] = useState(-1);

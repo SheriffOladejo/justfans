@@ -15,6 +15,14 @@
   border-radius: 10px;
 }
 
+.post-comment-reply {
+  font-size: 12px;
+  font-family: 'Inter', sans-serif;
+  color: #666;
+  margin-left: 15px;
+  cursor: pointer;
+}
+
 .post-likes {
   font-size: 12px;
   font-family: 'Inter', sans-serif;

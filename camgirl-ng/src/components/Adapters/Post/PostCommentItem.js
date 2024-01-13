@@ -2,18 +2,31 @@ import './PostCommentItem.css';
 import ProfilePicture from '../../ProfilePicture/ProfilePicture';
 import { useState, useEffect, useRef } from 'react';
 import React from 'react';
-import { calculateTimeAgo } from '../../../utils/Utils';
+import { calculateTimeAgo, formatNumber } from '../../../utils/Utils';
 import AppUser from '../../../models/AppUser';
 import DbHelper from '../../../utils/DbHelper';
+import ReplyCommentModal from '../../Modals/ReplyCommentModal/ReplyCommentModal';
 
 function PostCommentItem ({comment, index}) {
 
     const [owner, setOwner] = useState(new AppUser());
     const [likesCount, setLikesCount] = useState('');
 
+    const [showReplyModal, setShowReplyModal] = useState(false);
+
+    const [likedByUser, setLikedByUser] = useState(false);
+
     let dbHelper = new DbHelper();
 
-    
+    const closeReplyModal = () => {
+      setShowReplyModal(false);
+      document.body.style.overflow = "";
+    };
+  
+    const openReplyModal = () => {
+      setShowReplyModal(true);
+      document.body.style.overflow = "hidden";
+    };
 
     useEffect(() => {
       const getUser = async () => {
@@ -24,7 +37,7 @@ function PostCommentItem ({comment, index}) {
           if (comment.getLikes() !== null && comment.getLikes() !== undefined) {
             let likes = JSON.parse(comment.getLikes()).length;
             if (likes > 0) {
-              setLikesCount(`${likes}`);
+              setLikesCount(`${formatNumber(likes)}`);
             }
             else {
               setLikesCount('');
@@ -37,6 +50,11 @@ function PostCommentItem ({comment, index}) {
 
     return (
         <div className="post-comment-item-container">
+          <ReplyCommentModal
+            isOpen={showReplyModal} 
+            onClose={closeReplyModal} 
+            comment={comment}
+            owner={owner} ></ReplyCommentModal>
           <div className="post-comment-user-info">
             <ProfilePicture url={owner.getProfilePicture()} marginLeft='0px' zIndex={"1"}/>
             <div className="post-comment-user-details">
@@ -54,7 +72,8 @@ function PostCommentItem ({comment, index}) {
                 <div className="post-comment-like-container">
                   <img className="post-comment-like" src="/images/like.png" alt="Like"/>
                 </div>
-                <p className="post-likes">120k</p>
+                <p className="post-likes">{likesCount}</p>
+                <p className="post-comment-reply" onClick={openReplyModal}>Reply</p>
             </div>
             <div  className="post-comment-like-container">
               <img src="/images/more.png" alt="More" />

@@ -39,7 +39,9 @@ function isUserSignedIn () {
     const email = Cookies.get('email');
     if (username === null && email === null) {
         console.log("user cookie has expired");
-        alert("user cookie has expired");
+    }
+    if (username === undefined && email === undefined) {
+        console.log("user cookie has expired");
     }
     return {
         "email": email,
@@ -77,6 +79,18 @@ function scrollToTop (window) {
     });
 }
 
+function formatNumber(number) {
+    if (number < 1000) {
+      return number.toString(); // No formatting needed for numbers less than 1000
+    } else if (number < 1000000) {
+      // Format numbers between 1000 and 999999 as '1k', '1.5k', '100k', etc.
+      return (number / 1000).toFixed(1).replace(/\.0$/, '') + 'k';
+    } else {
+      // Format numbers equal to or greater than 1000000 as '1M', '1.5M', '100M', etc.
+      return (number / 1000000).toFixed(1).replace(/\.0$/, '') + 'M';
+    }
+  }
+
 function calculateTimeAgo (timestamp) {
     const currentTime = new Date().getTime();
     const timeDifference = currentTime - timestamp;
@@ -103,6 +117,7 @@ function calculateTimeAgo (timestamp) {
   
 
 export {
+    formatNumber,
     calculateTimeAgo,
     isValidEmail,
     stringToUint8Array,
