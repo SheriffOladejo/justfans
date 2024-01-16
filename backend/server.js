@@ -44,6 +44,53 @@ io.on('connection', (socket) => {
 
 // Posts and comments methods
 
+app.get("/getCommentCountByPostID", (req, res) => {
+    const post_id = req.query.post_id;
+    const sql = `SELECT COUNT(*) AS count FROM ${constants.COMMENT_TABLE} WHERE ${constants.COL_COMMENT_PARENT_ID} = ?`;
+    db.query(sql, [post_id], (err, result) => {
+        if (err) {
+            console.error('/getCommentCountByPostID: Error retrieving posts: ' + err.message);
+            res.status(500).json({ message: '/getCommentCountByPostID: Failed to retrieve comment count' });
+        } else {
+            res.json(result);
+        }
+    });
+});
+
+app.get("/getCommentsByPostID", (req, res) => {
+    const post_id = req.query.post_id;
+    const sql = `SELECT * FROM ${constants.COMMENT_TABLE} WHERE ${constants.COL_COMMENT_PARENT_ID} = ?`;
+    db.query(sql, [post_id], (err, result) => {
+        if (err) {
+            console.error('/getCommentsByPostID: Error retrieving posts: ' + err.message);
+            res.status(500).json({ message: '/getCommentsByPostID: Failed to retrieve comment count' });
+        } else {
+            res.json(result);
+        }
+    });
+});
+
+app.post("/updateComment", (req, res) => {
+
+    const {id, user_id, user_ids, creation_date, parent_id, hidden, caption, reactions, likes} = req.body;
+    const sql = `UPDATE ${constants.COMMENT_TABLE} 
+        SET ${constants.COL_COMMENT_USER_IDS} = ?, 
+            ${constants.COL_COMMENT_HIDDEN} = ?, 
+            ${constants.COL_COMMENT_REACTIONS} = ?, 
+            ${constants.COL_COMMENT_LIKES} = ? 
+        WHERE ${constants.COL_COMMENT_ID} = ?`;
+    db.query(sql, [user_ids, hidden, reactions, likes, id],
+        (err, result) => {
+            if (err) {
+                console.error('/updateComment: Error updating comment: ' + err.message);
+                res.json({ message: '/updateComment: Update comment failed: ' + err.message });
+            } else {
+                res.json({ message: '/updateComment: Comment update complete' });
+            }
+        })
+
+});
+
 app.get("/getPostsByUserID", (req, res) => {
     const user_id = req.query.user_id;
 
@@ -94,6 +141,23 @@ app.post("/deletePost", (req, res) => {
     });
 });
 
+app.post("/createComment", (req, res) => {
+    const { user_id, caption, creation_date, hidden, parent_id, likes, reactions, privacy, user_ids } = req.body;
+    const sql = `INSERT INTO ${constants.COMMENT_TABLE} (${constants.COL_COMMENT_USER_ID}, ${constants.COL_COMMENT_CAPTION}, 
+        ${constants.COL_COMMENT_CREATION_DATE}, ${constants.COL_COMMENT_HIDDEN}, ${constants.COL_COMMENT_PARENT_ID}, 
+        ${constants.COL_COMMENT_LIKES}, ${constants.COL_COMMENT_REACTIONS}, ${constants.COL_COMMENT_PRIVACY}, ${constants.COL_COMMENT_USER_IDS}) VALUES (?,?,?,?,?,?,?,?,?)`;
+    db.query(sql, [user_id, caption, creation_date, hidden, parent_id, likes, reactions, privacy, user_ids], (err, result) => {
+        if (err) {
+            console.error("/createComment sql: " + sql);
+            console.error('/createComment: Error inserting comment: ' + err.message);
+            res.status(500).json({ message: '/createComment: Create comment failed' });
+        }
+        else {
+            res.json({ message: '/createComment: Comment creation complete' });
+        }
+    });
+});
+
 
 app.post("/createPost", (req, res) => {
     
@@ -101,7 +165,7 @@ app.post("/createPost", (req, res) => {
         attachment_file_name, attachment_type, post_privacy, post_type, creation_date, 
         reactions, likes, tips } = req.body;
         const sql = `INSERT INTO ${constants.POST_TABLE} (${constants.COL_POST_USER_ID}, ${constants.COL_CAPTION}, ${constants.COL_ATTACHMENT_FILE},
-            ${constants.COL_COMMENTS_PRIVACY}, ${constants.COL_COMMENTS}, ${constants.COL_ATTACHMENT_FILE_NAME}, ${constants.COL_ATTACHMENT_TYPE}, 
+            ${constants.COL_POST_COMMENTS_PRIVACY}, ${constants.COL_COMMENTS}, ${constants.COL_ATTACHMENT_FILE_NAME}, ${constants.COL_ATTACHMENT_TYPE}, 
             ${constants.COL_POST_PRIVACY}, ${constants.COL_POST_TYPE}, ${constants.COL_CREATION_DATE}, ${constants.COL_REACTIONS}, 
             ${constants.COL_LIKES}, ${constants.COL_TIPS}) VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?)`;
             db.query(sql, [user_id, caption, attachment_file, comments_privacy, comments, attachment_file_name, attachment_type, post_privacy,
@@ -117,7 +181,6 @@ app.post("/createPost", (req, res) => {
 });
 
 app.post("/updatePost", (req, res) => {
-    console.error("updating post");
     const {
         id,
         user_id,
@@ -136,19 +199,19 @@ app.post("/updatePost", (req, res) => {
     } = req.body;
 
     const sql = `UPDATE ${constants.POST_TABLE} 
-                 SET ${constants.COL_CAPTION} = ?,
-                     ${constants.COL_ATTACHMENT_FILE} = ?,
-                     ${constants.COL_COMMENTS_PRIVACY} = ?,
-                     ${constants.COL_COMMENTS} = ?,
-                     ${constants.COL_ATTACHMENT_FILE_NAME} = ?,
-                     ${constants.COL_ATTACHMENT_TYPE} = ?,
-                     ${constants.COL_POST_PRIVACY} = ?,
-                     ${constants.COL_POST_TYPE} = ?,
-                     ${constants.COL_CREATION_DATE} = ?,
-                     ${constants.COL_REACTIONS} = ?,
-                     ${constants.COL_LIKES} = ?,
-                     ${constants.COL_TIPS} = ?
-                 WHERE ${constants.COL_POST_ID} = ?`;
+        SET ${constants.COL_CAPTION} = ?,
+            ${constants.COL_ATTACHMENT_FILE} = ?,
+            ${constants.COL_POST_COMMENTS_PRIVACY} = ?,
+            ${constants.COL_COMMENTS} = ?,
+            ${constants.COL_ATTACHMENT_FILE_NAME} = ?,
+            ${constants.COL_ATTACHMENT_TYPE} = ?,
+            ${constants.COL_POST_PRIVACY} = ?,
+            ${constants.COL_POST_TYPE} = ?,
+            ${constants.COL_CREATION_DATE} = ?,
+            ${constants.COL_REACTIONS} = ?,
+            ${constants.COL_LIKES} = ?,
+            ${constants.COL_TIPS} = ?
+        WHERE ${constants.COL_POST_ID} = ?`;
 
     db.query(
         sql,

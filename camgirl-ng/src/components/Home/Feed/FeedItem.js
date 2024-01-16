@@ -9,6 +9,7 @@ import DbHelper from '../../../utils/DbHelper';
 import AppUser from '../../../models/AppUser';
 import { calculateTimeAgo, getAppUser } from '../../../utils/Utils';
 import SendTipModal from '../../Modals/SendTipModal/SendTipModal';
+import PostCommentModel from '../../../models/PostCommentModel';
 
 function FeedItem({ post }) {
 
@@ -45,7 +46,7 @@ function FeedItem({ post }) {
   const [showTipModal, setShowTipModal] = useState(false);
  
   useEffect(() => {
-    const getCounts = () => {
+    const getLikesCounts = () => {
       if (post.getLikes() !== null) {
         let likes = JSON.parse(post.getLikes()).length;
         if (likes > 0) {
@@ -55,23 +56,24 @@ function FeedItem({ post }) {
           setLikesCount('');
         }
       }
-      if (post.getComments() !== null) {
-        let comments = JSON.parse(post.getComments()).comments.length;
-        if (comments > 0) {
-          setCommentsCount(`${comments}`);
-        }
-        else {
-          setCommentsCount('');
-        }
+    }
+    getLikesCounts();
+  }, [post.getLikes()]);
+
+  useEffect(() => {
+    const getCommentsCount = async () => {
+      let count = await dbHelper.getCommentCountByPostID(post.getId());
+      if (count !== 0) {
+        setCommentsCount(`${count}`);
       }
     }
-    getCounts();
-  });
+
+    getCommentsCount();
+  }, []);
   
   useEffect(() => {
     const fetchUser = async () => {
       let user = await getAppUser();
-      console.log()
       user.setCurrency("NGN");
       user.setCurrencySymbol("\u20A6");
 
@@ -160,55 +162,25 @@ function FeedItem({ post }) {
 
   const makeComment = async (event) => {
     event.preventDefault();
-    if (post.getComments() === null && comment !== "") {
-      let user_ids = [user.getUserId()];
-      let privacy = -1;
-      let comments = {
-        id: Date.now(),
-        user_id: user.getUserId(),
-        comment: comment,
-        creation_date: Date.now(),
-        hidden: "false",
-        parent_id: -1,
-        likes: null
-      };
-      let comment_data = {
-        user_ids: user_ids,
-        privacy: privacy,
-        comments: [comments]
-      };
-      post.setComments(JSON.stringify(comment_data));
-      await dbHelper.updatePost(post);
-      setComment("");
-    }
-    else if (post.getComments() !== null && comment !== "") {
-      let comments_data = JSON.parse(post.getComments());
-      var user_ids = comments_data.user_ids;
-      if (!user_ids.includes(user.getUserId())) {
-        user_ids.push(user.getUserId());
-      }
-      let comments = {
-        id: Date.now(),
-        user_id: user.getUserId(),
-        comment: comment,
-        creation_date: Date.now(),
-        hidden: "false",
-        parent_id: -1,
-        likes: null
-      };
-      var comments_list = comments_data.comments;
-      comments_list.push(comments);
+    let user_ids = JSON.stringify([]);
+    let privacy = -1;
+    let post_comment = new PostCommentModel(
+      -1,
+      user.getUserId(),
+      comment,
+      Date.now(),
+      "false",
+      post.getId(),
+      "",
+      "",
+      user_ids,
+      privacy
+    );
 
-      let comment_data = {
-        user_ids: user_ids,
-        privacy: comments_data.privacy,
-        comments: comments_list
-      }; 
-
-      post.setComments(JSON.stringify(comment_data));
-      await dbHelper.updatePost(post);
-      setComment("");
-    }
+    await dbHelper.createComment(post_comment);
+    setComment("");
+    let c = commentsCount + 1;
+    setCommentsCount(`${c}`);
   }
 
   const closeTipModal = () => {

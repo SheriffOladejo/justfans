@@ -19,6 +19,21 @@ CREATE TABLE camgirln_db.camgirl_post (
     tips TEXT
 );
 
+
+
+CREATE TABLE camgirln_db.camgirl_comment (
+    id INTEGER PRIMARY KEY AUTO_INCREMENT,
+    parent_id INTEGER,
+    user_id VARCHAR(200) NOT NULL,
+    hidden VARCHAR(10),
+    caption TEXT CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci,
+    creation_date BIGINT,
+    privacy INTEGER,
+    reactions TEXT,
+    likes TEXT,
+    user_ids TEXT
+);
+
 CREATE TABLE camgirln_db.camgirl_user (
     id INTEGER PRIMARY KEY AUTO_INCREMENT,
     user_id VARCHAR(200) DEFAULT '',

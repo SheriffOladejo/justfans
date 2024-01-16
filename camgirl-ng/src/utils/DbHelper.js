@@ -2,6 +2,7 @@ import Post from '../models/Post';
 import Constants from '../utils/Constants';
 import axios from 'axios';
 import AppUser from '../models/AppUser';
+import PostCommentModel from '../models/PostCommentModel';
 
 class DbHelper {
     constructor(){}
@@ -45,6 +46,27 @@ class DbHelper {
         }
     }
 
+    async createComment (comment) {
+        const data = {
+            "user_id": comment.getUserId(),
+            "caption": comment.getCaption(),
+            "creation_date": comment.getCreationDate(),
+            "hidden": comment.isHidden(),
+            "parent_id": comment.getParentId(),
+            "likes": comment.getLikes(),
+            "reactions": comment.getReactions(),
+            "privacy": comment.getPrivacy(),
+            "user_ids": comment.getUserIds()
+        };
+        try {
+            const response = await axios.post(`${Constants.BASE_API_URL}/createComment`, data);
+            return response;
+        }
+        catch (error) {
+            console.error("An error occurred: " + error);
+        }
+    }
+
     async createPost (post) {
         const data = {
             "user_id": post.getUserId(),
@@ -68,6 +90,73 @@ class DbHelper {
         catch (error) {
             console.error("An error occurred: " + error);
         }  
+    }
+
+    async updateComment (comment) {
+        const data = {
+            "id": comment.getId(),
+            "user_id": comment.getUserId(),
+            "user_ids": comment.getUserIds(),
+            "creation_date": comment.getCreationDate(),
+            "parent_id": comment.getParentId(),
+            "hidden": comment.isHidden(),
+            "caption": comment.getCaption(),
+            "reactions": comment.getReactions(),
+            "likes": comment.getLikes()
+        };
+        try {
+            const response = await axios.post(`${Constants.BASE_API_URL}/updateComment`, data);
+            return response;
+        }
+        catch (error) {
+            console.error("An error occurred: " + error);
+        }
+    }
+
+    async getCommentsByPostID (post_id) {
+        const list = [];
+        try {
+            const data = {"post_id": post_id};
+            const response = await axios.get(`${Constants.BASE_API_URL}/getCommentsByPostID`, {params: data});
+            response.data.sort((a, b) => b.creation_date - a.creation_date);
+            for (let i = 0; i < response.data.length; i++) {
+                const id = response.data[i]["id"];
+                const user_id = response.data[i]["user_id"];
+                const user_ids = response.data[i]["user_ids"];
+                const creation_date = response.data[i]["creation_date"];
+                const parent_id = response.data[i]["parent_id"];
+                const hidden = response.data[i]["hidden"];
+                const caption = response.data[i]["caption"];
+                const reactions = response.data[i]["reactions"];
+                const likes = response.data[i]["likes"];
+                
+                const comment = new PostCommentModel(
+                    id,
+                    user_id,
+                    caption,
+                    creation_date,
+                    hidden,
+                    parent_id,
+                    likes,
+                    reactions,
+                    user_ids
+                );
+                list.push(comment);
+            }
+            
+        }
+        catch (error) {
+            console.log("getCommentsByPostID error: " + error);
+        }
+        return list;
+    }
+
+    async getCommentCountByPostID (post_id) {
+        const data = {"post_id": `${post_id}`};
+        const response = await axios.get(`${Constants.BASE_API_URL}/getCommentCountByPostID`, {params: data});
+        let count = response.data[0]["count"];
+        console.log("coment count: " + toString(response.toString()));
+        return count;
     }
 
     async getPostsByUserID (user_id) {

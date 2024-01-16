@@ -172,12 +172,6 @@ function Home () {
 
     useEffect(() => {
       const getPosts = async () => {
-        const signinData = isUserSignedIn();
-          
-        const username = signinData["username"];
-        const email = signinData["email"];
-
-
         var _u = await getAppUser();
 
         if (_u !== null) {

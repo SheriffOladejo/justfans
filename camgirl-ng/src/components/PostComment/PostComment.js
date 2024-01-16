@@ -29,8 +29,6 @@ function PostComment () {
       post_id = '',
       owner_id = ''
     } = location.state || {};
-    
-    const commentData = [1,2,3,4,5,6,7,8,9,10];
 
     const [postComments, setPostComments] = useState([])
     const [imageAttachment, setImageAttachment] = useState(null);
@@ -87,12 +85,21 @@ function PostComment () {
     }, []);
 
     useEffect(() => {
-      const getPost = async () => {
-        const signinData = isUserSignedIn();
-          
-        const username = signinData["username"];
-        const email = signinData["email"];
+      const getComments = async () => {
+        let comments = await dbHelper.getCommentsByPostID(post.getId());
+        setPostComments(comments);
+        let c = comments.length;
+        if (c !== 0) {
+          setCommentsCount(`${c}`);
+        }
+      }
 
+      getComments();
+
+    }, [post]);
+
+    useEffect(() => {
+      const getPost = async () => {
         var _u = await getAppUser();
         
         if (_u !== null) {
@@ -107,24 +114,6 @@ function PostComment () {
             if (likesArray.includes(_u.getUserId())) {
               setLikedByUser(true);
             }
-          }
-
-          if (post.getComments() !== null) {
-            let comments = JSON.parse(post.getComments()).comments;
-            var arr = [];
-            for (let i = 0; i < comments.length; i++) {
-              let commentModel = new PostCommentModel(
-                comments[i].id,
-                comments[i].user_id,
-                comments[i].comment,
-                comments[i].creation_date,
-                comments[i].hidden,
-                comments[i].parent_id,
-                comments[i].likes
-              );
-              arr.push(commentModel);
-            }
-            setPostComments(arr);
           }
 
           if (post.getAttachmentType() === ATTACHMENT_GIF) {
@@ -145,13 +134,6 @@ function PostComment () {
 
       getPost();
 
-    }, []);
-
-    useEffect(() => {
-      const getComments = async () => {
-        let comments = JSON.parse(post.getComments()).comments
-
-      }
     }, []);
 
     useEffect(() => {
@@ -191,7 +173,6 @@ function PostComment () {
       }
 
       var likes = post.getLikes();
-      console.log("post likes: " + post.getLikes());
       var likesArray = JSON.parse(likes);
       if (likesArray !== null) {
         if (likesArray.includes(user.getUserId())) {
@@ -213,15 +194,6 @@ function PostComment () {
             setLikesCount('');
           }
         }
-        if (post.getComments() !== null && post.getComments()) {
-          let comments = JSON.parse(post.getComments()).comments.length;
-          if (comments > 0) {
-            setCommentsCount(`${comments}`);
-          }
-          else {
-            setCommentsCount('');
-          }
-        }
       }
       getCounts();
     });
@@ -241,105 +213,28 @@ function PostComment () {
       setShowTipModal(true);
       document.body.style.overflow = "hidden";
     };
-  
+
     const makeComment = async (event) => {
       event.preventDefault();
-      if (comment !== '') {
-        if (post.getComments() === null && comment !== "") {
-          let user_ids = [user.getUserId()];
-          let privacy = -1;
-          let comments = {
-            id: Date.now(),
-            user_id: user.getUserId(),
-            comment: comment,
-            creation_date: Date.now(),
-            hidden: "false",
-            parent_id: -1,
-            likes: null
-          };
-          let comment_data = {
-            user_ids: user_ids,
-            privacy: privacy,
-            comments: [comments]
-          };
-          post.setComments(JSON.stringify(comment_data));
-          await dbHelper.updatePost(post);
-          var arr = [];
-          for (let i = 0; i < postComments.length; i++) {
-            let commentModel = new PostCommentModel(
-              postComments[i].id,
-              postComments[i].user_id,
-              postComments[i].comment,
-              postComments[i].creation_date,
-              postComments[i].hidden,
-              postComments[i].parent_id,
-              postComments[i].likes
-            );
-            arr.push(commentModel);
-          }
-          arr.push(new PostCommentModel(
-            comments.id, 
-            comments.user_id, 
-            comments.comment, 
-            comments.creation_date, 
-            comments.hidden, 
-            comments.likes
-          ));
-          setPostComments(arr);
-          setComment("");
-        }
-        else if (post.getComments() !== null && comment !== "") {
-          let comments_data = JSON.parse(post.getComments());
-          var user_ids = comments_data.user_ids;
-          if (!user_ids.includes(user.getUserId())) {
-            user_ids.push(user.getUserId());
-          }
-          let comments = {
-            id: Date.now(),
-            user_id: user.getUserId(),
-            comment: comment,
-            creation_date: Date.now(),
-            hidden: "false",
-            parent_id: -1,
-            likes: null
-          };
-          var comments_list = comments_data.comments;
-          comments_list.push(comments);
-    
-          let comment_data = {
-            user_ids: user_ids,
-            privacy: comments_data.privacy,
-            comments: comments_list
-          }; 
-    
-          post.setComments(JSON.stringify(comment_data));
-          await dbHelper.updatePost(post);
-          var arr = [];
-          for (let i = 0; i < postComments.length; i++) {
-            let commentModel = new PostCommentModel(
-              postComments[i].id,
-              postComments[i].user_id,
-              postComments[i].comment,
-              postComments[i].creation_date,
-              postComments[i].hidden,
-              postComments[i].parent_id,
-              postComments[i].likes
-            );
-            arr.push(commentModel);
-          }
-          arr.push(new PostCommentModel(
-            comments.id, 
-            comments.user_id, 
-            comments.comment, 
-            comments.creation_date, 
-            comments.hidden, 
-            comments.likes
-          ));
-          setPostComments(arr);
-          setComment("");
-          
-        }
-      }
+      let user_ids = JSON.stringify([]);
+      let privacy = -1;
+      let post_comment = new PostCommentModel(
+        -1,
+        user.getUserId(),
+        comment,
+        Date.now(),
+        "false",
+        post.getId(),
+        "",
+        "",
+        user_ids,
+        privacy
+      );
+  
+      await dbHelper.createComment(post_comment);
+      postComments.push(post_comment);
+      setComment("");
+  
     }
 
     scrollToTop(window);
@@ -437,6 +332,7 @@ function PostComment () {
                         key={index}
                         index={index}
                         comment={postComments[index]}
+                        post={post}
                       />
                     ))}
                   </div>

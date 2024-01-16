@@ -20,11 +20,24 @@ const COL_POST_SHARE = "post_share";
 const COL_POST_PRIVACY = "post_privacy";
 const COL_POST_TYPE = "post_type";
 const COL_CREATION_DATE = "creation_date";
-const COL_COMMENTS_PRIVACY = "comments_privacy";
+const COL_POST_COMMENTS_PRIVACY = "comments_privacy";
 const COL_COMMENTS = "comments";
 const COL_REACTIONS = "reactions";
 const COL_LIKES = "likes";
 const COL_TIPS = "tips";
+
+
+const COMMENT_TABLE = "camgirl_comment";
+const COL_COMMENT_ID = "id";
+const COL_COMMENT_PARENT_ID = "parent_id";
+const COL_COMMENT_USER_ID = "user_id";
+const COL_COMMENT_HIDDEN = "hidden";
+const COL_COMMENT_CAPTION = "caption";
+const COL_COMMENT_CREATION_DATE = "creation_date";
+const COL_COMMENT_PRIVACY = "privacy";
+const COL_COMMENT_REACTIONS = "reactions";
+const COL_COMMENT_LIKES = "likes";
+const COL_COMMENT_USER_IDS = "user_ids";
 
 const USER_TABLE = "camgirl_user";
 const COL_EMAIL = "email";
@@ -59,6 +72,19 @@ const COL_CREATOR_MODE_DESC_DISMISSED = "creator_mode_desc_dismissed";
 
 
 module.exports = {
+  COL_POST_COMMENTS_PRIVACY,
+  COMMENT_TABLE,
+  COL_COMMENT_USER_IDS,
+  COL_COMMENTS,
+  COL_COMMENT_PRIVACY,
+  COL_COMMENT_CAPTION,
+  COL_COMMENT_CREATION_DATE,
+  COL_COMMENT_HIDDEN,
+  COL_COMMENT_ID,
+  COL_COMMENT_LIKES,
+  COL_COMMENT_PARENT_ID,
+  COL_COMMENT_USER_ID,
+  COL_COMMENT_REACTIONS,
   HOST,
   USER,
   PASSWORD,
@@ -107,7 +133,6 @@ module.exports = {
   COL_POST_PRIVACY,
   COL_POST_TYPE,
   COL_CREATION_DATE,
-  COL_COMMENTS_PRIVACY,
   COL_COMMENTS,
   COL_REACTIONS,
   COL_LIKES,
