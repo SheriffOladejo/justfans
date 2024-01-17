@@ -1,5 +1,5 @@
 .post-back-container {
-    max-width: auto;
+    min-width: 550px;
     height: 75px;
     background-color: white;
     border-radius: 8px;

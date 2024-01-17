@@ -12,7 +12,7 @@ import { gapi } from 'gapi-script';
 import Constants from '../../utils/Constants';
 import { Base64 } from 'js-base64';
 import DbHelper from '../../utils/DbHelper';
-import LoadingScreen from '../LoadingScreen/LoadingScreen';
+import LoadingSpinner from '../LoadingSpinner/LoadingSpinner';
 
 function SignupSection () {
 
@@ -297,7 +297,7 @@ function SignupSection () {
     }
 
     if (loading) {
-      return (<div><LoadingScreen/></div>)
+      return (<div><LoadingSpinner/></div>)
     }
 
     return (

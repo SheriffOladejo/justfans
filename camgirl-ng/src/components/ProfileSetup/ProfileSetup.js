@@ -9,7 +9,7 @@ import DbHelper from '../../utils/DbHelper';
 import Constants from '../../utils/Constants';
 import { initializeApp } from 'firebase/app';
 import { getStorage, ref, uploadBytesResumable, getDownloadURL } from 'firebase/storage';
-import LoadingScreen from '../LoadingScreen/LoadingScreen';
+import LoadingSpinner from '../LoadingSpinner/LoadingSpinner';
 import Cookies from 'js-cookie';
 
 
@@ -317,7 +317,7 @@ function ProfileSetup () {
         <Navbar />
         <div className="dialog-container">
           <div className="profile-dialog">
-            <div style={{ paddingTop:'100px', paddingBottom:'100px' }}><LoadingScreen/></div>
+            <div style={{ paddingTop:'100px', paddingBottom:'100px' }}><LoadingSpinner/></div>
         
           </div>
         </div> 
@@ -457,7 +457,7 @@ function ProfileSetup () {
         {!isMobile && <Navbar /> }
         <div className="dialog-container">
           <div className="profile-dialog">
-            {loading && <div><ToastContainer /><LoadingScreen/></div>} 
+            {loading && <div><ToastContainer /><LoadingSpinner/></div>} 
             <div style={{ width:'500px' }}>
               <div className='progress_bar'>
 

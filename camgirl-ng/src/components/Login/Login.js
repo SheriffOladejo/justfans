@@ -9,7 +9,7 @@ import { Base64 } from 'js-base64';
 import { useNavigate } from 'react-router-dom';
 import { GoogleLogin } from 'react-google-login';
 import DbHelper from '../../utils/DbHelper';
-import LoadingScreen from '../LoadingScreen/LoadingScreen';
+import LoadingSpinner from '../LoadingSpinner/LoadingSpinner';
 import Cookies from 'js-cookie';
 
 function Login() {
@@ -297,7 +297,7 @@ function Login() {
   }
 
   if (loading) {
-    return <LoadingScreen/>
+    return <LoadingSpinner/>
   }
 
   return (

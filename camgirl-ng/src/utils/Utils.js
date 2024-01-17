@@ -114,9 +114,26 @@ function calculateTimeAgo (timestamp) {
 
     return result;
 }
+
+function addDataIntoCache(key, data) {
+    console.log(data);
+    localStorage.setItem(key, JSON.stringify(data));
+    console.log("Data Added into localStorage!");
+}
+
+function getDataFromLocalStorage(key) {
+    const data = localStorage.getItem(key);
+    if (data) {
+      return data
+    } else {
+      return null; 
+    }
+  }
   
 
 export {
+    getDataFromLocalStorage,
+    addDataIntoCache,
     formatNumber,
     calculateTimeAgo,
     isValidEmail,

@@ -6,12 +6,15 @@ import { calculateTimeAgo, formatNumber, getAppUser } from '../../../utils/Utils
 import AppUser from '../../../models/AppUser';
 import DbHelper from '../../../utils/DbHelper';
 import ReplyCommentModal from '../../Modals/ReplyCommentModal/ReplyCommentModal';
+import LoadingSpinner from '../../LoadingSpinner/LoadingSpinner';
 
 function PostCommentItem ({comment, index, post}) {
 
     const [owner, setOwner] = useState(new AppUser());
     const [user, setUser] = useState(new AppUser());
     const [likesCount, setLikesCount] = useState('');
+
+    const [loading, setLoading] = useState(false);
 
     const [showReplyModal, setShowReplyModal] = useState(false);
 
@@ -76,6 +79,7 @@ function PostCommentItem ({comment, index, post}) {
 
     useEffect(() => {
       const fetchUser = async () => {
+        setLoading(true);
         let user = await getAppUser();
         user.setCurrency("NGN");
         user.setCurrencySymbol("\u20A6");
@@ -104,43 +108,53 @@ function PostCommentItem ({comment, index, post}) {
             }
           }
         }
+        setLoading(false);
       }
       getUser();
     },[user]);
 
     return (
         <div className="post-comment-item-container">
-          <ReplyCommentModal
-            isOpen={showReplyModal} 
-            onClose={closeReplyModal} 
-            callback={callback}
-            comment={comment}
-            owner={owner}
-            user={user} />
-          <div className="post-comment-user-info">
-            <ProfilePicture url={owner.getProfilePicture()} marginLeft='0px' zIndex={"1"}/>
-            <div className="post-comment-user-details">
-              <div className="post-comment-name-username">
-                <p className="post-comment-display-name">{''+owner.getFirstName() + ' ' + owner.getLastName()}</p>
-                <img src="/images/verifiied.png" alt="Super user" className="post-comment-verified"  />
-                <p className="post-comment-username">@{owner.getUserName()}</p>
-              </div>
-              <p className="post-comment-post-time">{calculateTimeAgo(comment.getCreationDate())}</p>
-            </div>
-          </div>
-          <p className="post-comment-item-caption">{comment.getCaption()}</p>
-          <div className="post-comment-item-reaction-container">
-            <div className="post-comment-item-reaction">
-                <div className="post-comment-like-container" onClick={likeComment}>
-                  <img className="post-comment-like" src={likedByUser ? "/images/like_red.png" : "/images/like.png"} alt="Like" />
+          { loading && <LoadingSpinner/> }
+          { !loading && (<>
+            <ReplyCommentModal
+              isOpen={showReplyModal} 
+              onClose={closeReplyModal} 
+              callback={callback}
+              comment={comment}
+              owner={owner}
+              user={user} />
+            <div className="post-comment-user-info">
+              <ProfilePicture url={owner.getProfilePicture()} marginLeft='0px' zIndex={"1"}/>
+              <div className="post-comment-user-details">
+                <div className="post-comment-name-username">
+                  <p className="post-comment-display-name">{''+owner.getFirstName() + ' ' + owner.getLastName()}</p>
+                  <img src="/images/verifiied.png" alt="Super user" className="post-comment-verified"  />
+                  <p className="post-comment-username">@{owner.getUserName()}</p>
                 </div>
-                <p className="post-likes">{likesCount}</p>
-                <p className="post-comment-reply" onClick={openReplyModal}>Reply</p>
+                <p className="post-comment-post-time">{calculateTimeAgo(comment.getCreationDate())}</p>
+              </div>
             </div>
-            <div  className="post-comment-like-container">
-              <img src="/images/more.png" alt="More" />
+            <p className="post-comment-item-caption">{comment.getCaption()}</p>
+            <div className="post-comment-item-reaction-container">
+              <div className="post-comment-item-reaction">
+                  <div className="post-comment-like-container" onClick={likeComment}>
+                    <img className="post-comment-like" src={likedByUser ? "/images/like_red.png" : "/images/like.png"} alt="Like" />
+                  </div>
+                  <p className="post-likes">{likesCount}</p>
+              </div>
+              <div onClick={openReplyModal} className="reaction">
+                <div className="reaction-icon">
+                  <img src="/images/comment.png" alt="Comment" style={{ marginTop: '5px' }} />
+                </div>
+                <p className="reaction-text">12</p>
+              </div>
+              <div  className="post-comment-like-container">
+                <img src="/images/more.png" alt="More" />
+              </div>
             </div>
-          </div>
+          </>)}
+          
         </div>
     );
 }

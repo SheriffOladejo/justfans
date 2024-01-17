@@ -1,0 +1,9 @@
+.loading-spinner {
+    display: flex;
+    flex-direction: row;
+    width: 100%;
+    height: auto;
+    align-items: center;
+    justify-content: center;
+    margin-top: 30px;
+}

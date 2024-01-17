@@ -19,6 +19,7 @@ import DbHelper from '../../utils/DbHelper';
 import { ATTACHMENT_GIF, ATTACHMENT_IMAGE, ATTACHMENT_VIDEO } from '../../utils/Constants';
 import SendTipModal from '../Modals/SendTipModal/SendTipModal';
 import PostCommentModel from '../../models/PostCommentModel';
+import LoadingSpinner from '../LoadingSpinner/LoadingSpinner';
 
 function PostComment () {
 
@@ -54,6 +55,7 @@ function PostComment () {
 
     const textareaRef = useRef(null);
 
+    const [loading, setLoading] = useState(false);
 
 
     useEffect(() => {
@@ -86,6 +88,7 @@ function PostComment () {
 
     useEffect(() => {
       const getComments = async () => {
+        setLoading(true);
         let comments = await dbHelper.getCommentsByPostID(post.getId());
         setPostComments(comments);
         let c = comments.length;
@@ -130,9 +133,11 @@ function PostComment () {
         else {
           
         }
+        setLoading(false);
       }
 
       getPost();
+
 
     }, []);
 
@@ -144,6 +149,22 @@ function PostComment () {
       fetchUser();
     }, []);
 
+
+    useEffect(() => {
+      const getCounts = () => {
+        
+        if (post.getLikes() !== null && post.getLikes() !== undefined) {
+          let likes = JSON.parse(post.getLikes()).length;
+          if (likes > 0) {
+            setLikesCount(`${likes}`);
+          }
+          else {
+            setLikesCount('');
+          }
+        }
+      }
+      getCounts();
+    });
 
     const likePost = async () => {
       var likes = post.getLikes();
@@ -182,21 +203,6 @@ function PostComment () {
       
     }
 
-    useEffect(() => {
-      const getCounts = () => {
-        
-        if (post.getLikes() !== null && post.getLikes() !== undefined) {
-          let likes = JSON.parse(post.getLikes()).length;
-          if (likes > 0) {
-            setLikesCount(`${likes}`);
-          }
-          else {
-            setLikesCount('');
-          }
-        }
-      }
-      getCounts();
-    });
 
     const navigate = useNavigate();
 
@@ -252,6 +258,8 @@ function PostComment () {
                     </div>
                     <p className="back-post-text">Post</p>
                 </div>
+                { loading && <LoadingSpinner/> }
+                { !loading && ( 
                 <div className="post-comment-container">
                   <div className="post-comment-user-info">
                     <ProfilePicture url={postOwner.getProfilePicture()} marginLeft='0px' zIndex={"1"}/>
@@ -337,6 +345,7 @@ function PostComment () {
                     ))}
                   </div>
                 </div>
+                )}
               </div>
               {!isMobile && <SecondarySideBar/>}
             </div>

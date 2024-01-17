@@ -1,8 +1,9 @@
+import React from 'react';
 import Stories from '../Home/Stories/Stories';
 import './Home.css';
 import FeedItem from '../Home/Feed/FeedItem';
 import ProfilePicture from '../ProfilePicture/ProfilePicture';
-import { useState, useRef, useEffect } from 'react';
+import { useState, useRef, useEffect, useMemo } from 'react';
 import TextareaAutosize from 'react-textarea-autosize';
 import { ToastContainer, toast } from 'react-toastify';
 import ReactPlayer from 'react-player';
@@ -11,15 +12,15 @@ import Post  from '../../models/Post';
 import AppUser from '../../models/AppUser';
 import Navbar from '../ProfileSetup/Navbar';
 import DbHelper from '../../utils/DbHelper';
-import { getAppUser, isUserSignedIn } from '../../utils/Utils';
+import { getAppUser, addDataIntoCache, getDataFromLocalStorage } from '../../utils/Utils';
 import { getStorage, ref, uploadBytesResumable, getDownloadURL } from 'firebase/storage';
 import { FIREBASE_CONFIG, PUBLICITY_OPTIONS, ATTACHMENT_GIF, ATTACHMENT_IMAGE, ATTACHMENT_VIDEO } from '../../utils/Constants';
 import { initializeApp } from 'firebase/app';
-import LoadingScreen from '../LoadingScreen/LoadingScreen';
 import SelectGif from '../SelectGif/SelectGif';
 import BottomNav from '../BottomNav/BottomNav';
 import PublicityOptions from './PublicityOptions/PublicityOptions';
 import { scrollToTop } from '../../utils/Utils';
+import LoadingSpinner from '../LoadingSpinner/LoadingSpinner';
 
 function Home () {
 
@@ -164,6 +165,7 @@ function Home () {
 
     useEffect(() => {
       const fetchUser = async () => {
+        setLoading(true);
         var _u = await getAppUser();
         setUser(_u);
       };
@@ -172,20 +174,21 @@ function Home () {
 
     useEffect(() => {
       const getPosts = async () => {
-        var _u = await getAppUser();
-
-        if (_u !== null) {
-          let user_id = _u.user_id;
+        if (user !== null) {
+          
+          let user_id = user.user_id;
           let posts = await dbHelper.getPostsByUserID(user_id);
           setPosts(posts);
         }
         else {
+
         }
+        setLoading(false);
       }
 
       getPosts();
 
-    }, []);
+    }, [user]);
 
     const removeAttachment = () => {
       setSelectedVideo(null);
@@ -294,8 +297,7 @@ function Home () {
       <Navbar />
       <div className="dialog-container">
         <div className="profile-dialog">
-          <div style={{ paddingTop:'100px', paddingBottom:'100px' }}><LoadingScreen/></div>
-      
+          <LoadingSpinner/>
         </div>
       </div> 
     </div>
@@ -306,7 +308,7 @@ function Home () {
       
     }
 
-    scrollToTop(window);
+    //scrollToTop(window);
 
     if (isMobile) {
       return (
@@ -347,127 +349,132 @@ function Home () {
 
     return (
         <div onClick={removeDialogs} className="home-container">
-          <Stories />
-          <div className="create-post-container">
-              <div className="textfield-and-profile">
-                  <div>
-                    <ProfilePicture url={user.getProfilePicture()} marginTop="15px" zIndex={"1"}/>
-                  </div>
-                  
-                  <div className='home-create-post'>
-                    <div className="home-post-publicity" onClick={togglePublicityDropdown}>
-                      <img className="home-post-publicity-icon" src="/images/globe.png" alt="Image" />
-                      <p className="home-post-publicity-text">{selectedPublicity}</p>
-                      <img className="home-post-publicity-icon-arrow" src="/images/chevron-down.png" alt="Image" />
-                    </div>
-                    {isPublicityDropdownOpen && (
-                      <div className='publicity-dropdown-container'>
-                        <p className='publicity-desc-title'>Who can see your post?</p>
-                        <p className='publicity-desc'>Your post will show up in Feed, on your profile and in search results.<br/><br/>Your default audience is set to Public, but you can change the audience of this specific post.</p>
-                        <div className="publicity-dropdown-list">
-                          {PUBLICITY_OPTIONS.map((option) => 
-                            <PublicityOptions title={option.title} desc={option.desc} image={option.image} handlePublicityOptionClick={handlePublicityOptionClick} />
-                          )}
-                        </div>
-                        <div className="publicity-buttons-row">
-                          <button className="publicity-cancel-button">
-                            Cancel
-                          </button>
-                          <button className="publicity-done-button">
-                            Done
-                          </button>
-                        </div>
-                      </div>
-                      )}
-                    <TextareaAutosize
-                      className="home-create-post-textfield"
-                      placeholder="What's happening!?"
-                      ref={textareaRef}
-                      value={postText}
-                      onChange={(e) => setPostText(e.target.value)}
-                    />
-                    {showEmojiPicker && (
-                      <div className="home-emoji-picker">
-                        <EmojiPicker
-                          onEmojiClick={handleEmojiSelect}
-                        />
-                      </div>
-                    )}
-
-                    <div className="home-post-attachment-container">
-                      
-                      { (selectedGif || selectedImage) && 
-                        <img className="home-post-attachment-media" 
-                        src={selectedGif === null ? URL.createObjectURL(selectedImage) : selectedGif}/> 
-                      }
-                      { selectedVideo && 
-                        <ReactPlayer
-                          url={URL.createObjectURL(selectedVideo)}
-                          controls={true}
-                          width="100%"
-                          max-height="auto"
-                        /> 
-                      }
-                      { attachmentType !== '' &&
-                        <div style={{ display:'flex', flexDirection:'row', alignItems:'center', justifyContent:'center' }}>
-                          <div onClick={removeAttachment} className="home-post-attachment-close-container">
-                            <img className="home-post-attachment-close" src="/images/close.png"/>
-                          </div>
-                          { (selectedImage || selectedVideo) && <div className="home-post-attachment-edit-container"><h4 className="home-post-attachment-edit">Edit</h4></div>}
-                        </div>
-                      }
-                    </div>
-                  </div>
-              </div>
-              <div style={{ 
-                width: 'auto', 
-                height: '0.08px', 
-                backgroundColor: '#EBEBEB', 
-                marginTop: '25px',
-                marginLeft: '10px',
-                marginRight: '10px' }}/>
-              <div className="element-container">
-                <div className="home-attachment-container">
-                  <div className="element" onClick={() => setShowEmojiPicker((prev) => !prev)}>
-                    <img src="/images/smile.png" alt="Emoji" />
-                  </div>
-                  <div className="element" onClick={openFileChooser}>
-                    <img src="/images/image.png" alt="Image" />
-                  </div>
-                  <div className="element" onClick={toggleShowGifs}>
-                    <img src="/images/gif.png" alt="Gif" />
-                  </div>
-                  <div className="element">
-                    <img style={{ marginTop: '5px' }} src="/images/live.png" alt="Live Video" />
-                  </div>
-                </div>
-                <button className="post-button" onClick={createPost} disabled={ !postText && !selectedImage && !selectedVideo && !selectedGif }>
-                  Post
-                </button>
-                <input type="file" style={{ display: 'none' }} accept="image/gif" ref={gifRef} onChange={handleGifAttachment} />
-              
-                <input type="file" style={{ display: 'none' }} accept="image/jpeg, image/png, video/mp4" ref={attachmentRef} onChange={handlePostAttachment} />
-              </div>
-          </div>
-          {showGifs && <SelectGif onSelect={handleGifAttachment} />}
-          <div className='filter-posts'>
-            <img src="/images/filter.png" alt="Filter" style={{ width: '16px', height: '16px' }} />
-            <p style={{ fontSize: '13px', fontWeight: '400', fontFamily: 'Inter' }}>Filter posts:</p>
-            <p style={{ fontSize: '13px', fontWeight: '400', fontFamily: 'Inter', marginLeft: '5px' }}>Free</p>
-            <a href='#' onClick={showFilterOptions} style={{ paddingRight: '10px' }}>
-              <img src="/images/chevron-down.png" alt="Filter" style={{ width: '10px', height: '10px', marginLeft: '5px' }} />
-            </a>
-          </div>
-          <div style={{ width: '100%', height: '0.1px', backgroundColor: 'grey', marginBottom: '25px' }}/>
+          { loading && <LoadingSpinner/> }
+          { !loading && (
           <div>
-            {posts.map((item, index) => (
-              <FeedItem
-                key={index}
-                post={item}
-              />
-            ))}
+            <Stories />
+            <div className="create-post-container">
+                <div className="textfield-and-profile">
+                    <div>
+                      <ProfilePicture url={user.getProfilePicture()} marginTop="15px" zIndex={"1"}/>
+                    </div>
+                    
+                    <div className='home-create-post'>
+                      <div className="home-post-publicity" onClick={togglePublicityDropdown}>
+                        <img className="home-post-publicity-icon" src="/images/globe.png" alt="Image" />
+                        <p className="home-post-publicity-text">{selectedPublicity}</p>
+                        <img className="home-post-publicity-icon-arrow" src="/images/chevron-down.png" alt="Image" />
+                      </div>
+                      {isPublicityDropdownOpen && (
+                        <div className='publicity-dropdown-container'>
+                          <p className='publicity-desc-title'>Who can see your post?</p>
+                          <p className='publicity-desc'>Your post will show up in Feed, on your profile and in search results.<br/><br/>Your default audience is set to Public, but you can change the audience of this specific post.</p>
+                          <div className="publicity-dropdown-list">
+                            {PUBLICITY_OPTIONS.map((option) => 
+                              <PublicityOptions title={option.title} desc={option.desc} image={option.image} handlePublicityOptionClick={handlePublicityOptionClick} />
+                            )}
+                          </div>
+                          <div className="publicity-buttons-row">
+                            <button className="publicity-cancel-button">
+                              Cancel
+                            </button>
+                            <button className="publicity-done-button">
+                              Done
+                            </button>
+                          </div>
+                        </div>
+                        )}
+                      <TextareaAutosize
+                        className="home-create-post-textfield"
+                        placeholder="What's happening!?"
+                        ref={textareaRef}
+                        value={postText}
+                        onChange={(e) => setPostText(e.target.value)}
+                      />
+                      {showEmojiPicker && (
+                        <div className="home-emoji-picker">
+                          <EmojiPicker
+                            onEmojiClick={handleEmojiSelect}
+                          />
+                        </div>
+                      )}
+
+                      <div className="home-post-attachment-container">
+                        
+                        { (selectedGif || selectedImage) && 
+                          <img className="home-post-attachment-media" 
+                          src={selectedGif === null ? URL.createObjectURL(selectedImage) : selectedGif}/> 
+                        }
+                        { selectedVideo && 
+                          <ReactPlayer
+                            url={URL.createObjectURL(selectedVideo)}
+                            controls={true}
+                            width="100%"
+                            max-height="auto"
+                          /> 
+                        }
+                        { attachmentType !== '' &&
+                          <div style={{ display:'flex', flexDirection:'row', alignItems:'center', justifyContent:'center' }}>
+                            <div onClick={removeAttachment} className="home-post-attachment-close-container">
+                              <img className="home-post-attachment-close" src="/images/close.png"/>
+                            </div>
+                            { (selectedImage || selectedVideo) && <div className="home-post-attachment-edit-container"><h4 className="home-post-attachment-edit">Edit</h4></div>}
+                          </div>
+                        }
+                      </div>
+                    </div>
+                </div>
+                <div style={{ 
+                  width: 'auto', 
+                  height: '0.08px', 
+                  backgroundColor: '#EBEBEB', 
+                  marginTop: '25px',
+                  marginLeft: '10px',
+                  marginRight: '10px' }}/>
+                <div className="element-container">
+                  <div className="home-attachment-container">
+                    <div className="element" onClick={() => setShowEmojiPicker((prev) => !prev)}>
+                      <img src="/images/smile.png" alt="Emoji" />
+                    </div>
+                    <div className="element" onClick={openFileChooser}>
+                      <img src="/images/image.png" alt="Image" />
+                    </div>
+                    <div className="element" onClick={toggleShowGifs}>
+                      <img src="/images/gif.png" alt="Gif" />
+                    </div>
+                    <div className="element">
+                      <img style={{ marginTop: '5px' }} src="/images/live.png" alt="Live Video" />
+                    </div>
+                  </div>
+                  <button className="post-button" onClick={createPost} disabled={ !postText && !selectedImage && !selectedVideo && !selectedGif }>
+                    Post
+                  </button>
+                  <input type="file" style={{ display: 'none' }} accept="image/gif" ref={gifRef} onChange={handleGifAttachment} />
+                
+                  <input type="file" style={{ display: 'none' }} accept="image/jpeg, image/png, video/mp4" ref={attachmentRef} onChange={handlePostAttachment} />
+                </div>
+            </div>
+            {showGifs && <SelectGif onSelect={handleGifAttachment} />}
+            <div className='filter-posts'>
+              <img src="/images/filter.png" alt="Filter" style={{ width: '16px', height: '16px' }} />
+              <p style={{ fontSize: '13px', fontWeight: '400', fontFamily: 'Inter' }}>Filter posts:</p>
+              <p style={{ fontSize: '13px', fontWeight: '400', fontFamily: 'Inter', marginLeft: '5px' }}>Free</p>
+              <a href='#' onClick={showFilterOptions} style={{ paddingRight: '10px' }}>
+                <img src="/images/chevron-down.png" alt="Filter" style={{ width: '10px', height: '10px', marginLeft: '5px' }} />
+              </a>
+            </div>
+            <div style={{ width: '100%', height: '0.1px', backgroundColor: 'grey', marginBottom: '25px' }}/>
+            <div>
+              {posts.map((item, index) => (
+                <FeedItem
+                  key={index}
+                  post={item}
+                />
+              ))}
+            </div>
+            <ToastContainer/>
           </div>
-          <ToastContainer/>
+          )}
         </div>
     );
   

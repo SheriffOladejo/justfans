@@ -1,7 +1,7 @@
 import './Signup.css';
 import Login from '../Login/Login';
 import { useState, useEffect } from 'react';
-import LoadingScreen from '../LoadingScreen/LoadingScreen';
+import LoadingSpinner from '../LoadingSpinner/LoadingSpinner';
 
 function Signup () {
 
