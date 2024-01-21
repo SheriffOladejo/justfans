@@ -8,6 +8,7 @@ import EmojiPicker from 'emoji-picker-react';
 import Foco from 'react-foco';
 import PostCommentModel from '../../../models/PostCommentModel';
 import DbHelper from '../../../utils/DbHelper';
+import PostCommentItem from '../../Adapters/Post/PostCommentItem';
 
 function ReplyCommentModal (
     { isOpen, onClose, comment, owner, user, callback }
@@ -18,16 +19,21 @@ function ReplyCommentModal (
     const [likesCount, setLikesCount] = useState('');
     const [likedByUser, setLikedByUser] = useState(false);
 
+
     const [showEmojiPicker, setShowEmojiPicker] = useState(false);
 
     const [commentText, setCommentText] = useState('');
+    const [commentId, setCommentId] = useState('');
+
+    const [childComments, setChildComments] = useState([]);
 
     const textareaRef = useRef(null);
     
     useEffect(() => {
       setLikedByUser(false);
       setLikesCount('');
-    });
+      setCommentText("");
+    }, [isOpen]);
 
     useEffect(() => {
         const getLikeData = () => {
@@ -46,7 +52,16 @@ function ReplyCommentModal (
           }
         }
         getLikeData();
-    });
+    }, [isOpen]);
+
+    useEffect(() => {
+      const getChildComments = async () => {
+        let childComments = await dbHelper.getCommentsByPostID(comment.getId());
+        setChildComments(childComments);
+      }
+
+      getChildComments();
+    }, [isOpen]);
 
     const handleClose = () => {
       setCommentText('');
@@ -74,24 +89,37 @@ function ReplyCommentModal (
 
 
     const makeComment = async (event) => {
-        event.preventDefault();
-        let user_ids = JSON.stringify([]);
-        let privacy = -1;
-        let post_comment = new PostCommentModel(
-          -1,
-          user.getUserId(),
-          commentText,
-          Date.now(),
-          "false",
-          comment.getId(),
-          "",
-          "",
-          user_ids,
-          privacy
-        );
-    
+      
+      event.preventDefault();
+      let user_ids = JSON.stringify([]);
+      let privacy = -1;
+      let post_comment = new PostCommentModel(
+        -1,
+        user.getUserId(),
+        commentText,
+        Date.now(),
+        "false",
+        comment.getId(),
+        "",
+        "",
+        user_ids,
+        privacy
+      );
+
+      const words = commentText.split(/\s+/);
+
+      if (words.length > 0 && words[0].startsWith('@')) {
+        post_comment.setParentId(commentId);
         await dbHelper.createComment(post_comment);
-        onClose();
+        callback(likedByUser, likesCount, childComments.length + 1);
+      }
+      else {
+        await dbHelper.createComment(post_comment);
+        callback(likedByUser, likesCount, childComments.length);
+      }
+  
+      
+      onClose();
     
     }
 
@@ -137,6 +165,10 @@ function ReplyCommentModal (
         }
     }
 
+    const cb = (username, comment_id) => {
+      setCommentText(`@${username} `);
+      setCommentId(comment_id);
+    }
 
     if (!isOpen) {
         return null;
@@ -172,38 +204,51 @@ function ReplyCommentModal (
                         <img src="/images/more.png" alt="More" />
                         </div>
                     </div>
-                    <div className="replymodal-comment-box">
-                        <a href='#' onClick={() => setShowEmojiPicker((prev) => !prev)} style={{ paddingLeft: '0px' }}>
-                            <img
-                                src="/images/emoji.svg"
-                                alt="Emoji"
-                            />
-                        </a>
-                        <TextareaAutosize
-                            className="reply-comment-modal-input"
-                            placeholder="Add a comment"
-                            ref={textareaRef}
-                            value={commentText}
-                            onChange={(e) => setCommentText(e.target.value)}
-                        />
-                        <a href='#' onClick={makeComment} style={{ paddingRight: '10px' }}>
-                            <img
-                                src="/images/send.png"
-                                alt="Send"
-                            />
-                        </a>
-                    </div>
-                    {showEmojiPicker && (
-                        <Foco
-                        onClickOutside={() => setShowEmojiPicker(false)}>
-                            <div className="reply-comment-modal-emoji-picker">
-                                <EmojiPicker
-                                onEmojiClick={handleEmojiSelect}
-                                />
-                            </div>
-                        </Foco>
-                    )}
+                    
                 </div>
+                <div className='reply-comment-modal-child-comment-container'>
+                  <div className='reply-comment-modal-child-comment'>
+                    {childComments.sort((a, b) => b.getCreationDate() - a.getCreationDate()).map((comment, index) => (
+                      <PostCommentItem
+                        key={index}
+                        comment={childComments[index]}
+                        from="commentmodal"
+                        cb={cb}
+                      />
+                    ))}
+                  </div>
+                </div>
+                <div className="replymodal-comment-box">
+                  <a href='#' onClick={() => setShowEmojiPicker((prev) => !prev)} style={{ paddingLeft: '0px' }}>
+                      <img
+                          src="/images/emoji.svg"
+                          alt="Emoji"
+                      />
+                  </a>
+                  <TextareaAutosize
+                      className="reply-comment-modal-input"
+                      placeholder="Add a comment"
+                      ref={textareaRef}
+                      value={commentText}
+                      onChange={(e) => setCommentText(e.target.value)}
+                  />
+                  <a href='#' onClick={makeComment} style={{ paddingRight: '10px' }}>
+                      <img
+                          src="/images/send.png"
+                          alt="Send"
+                      />
+                  </a>
+                </div>
+                {showEmojiPicker && (
+                    <Foco
+                    onClickOutside={() => setShowEmojiPicker(false)}>
+                        <div className="reply-comment-modal-emoji-picker">
+                            <EmojiPicker
+                            onEmojiClick={handleEmojiSelect}
+                            />
+                        </div>
+                    </Foco>
+                )}
             </div>
         </div>
 

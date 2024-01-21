@@ -9,6 +9,7 @@
     align-items: center;
     justify-content: center;
     z-index: 2;
+    overflow-y: auto;
 }
 
 .reply-comment-modal-child {
@@ -85,6 +86,9 @@
     flex-direction:column;
     align-items:start;
     border-radius: 8px;
+    position: sticky;
+    top: 0px;
+    z-index: 2;
   }
   
   .reply-comment-modal-item-caption {
@@ -93,6 +97,11 @@
     font-weight: 500;
     font-family: 'Inter', sans-serif;
     margin-left: 57px;
+  }
+
+  .reply-comment-modal-child-comment {
+    margin-left: 50px;
+    height: auto;
   }
 
   .reply-comment-modal-input {
@@ -129,6 +138,8 @@
     margin-top: 10px;
     justify-content: space-between;
     align-items: center;
+    position: sticky;
+    bottom: 0;
   }
   
   @media only screen and (max-width: 450px) {

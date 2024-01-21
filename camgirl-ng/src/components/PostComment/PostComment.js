@@ -303,7 +303,7 @@ function PostComment () {
                     </div>
                     <div className="post-comment-reaction">
                       <div className="post-comment-reaction-icon">
-                        <img src="/images/comment.png" alt="Comment" />
+                        <img src="/images/comment.png" style={{ marginTop: '7px' }} alt="Comment" />
                       </div>
                       <p className="post-comment-reaction-text">{commentsCount}</p>
                     </div>
@@ -338,9 +338,8 @@ function PostComment () {
                     {postComments.sort((a, b) => b.getCreationDate() - a.getCreationDate()).map((comment, index) => (
                       <PostCommentItem
                         key={index}
-                        index={index}
                         comment={postComments[index]}
-                        post={post}
+                        from="postcomment"
                       />
                     ))}
                   </div>

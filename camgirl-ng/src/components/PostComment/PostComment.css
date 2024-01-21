@@ -161,14 +161,13 @@
   font-weight: 600;
   font-family: 'Inter', sans-serif;
   color: #828282;
-  margin-bottom: 15px;
+  margin-bottom: 10px;
 }
 
 .post-comment-reaction {
   display: flex;
   flex-direction: row;
   align-items: center;
-  text-align: center;
   gap: 5px;
   padding: 10px;
 }

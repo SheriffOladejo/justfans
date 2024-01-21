@@ -70,6 +70,19 @@ app.get("/getCommentsByPostID", (req, res) => {
     });
 });
 
+app.get("/getCommentsByPostID", (req, res) => {
+    const post_id = req.query.post_id;
+    const sql = `SELECT * FROM ${constants.COMMENT_TABLE} WHERE ${constants.COL_COMMENT_PARENT_ID} = ?`;
+    db.query(sql, [post_id], (err, result) => {
+        if (err) {
+            console.error('/getCommentsByPostID: Error retrieving posts: ' + err.message);
+            res.status(500).json({ message: '/getCommentsByPostID: Failed to retrieve comment count' });
+        } else {
+            res.json(result);
+        }
+    });
+});
+
 app.post("/updateComment", (req, res) => {
 
     const {id, user_id, user_ids, creation_date, parent_id, hidden, caption, reactions, likes} = req.body;
